@@ -24,8 +24,6 @@ class SubSpeller {
 
     }
     render(_this) {
-        _this.ctx.fillStyle = "white";
-        _this.ctx.fillRect(this.x - style.fontSize / 2, this.y - style.fontSize, 3 * (this.w + this.wMargin), 3 * this.h)
 
         let i = 0
 
@@ -40,12 +38,21 @@ class SubSpeller {
         })
     }
     renderFlash(_this) {
-        if (this.sinWave.isUp()) {
-            _this.ctx.fillStyle = "black";
-            // const coor = this.gridHelper.getCoordinate(1)
-            const coor = this.gridHelper.getCoordinate(randInt(0, this.alphabets.length - 1))
-            _this.ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * 1.2, style.fontSize * 1.3)
-        }
+
+        let max = 255
+        let min = 0
+        let color = this.sinWave.getYNow() * (max - min) + min
+        _this.ctx.fillStyle = `rgb(${color},${color},${color})`;
+        const coor = this.gridHelper.getCoordinate(randInt(0, this.alphabets.length - 1))
+        _this.ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * 1.2, style.fontSize * 1.3)
+
+
+        // if (this.sinWave.isUp()) {
+
+        // _this.ctx.fillStyle = "black";
+        // const coor = this.gridHelper.getCoordinate(randInt(0, this.alphabets.length - 1))
+        // _this.ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * 1.2, style.fontSize * 1.3)
+        // }
     }
 
 }

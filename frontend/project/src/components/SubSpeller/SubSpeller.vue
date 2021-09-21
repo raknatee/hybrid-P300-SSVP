@@ -5,8 +5,6 @@
     </div>
 </template>
 <script>
-// eslint-disable-next-line no-unused-vars
-import {SinWave,getNow} from "@/modules/SinWave.js"
 export default {
     props:{'labels':Array,numCol:{default: 3}},
     components:{
