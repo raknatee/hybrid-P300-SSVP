@@ -7,9 +7,14 @@
 <script>
 import { setBG } from "@/modules/renderer/BasicSetup.js";
 import { getSizeW, getSizeH } from "@/modules/renderer/Sizing.js";
+
+import {AppState} from "@/modules/SubSpeller/AppState.js"
+import {sleep} from "@/modules/Time.js"
 import { SubSpeller } from "@/modules/SubSpeller/SubSpeller.js";
 import { NextSSVP } from "@/modules/SubSpeller/NextSSVP.js";
+import {UserText} from "@/modules/SubSpeller/UserText.js";
 import { GridHelper } from "@/modules/renderer/GridHelper.js";
+
 import { style } from "@/modules/renderer/Style.js";
 
 export default {
@@ -17,6 +22,8 @@ export default {
     return {
       canvas: null,
       ctx: null,
+      appState: new AppState(),
+      userText: "dummy text"
     };
   },
   mounted() {
@@ -49,27 +56,32 @@ export default {
       const subSpellers = [];
       for (let i = 0; i < 12; i++) {
         if (i == 8 || i == 9) {
-          subSpellers.push(null);
           continue;
         }
         let coor = gridHelper.getCoordinate(i);
-        subSpellers.push(new SubSpeller(i, coor.x, coor.y));
+        let thisSubSpller = new SubSpeller(i, coor.x, coor.y,this.appState)
+        subSpellers.push(thisSubSpller);
       }
 
-      const nextBtn = new NextSSVP(getSizeW(.55),getSizeH(.9))
+      const nextBtn = new NextSSVP(getSizeW(.55),getSizeH(.9),this.appState)
+  
+      setInterval( async ()=>{
+        this.appState.toTarget({gridIndex:4,alpIndex:5})
+        await sleep(2000)
+        this.appState.toFlashingP300()
+        await sleep(2000)
+        this.appState.toZERO()
+      },5000)
+
+     
       const tick = () => {
         setBG(this);
-        // nextBtn.renderFlash(this)
+        UserText.render(this,this.userText)
         nextBtn.render(this)
-        for (let i = 0; i < 12; i++) {
-          let subSpeller = subSpellers[i];
-          if (subSpeller === null) {
-            continue;
-          }
+        subSpellers.forEach((subSpeller)=>{
+          subSpeller.render(this)
+        })
 
-          // subSpeller.renderFlash(this);
-          subSpeller.render(this);
-        }
 
         window.requestAnimationFrame(tick);
       };
