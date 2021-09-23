@@ -5,7 +5,19 @@ import time
 from queue import Queue
 app = FastAPI()
 
-eeg_client:Optional[WebSocket]=None
+from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+class EEGClient:
+    client:Optional[WebSocket]=None
+
+
 eeg_queue = Queue(250)
 
 def iprint(*args,**kwargs):
@@ -15,22 +27,23 @@ def iprint(*args,**kwargs):
 async def eeg_streaming(ws:WebSocket):
     try:
         await ws.accept()
-        eeg_client = ws
+        EEGClient.client = ws
        
         while True:
-            msg = await eeg_client.receive_json()
+            msg = await EEGClient.client.receive_json()
             iprint(msg)
 
     finally:
-        eeg_client = None
+        EEGClient.client = None
 
 @app.get("/check_headset")
 def check_headset():
     status:str
-    if(eeg_client is None):
+    if(EEGClient.client is None):
         status = "no connection"
     else:
         status = "connected"
+    print(f"{status=}")
     return {
         'status':status
     }

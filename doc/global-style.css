@@ -33,3 +33,7 @@ code {
     color: #25a102;
     text-decoration-color: #25a102;
 }
+
+.img-full-w {
+    width: 90vw;
+}

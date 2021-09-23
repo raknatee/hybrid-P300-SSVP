@@ -24,5 +24,7 @@ services:
         build:
             context: ./dummy-ml-server
             dockerfile: Dockerfile
+        ports:
+            - "8000:8000"
         volumes:
             - ./dummy-ml-server/src:/home/src

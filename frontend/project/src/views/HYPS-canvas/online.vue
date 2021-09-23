@@ -1,6 +1,7 @@
 <template lang="">
     <div class="layout">
         <button @click="fullScreen">click me for fullscreen</button>
+        <headset/>
         <canvas id="canvas"></canvas>
     </div>
 </template>
@@ -8,10 +9,13 @@
 import { setBG } from "@/modules/renderer/BasicSetup.js";
 import { getSizeW, getSizeH } from "@/modules/renderer/Sizing.js";
 
+import {getJsonFromWSMessage } from "@/modules/RestAPIHelper/WSHelper.js";
+
+
 import {AppState} from "@/modules/SubSpeller/AppState.js"
 import {sleep} from "@/modules/Time.js"
 import { SubSpeller } from "@/modules/SubSpeller/SubSpeller.js";
-import { NextSSVP } from "@/modules/SubSpeller/NextSSVP.js";
+// import { NextSSVP } from "@/modules/SubSpeller/NextSSVP.js";
 import {UserText} from "@/modules/SubSpeller/UserText.js";
 import { GridHelper } from "@/modules/renderer/GridHelper.js";
 
@@ -23,9 +27,14 @@ export default {
       canvas: null,
       ctx: null,
       appState: new AppState(),
-      userText: "dummy text"
+      userText: "dummy text",
+      ws:null
     };
   },
+  components:{
+    'headset': ()=>import("@/components/headset-status/HeadsetStatus.vue")
+  }
+  ,
   mounted() {
     this.canvas = document.getElementById("canvas");
     this.ctx = this.canvas.getContext("2d");
@@ -39,6 +48,8 @@ export default {
     },
 
     run() {
+
+      this.setUpWS()
       this.canvas.width = getSizeW(1);
       this.canvas.height = getSizeH(1);
 
@@ -63,21 +74,21 @@ export default {
         subSpellers.push(thisSubSpller);
       }
 
-      const nextBtn = new NextSSVP(getSizeW(.55),getSizeH(.9),this.appState)
+      // const nextBtn = new NextSSVP(getSizeW(.55),getSizeH(.9),this.appState)
   
-      setInterval( async ()=>{
-        this.appState.toTarget({gridIndex:4,alpIndex:5})
-        await sleep(2000)
-        this.appState.toFlashingP300()
-        await sleep(2000)
-        this.appState.toZERO()
-      },5000)
+      // setInterval( async ()=>{
+      //   this.appState.toTarget({gridIndex:4,alpIndex:5})
+      //   await sleep(2000)
+      //   this.appState.toFlashingP300()
+      //   await sleep(2000)
+      //   this.appState.toZERO()
+      // },5000)
 
      
       const tick = () => {
         setBG(this);
         UserText.render(this,this.userText)
-        nextBtn.render(this)
+        // nextBtn.render(this)
         subSpellers.forEach((subSpeller)=>{
           subSpeller.render(this)
         })
@@ -87,6 +98,17 @@ export default {
       };
       tick();
     },
+    setUpWS(){
+      this.ws = new WebSocket("ws://localhost:8000/begin_online_mode")
+      this.ws.onmessage = (msg) =>{
+          msg = getJsonFromWSMessage(msg)
+          if(msg['cmd'] == "next"){
+            sleep(1000)
+            // TODO: run HYPS 
+            // this is Step 2 and 3 in /begin_online_mode on client side
+          }
+      }
+    }
   },
 };
 </script>

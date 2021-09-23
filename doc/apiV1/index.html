@@ -107,10 +107,13 @@ client <- api
                 <p>client run the experiment</p>
                 <ul>
                     <li>
-                        <p> highlight the target</p>
+                        <p>Gap for each round <strong>sleep 500 ms</strong> </p>
                     </li>
                     <li>
-                        <p>run HYPS</p>
+                        <p> highlight the target <strong>sleep 1000 ms</strong> </p>
+                    </li>
+                    <li>
+                        <p>run HYPS <strong>sleep ?? ms</strong></p>
                     </li>
                 </ul>
             </li>
@@ -165,7 +168,9 @@ client <- api
 {"cmd":"next"}
             </code>
             </li>
-
+            <li>
+                <p>client run the experiment</p>
+            </li>
             <li>
                 <p>Client says ok Im done</p>
                 <code>
@@ -178,7 +183,16 @@ client -> api
             </code>
             </li>
             <li>
-                <p>This API guesses </p>
+                <p>This API guesses then repeat Step 2</p>
+                <ul>
+                    <li>
+                        <p>Gap for each round <strong>sleep 500 ms</strong> </p>
+                    </li>
+                    <li>
+                        <p>run HYPS <strong>sleep ?? ms</strong> </p>
+                    </li>
+
+                </ul>
                 <code>
 client <- api
 {
