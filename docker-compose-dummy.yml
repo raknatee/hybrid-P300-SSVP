@@ -1,0 +1,28 @@
+version: "3"
+services: 
+    front:
+        build: 
+            context: ./frontend
+            dockerfile: Dockerfile.dev
+        ports: 
+            - "8080:8080"
+        volumes: 
+            - ./frontend/project:/home/project
+            - /home/project/node_modules
+        environment: 
+            - CHOKIDAR_USEPOLLING=true
+    
+    eeg-client:
+        build:
+            context: ./dummy-eeg-client
+        volumes:
+            - ./dummy-eeg-client/src:/home/src
+        depends_on:
+           - ml-server
+
+    ml-server:
+        build:
+            context: ./dummy-ml-server
+            dockerfile: Dockerfile
+        volumes:
+            - ./dummy-ml-server/src:/home/src

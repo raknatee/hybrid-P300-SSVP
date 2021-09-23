@@ -26,3 +26,9 @@ code {
     padding: 1rem;
     white-space: pre-wrap
 }
+
+.todo-done {
+    text-decoration: line-through;
+    color: #25a102;
+    text-decoration-color: #25a102;
+}

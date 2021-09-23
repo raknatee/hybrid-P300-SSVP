@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <!-- <router-link to="/hyps">hybrid-P300-SSVP</router-link> -->
-    <button @click="go" id="hyps-btn">hybrid-P300-SSVP</button>
+    <button @click="go" id="hyps-btn">hybrid-P300-SSVP-Online mode</button>
   </div>
 </template>
 
