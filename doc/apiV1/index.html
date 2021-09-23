@@ -96,9 +96,9 @@ client (EEG client) -> api
                 </p>
 
                 <code>
-    client <- api
-    
-    {"cmd":"next"}
+client <- api
+
+{"cmd":"next"}
                 </code>
 
             </li>
@@ -118,25 +118,25 @@ client (EEG client) -> api
             <li>
                 <p>Server/This API saves those data then finishs this round then repeat next round (repeat step 2)</p>
                 <code>
-    client -> api
-    
-    {
-        "target_grid": &lt;int&gt;
-        "target_index": &lt;int&gt;
-        "data":[
-                    {
-                        "timestamp": &lt;timestamp(int of ms)&gt;,
-                        "is_target_activated": &lt;bool&gt;
-                    },
-                    {
-                        "timestamp": &lt;timestamp(int of ms)&gt;,
-                        "is_target_activated": &lt;bool&gt;
-                    }
-                    ...  # noted: number == size of that grid
-                ]
-               
-    
-    }
+client -> api
+
+{
+    "target_grid": &lt;int&gt;
+    "target_index": &lt;int&gt;
+    "data":[
+                {
+                    "timestamp": &lt;timestamp(int of ms)&gt;,
+                    "is_target_activated": &lt;bool&gt;
+                },
+                {
+                    "timestamp": &lt;timestamp(int of ms)&gt;,
+                    "is_target_activated": &lt;bool&gt;
+                }
+                ...  # noted: number == size of that grid
+            ]
+            
+
+}
                 </code>
             </li>
         </ol>

@@ -21,10 +21,11 @@ strong {
 
 code {
     display: inline-block;
+    border-radius: 1rem;
     background-color: black;
     color: white;
     padding: 1rem;
-    white-space: pre-wrap
+    white-space: pre-wrap;
 }
 
 .todo-done {
