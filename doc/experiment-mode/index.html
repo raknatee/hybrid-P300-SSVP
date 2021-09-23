@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../global-style.css">
+
+</head>
+
+<body>
+
+    <h1>Offline mode</h1>
+    <p>we can call it like a collecting data mode</p>
+
+    <h2>Flow program</h2>
+    <ol>
+        <li>
+            <p>before going to connect to WS server please check status of EEG headset from
+                <a href="../apiV1/index.html#check_headset-api">/check_headset</a> <span class="protocol">HTTP</span> with setInterval </p>
+
+        </li>
+        <li>A client (js) connects to backend <a href="../apiV1/index.html#begin_offline_mode-api">/begin_offline_mode </a> <span class="protocol">WS</span></li>
+    </ol>
+    <hr>
+    <h1>Online mode</h1>
+    <h2>Flow program</h2>
+    <ol>
+        <li>
+            <p>before going to connect to WS server please check status of EEG headset from
+                <a href="../apiV1/index.html#check_headset-api">/check_headset</a> <span class="protocol">HTTP</span> with setInterval </p>
+
+        </li>
+        <li>A client (js) connects to backend <a href="../apiV1/index.html#begin_online_mode-api">/begin_online_mode </a> <span class="protocol">WS</span></li>
+    </ol>
+
+</body>
+
+</html>

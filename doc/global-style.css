@@ -1,0 +1,28 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    padding: 2rem;
+}
+
+.protocol {
+    border: .1rem solid black;
+    padding: .2em;
+    border-radius: .5rem;
+    margin: .5em;
+    color: white;
+    background: linear-gradient(0deg, #243B55 0%, #141E30 100%);
+}
+
+strong {
+    border: .1rem solid black;
+    padding: .2rem;
+    border-radius: .2rem;
+    background: linear-gradient(180deg, #ffffff 0%, #a7a7a7 100%);
+}
+
+code {
+    display: inline-block;
+    background-color: black;
+    color: white;
+    padding: 1rem;
+    white-space: pre-wrap
+}
