@@ -37,3 +37,21 @@ code {
 .img-full-w {
     width: 90vw;
 }
+
+.status {
+    color: #ffffff;
+    padding: .2rem;
+    border-radius: .2rem;
+}
+
+.okay {
+    background: linear-gradient(180deg, #00c210 0%, #008026 100%);
+}
+
+.not-test-yet {
+    background: linear-gradient(180deg, #ffbb6c 0%, #802900 100%);
+}
+
+.unfinish {
+    background: linear-gradient(180deg, #ff6c6c 0%, #ff0606 100%);
+}
