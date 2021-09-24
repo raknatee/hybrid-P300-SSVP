@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../global-style.css">
+
+</head>
+
+<body>
+    <h1 class="big-head">Stack Talk</h1>
+    <p>Basically, this application would compose with 3 components which are Frontend(GUI), ML service/server , and lastly EEG streaming client.</p>
+    <h2>Docker</h2>
+    <p>Frontend and ML service would be deployed on Docker container which are cool.Only EEG-client cannot because we want to connect EEG headset with Serial Port(USB). Serial Port could not (year 2021) work with Docker on Windows OS & Mac but it can work
+        with Linux.</p>
+    <hr>
+    <h1>EEG streaming Client</h1>
+    <p>This application needs someone(or thing) to stream EEG signal to our main core which is ML server.</p>
+    <p>Normally, Open-BCI (EEG headset brand) has 2 types of EEG connecter that are Bluetooth and Wifi (I would call it White and Orange because of its color). Most researchers use LSL (Labstreaminglayer > <a href="https://labstreaminglayer.readthedocs.io/info/getting_started.html">click me for more information</a>        ) protocol to create a streaming pipeline which is based on TCP.The main objective of LSL is for data streaming over the local network. Therefore, I decided to use WS (Websocket) for this because it's more production mode.</p>
+    <h2>Bluetooth (White)</h2>
+    <p>I would create a WS over Serial connection. To stream the data to ML-server.
+    </p>
+    <h2>Wifi (Orange)</h2>
+    <p>Currently (2021), Wifi module doesn't support.</p>
+    <h2>Stack</h2>
+    <ol>
+        <li>python lib <a href="https://pypi.org/project/pyOpenBCI/">pyopenbci</a></li>
+        <li>python Websocket client <a href="https://websockets.readthedocs.io/en/stable/">link</a> </li>
+    </ol>
+    <hr>
+    <h1>Frontend</h1>
+    <p>I decided to use Web (actually it is HTML canvas) for GUI.
+    </p>
+    <h2>Stack</h2>
+    <ul>
+        <li>VueJS (for router)</li>
+        <li><a href="https://www.w3schools.com/html/html5_canvas.asp">HTML Canvas</a> </li>
+    </ul>
+    <hr>
+    <h1>ML-server</h1>
+</body>
+
+</html>

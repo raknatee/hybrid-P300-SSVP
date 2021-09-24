@@ -28,10 +28,12 @@ code {
     white-space: pre-wrap;
 }
 
-.todo-done {
-    text-decoration: line-through;
-    color: #25a102;
-    text-decoration-color: #25a102;
+.big-head {
+    background-color: #337474;
+    text-align: center;
+    padding: 1rem;
+    border-radius: 1rem;
+    color: white;
 }
 
 .img-full-w {
