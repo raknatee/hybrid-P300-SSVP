@@ -1,14 +1,14 @@
 import { subSpellerData, wavesData } from "./info.js"
 import { getSizeW, getSizeH } from "@/modules/renderer/Sizing.js"
 import { GridHelper } from "@/modules/renderer/GridHelper.js"
-import { SinWave,getNow } from "@/modules/SinWave.js"
+import { SinWave, getNow } from "@/modules/SinWave.js"
 // eslint-disable-next-line no-unused-vars
-import { randInt } from "@/modules/Random.js"
+import { randInt, rangeRandomArray } from "@/modules/Random.js"
 import { style } from "@/modules/renderer/Style.js"
-import {State} from "./AppState.js"
+import { State } from "./AppState.js"
 
 class SubSpeller {
-    constructor(index, x, y,appState) {
+    constructor(index, x, y) {
         this.gridIndex = index
         this.alphabets = subSpellerData[this.gridIndex]
 
@@ -27,11 +27,18 @@ class SubSpeller {
         // timing
         this.previousTime = null
         this.currentIndex = 0
-        this.state = appState
+        this.state = null
+
+        // P300
+        this.randomIndex = []
+
 
     }
+    setState(appState) {
+        this.state = appState
+    }
     render(_this) {
-        
+
         this.renderFlash(_this)
         this.renderTarget(_this)
 
@@ -46,16 +53,18 @@ class SubSpeller {
             i++;
         })
     }
-  
+    createRandomOrder() {
+        this.randomIndex = rangeRandomArray(this.alphabets.length)
+    }
     renderFlash(_this) {
-        if (this.state.getCurrentState() != State.FlashingP300){
+        if (this.state.getCurrentState() != State.FlashingP300 && this.randomIndex.length > 0) {
             return
         }
         let now = getNow()
 
-        if(this.previousTime === null || now-this.previousTime >= .2){
+        if (this.previousTime === null || now - this.previousTime >= .2) {
             this.previousTime = now
-            this.currentIndex = randInt(0, this.alphabets.length - 1)
+            this.currentIndex = this.randomIndex.pop()
         }
 
 
@@ -66,12 +75,12 @@ class SubSpeller {
         const coor = this.gridHelper.getCoordinate(this.currentIndex)
         _this.ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * 1.2, style.fontSize * 1.3)
     }
-    renderTarget(_this){
-        if(this.state.getCurrentState() != State.Targeting){
+    renderTarget(_this) {
+        if (this.state.getCurrentState() != State.Targeting) {
             return
         }
         let targetIndexs = this.state.getTargetIndex()
-        if(targetIndexs.gridIndex != this.gridIndex){
+        if (targetIndexs.gridIndex != this.gridIndex) {
             return
         }
 
@@ -84,4 +93,4 @@ class SubSpeller {
 }
 
 
-export { SubSpeller,State }
+export { SubSpeller, State }

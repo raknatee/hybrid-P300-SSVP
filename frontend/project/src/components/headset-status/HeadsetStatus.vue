@@ -9,15 +9,19 @@ import {restAPIGet} from "@/modules/RestAPIHelper/RestAPIHelper.js"
 export default {
     data(){
         return {
-            status:'-'
+            status:'-',
+            interval:null
         }
     },
     mounted() {
-        setInterval(async()=>{
-            let resp = await restAPIGet('http://localhost:8000/check_headset/')
+        this.interval = setInterval(async()=>{
+            let resp = await restAPIGet('http://localhost:8000/check_headset')
             this.status = resp.status
-        },4000)
+        },1000)
     },
+    beforeDestroy() {
+        clearInterval(this.interval)
+    }
 }
 </script>
 <style lang="">

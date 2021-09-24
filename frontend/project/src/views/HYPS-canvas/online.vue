@@ -1,7 +1,7 @@
 <template lang="">
     <div class="layout">
         <button @click="fullScreen">click me for fullscreen</button>
-        <headset/>
+  
         <canvas id="canvas"></canvas>
     </div>
 </template>
@@ -10,7 +10,7 @@ import { setBG } from "@/modules/renderer/BasicSetup.js";
 import { getSizeW, getSizeH } from "@/modules/renderer/Sizing.js";
 
 import {getJsonFromWSMessage } from "@/modules/RestAPIHelper/WSHelper.js";
-
+import {getNow} from "@/modules/SinWave.js"
 
 import {AppState} from "@/modules/SubSpeller/AppState.js"
 import {sleep} from "@/modules/Time.js"
@@ -26,15 +26,15 @@ export default {
     return {
       canvas: null,
       ctx: null,
-      appState: new AppState(),
-      userText: "dummy text",
-      ws:null
+      appState: null,
+      userText: [],
+      ws:null,
+      begin_time:null,
+      finish_time:null,
     };
   },
-  components:{
-    'headset': ()=>import("@/components/headset-status/HeadsetStatus.vue")
-  }
-  ,
+ 
+  
   mounted() {
     this.canvas = document.getElementById("canvas");
     this.ctx = this.canvas.getContext("2d");
@@ -70,24 +70,19 @@ export default {
           continue;
         }
         let coor = gridHelper.getCoordinate(i);
-        let thisSubSpller = new SubSpeller(i, coor.x, coor.y,this.appState)
+        let thisSubSpller = new SubSpeller(i, coor.x, coor.y)
         subSpellers.push(thisSubSpller);
       }
+      this.appState = new AppState(subSpellers)
 
       // const nextBtn = new NextSSVP(getSizeW(.55),getSizeH(.9),this.appState)
   
-      // setInterval( async ()=>{
-      //   this.appState.toTarget({gridIndex:4,alpIndex:5})
-      //   await sleep(2000)
-      //   this.appState.toFlashingP300()
-      //   await sleep(2000)
-      //   this.appState.toZERO()
-      // },5000)
+
 
      
       const tick = () => {
         setBG(this);
-        UserText.render(this,this.userText)
+        UserText.render(this,this.userText.join(','))
         // nextBtn.render(this)
         subSpellers.forEach((subSpeller)=>{
           subSpeller.render(this)
@@ -100,12 +95,22 @@ export default {
     },
     setUpWS(){
       this.ws = new WebSocket("ws://localhost:8000/begin_online_mode")
-      this.ws.onmessage = (msg) =>{
+      this.ws.onmessage = async (msg) =>{
           msg = getJsonFromWSMessage(msg)
           if(msg['cmd'] == "next"){
-            sleep(1000)
-            // TODO: run HYPS 
-            // this is Step 2 and 3 in /begin_online_mode on client side
+            await sleep(1000)
+            this.begin_time =  getNow()
+            this.appState.toFlashingP300()
+            await sleep(3000)
+            this.appState.toZERO()
+            this.ws.send(JSON.stringify({
+              'begin_time':this.begin_time
+            }))
+          }
+          if(msg['cmd']=="output_model"){
+            let alp = this.appState.findAlphabetByIndex(msg["guessed_grid"],msg["guessed_index"])
+            this.userText.push(alp)
+       
           }
       }
     }

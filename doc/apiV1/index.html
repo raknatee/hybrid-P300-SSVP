@@ -10,15 +10,45 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../global-style.css">
-
+    <style>
+        .big-head {
+            background-color: #337474;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 1rem;
+            color: white;
+        }
+        
+        .status {
+            color: #ffffff;
+            padding: .2rem;
+            border-radius: .2rem;
+        }
+        
+        .okay {
+            background: linear-gradient(180deg, #00c210 0%, #008026 100%);
+        }
+        
+        .not-test-yet {
+            background: linear-gradient(180deg, #ffbb6c 0%, #802900 100%);
+        }
+        
+        .unfinish {
+            background: linear-gradient(180deg, #ff6c6c 0%, #ff0606 100%);
+        }
+    </style>
 </head>
 
 <body>
 
+    <h1 class="big-head">API V1</h1>
+    <p>color: <span class="status okay">okay</span> <span class="status not-test-yet">not test yet</span> <span class="status unfinish">unfinish</span></p>
+    <hr>
     <div>
 
         <h1 id="eeg_streaming-api">/eeg_streaming <span class="protocol">WS</span></h1>
         <p>We would have another process to send EEG signal to the server</p>
+        <p>status: <span class="status okay">dummy eeg-client</span> <span class="status okay">dummy API</span> <span class="status unfinish">real API</span> </p>
         <h2>Flow program</h2>
         <ol>
             <li>
@@ -29,7 +59,7 @@
                 <code>
 client (EEG client) -> api
 {
-    "timestamp": &lt;timestamp(int of ms)&gt;,
+    "timestamp": &lt;timestamp(float of s)&gt;,
     "data":[&lt;float&gt;,&lt;float&gt;,...,&lt;float&gt;] #size = 8
 }
                 </code>
@@ -46,6 +76,8 @@ client (EEG client) -> api
     <div>
 
         <h1 id="check_headset-api">/check_headset <span class="protocol">HTTP GET</span></h1>
+        <p>status: <span class="status okay">dummy API</span> <span class="status unfinish">real API</span> </p>
+
         <h2>Response body</h2>
         <code>
 {
@@ -65,7 +97,7 @@ client (EEG client) -> api
         <h2>Response body</h2>
         <code>
 {
-    "timestamp": &lt;timestamp(int of ms)&gt;,
+    "timestamp": &lt;timestamp(float of s)&gt;,
     "data":[&lt;float&gt;,&lt;float&gt;,...,&lt;float&gt;] #size = 8
 }
         </code>
@@ -79,6 +111,8 @@ client (EEG client) -> api
 
         <h1 id="begin_offline_mode-api">/begin_offline_mode <span class="protocol">WS</span></h1>
         <p>A WS connection for begining the offline mode</p>
+        <p>status: <span class="status unfinish">Web GUI</span> <span class="status okay">dummy API</span> <span class="status unfinish">real API</span> </p>
+
         <h2>Setup</h2>
         <ol>
             <li>Client knows what they need to do right? (how to run experiments)</li>
@@ -107,7 +141,7 @@ client <- api
                 <p>client run the experiment</p>
                 <ul>
                     <li>
-                        <p>Gap for each round <strong>sleep 500 ms</strong> </p>
+                        <p>Gap for each round <strong>sleep 1000 ms</strong> </p>
                     </li>
                     <li>
                         <p> highlight the target <strong>sleep 1000 ms</strong> </p>
@@ -128,11 +162,11 @@ client -> api
     "target_index": &lt;int&gt;
     "data":[
                 {
-                    "timestamp": &lt;timestamp(int of ms)&gt;,
+                    "timestamp": &lt;timestamp(float of s)&gt;,
                     "is_target_activated": &lt;bool&gt;
                 },
                 {
-                    "timestamp": &lt;timestamp(int of ms)&gt;,
+                    "timestamp": &lt;timestamp(float of s)&gt;,
                     "is_target_activated": &lt;bool&gt;
                 }
                 ...  # noted: number == size of that grid
@@ -149,6 +183,8 @@ client -> api
 
     <div>
         <h1 id="begin_online_mode-api">/begin_online_mode <span class="protocol">WS</span></h1>
+        <p>status: <span class="status okay">Web GUI</span> <span class="status okay">dummy API</span> <span class="status unfinish">real API</span> </p>
+
         <h2>Setup</h2>
         <ol>
             <li>Client does not know anything. They just do the HYPS</li>
@@ -170,6 +206,15 @@ client <- api
             </li>
             <li>
                 <p>client run the experiment</p>
+                <ul>
+                    <li>
+                        <p>Gap for each round <strong>sleep 1000 ms</strong> </p>
+                    </li>
+                    <li>
+                        <p>run HYPS <strong>sleep ?? ms</strong> </p>
+                    </li>
+
+                </ul>
             </li>
             <li>
                 <p>Client says ok Im done</p>
@@ -177,8 +222,7 @@ client <- api
 client -> api
 
 {
-    "begin_time":&lt;timestamp(int of ms)&gt;,
-    "finish_time":&lt;timestamp(int of ms)&gt;
+    "begin_time":&lt;timestamp(float of s)&gt;,
 }
             </code>
             </li>
@@ -186,16 +230,15 @@ client -> api
                 <p>This API guesses then repeat Step 2</p>
                 <ul>
                     <li>
-                        <p>Gap for each round <strong>sleep 500 ms</strong> </p>
+                        <p>Gap for model prediction <strong>sleep ?? ms</strong> </p>
                     </li>
-                    <li>
-                        <p>run HYPS <strong>sleep ?? ms</strong> </p>
-                    </li>
+
 
                 </ul>
                 <code>
 client <- api
 {
+    "cmd": "output_model"
     "guessed_grid": &lt;int&gt;,
     "guessed_index": &lt;int&gt;
     

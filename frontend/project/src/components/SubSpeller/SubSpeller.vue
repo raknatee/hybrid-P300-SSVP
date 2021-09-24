@@ -17,23 +17,7 @@ export default {
     },
     mounted() {
      
-        // const thisWave = new SinWave(10,.5*Math.PI)
-        // const tick = ()=>{
-               
-            
-        //     if(thisWave.isUp(getNow())){
-        //         console.log("up")
-        //         this.$refs.subGrid.classList.add("up")
-                
-        //     }else{
-               
-        //         console.log("down")
-        //         this.$refs.subGrid.classList.remove("up")
-
-        //     }
-        //     window.requestAnimationFrame(tick)
-        // }
-        // tick()
+     
         
         
     },
