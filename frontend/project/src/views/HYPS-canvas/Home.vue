@@ -14,12 +14,9 @@ import {getNow} from "@/modules/SinWave.js"
 
 import {AppState} from "@/modules/SubSpeller/AppState.js"
 import {sleep} from "@/modules/Time.js"
-import { SubSpeller } from "@/modules/SubSpeller/SubSpeller.js";
 // import { NextSSVP } from "@/modules/SubSpeller/NextSSVP.js";
 import {UserText} from "@/modules/SubSpeller/UserText.js";
-import { GridHelper } from "@/modules/renderer/GridHelper.js";
-
-import { style } from "@/modules/renderer/Style.js";
+import {choise} from "@/modules/Random.js"
 
 export default {
   data() {
@@ -30,7 +27,7 @@ export default {
       userText: [],
       ws:null,
       begin_time:null,
-      finish_time:null,
+  
     };
   },
  
@@ -48,32 +45,18 @@ export default {
     },
 
     run() {
-
-      this.setUpWS()
+    
+      if(this.$route.params.mode === "online"){
+        this.setUpWSOnline()
+      }
+       if(this.$route.params.mode === "offline"){
+        this.setUpWSOffline()
+      }
       this.canvas.width = getSizeW(1);
       this.canvas.height = getSizeH(1);
 
-      this.ctx.font = `${style.fontSize}px Arial`;
-
-      this.ctx.fillStyle = "black";
-
-      const gridHelper = new GridHelper(
-        getSizeW(0.05),
-        getSizeH(0.08),
-        4,
-        getSizeW(0.25),
-        getSizeH(0.3)
-      );
-      const subSpellers = [];
-      for (let i = 0; i < 12; i++) {
-        if (i == 8 || i == 9) {
-          continue;
-        }
-        let coor = gridHelper.getCoordinate(i);
-        let thisSubSpller = new SubSpeller(i, coor.x, coor.y)
-        subSpellers.push(thisSubSpller);
-      }
-      this.appState = new AppState(subSpellers)
+      
+      this.appState = new AppState(this)
 
       // const nextBtn = new NextSSVP(getSizeW(.55),getSizeH(.9),this.appState)
   
@@ -84,7 +67,7 @@ export default {
         setBG(this);
         UserText.render(this,this.userText.join(','))
         // nextBtn.render(this)
-        subSpellers.forEach((subSpeller)=>{
+        this.appState.subSpellers.forEach((subSpeller)=>{
           subSpeller.render(this)
         })
 
@@ -93,7 +76,7 @@ export default {
       };
       tick();
     },
-    setUpWS(){
+    setUpWSOnline(){
       this.ws = new WebSocket("ws://localhost:8000/begin_online_mode")
       this.ws.onmessage = async (msg) =>{
           msg = getJsonFromWSMessage(msg)
@@ -112,6 +95,41 @@ export default {
             this.userText.push(alp)
        
           }
+      }
+    },
+    setUpWSOffline(){
+      this.ws = new WebSocket("ws://localhost:8000/begin_offline_mode")
+      this.ws.onmessage = async (msg) =>{
+        msg = getJsonFromWSMessage(msg)
+
+        if(msg["cmd"]== "next"){
+
+
+          // let target = {'gridIndex':2,'alpIndex':2}
+          // let target = {'gridIndex':10,'alpIndex':2}
+          // let target = {'gridIndex':11,'alpIndex':2}
+          let target = choise([
+            {'gridIndex':2,'alpIndex':2},
+            {'gridIndex':10,'alpIndex':2},
+            {'gridIndex':11,'alpIndex':2},
+          ])
+          let msgExperiment = {
+            "target_grid": target.gridIndex,
+            "terget_index": target.alpIndex,
+            "data":[]
+          }
+          await sleep(1000)
+          this.appState.toTarget(target,msgExperiment)
+          await sleep(1000)
+          this.appState.toZERO()
+          await sleep(1000)
+          this.appState.toFlashingP300()
+          await sleep(3000)
+          this.appState.toZERO()
+          this.appState.resetSubSpellersForOfflineMode()
+          console.log(msgExperiment)
+          this.ws.send(JSON.stringify(msgExperiment))
+        }
       }
     }
   },

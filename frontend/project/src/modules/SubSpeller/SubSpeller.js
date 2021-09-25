@@ -32,6 +32,10 @@ class SubSpeller {
         // P300
         this.randomIndex = []
 
+        // For Offline mode
+        this.do_need_watch = false
+        this.last_index_which_insert_to_msg_experiment = -1
+
 
     }
     setState(appState) {
@@ -74,6 +78,35 @@ class SubSpeller {
         _this.ctx.fillStyle = `rgb(${color},${color},${color})`;
         const coor = this.gridHelper.getCoordinate(this.currentIndex)
         _this.ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * 1.2, style.fontSize * 1.3)
+
+        if (!this.do_need_watch) {
+            return
+        }
+        if (this.currentIndex == undefined) {
+            return
+        }
+        if (this.currentIndex == this.last_index_which_insert_to_msg_experiment) {
+            return
+        }
+        this.last_index_which_insert_to_msg_experiment = this.currentIndex
+
+        let targetIndex = this.state.getTargetIndex()
+        let is_activated = false
+        if (targetIndex.alpIndex === this.currentIndex) {
+            is_activated = true
+        } else {
+            is_activated = false
+        }
+        let timeForStamp = getNow()
+        if (is_activated) {
+            console.log(timeForStamp, is_activated)
+        }
+        this.msgExperiment.data.push({
+            "timestamp": timeForStamp,
+            "is_target_activated": is_activated
+        })
+
+
     }
     renderTarget(_this) {
         if (this.state.getCurrentState() != State.Targeting) {
@@ -89,7 +122,13 @@ class SubSpeller {
         _this.ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * 1.2, style.fontSize * 1.3)
 
     }
-
+    setOfflineWatcher(msgExperiment) {
+        this.do_need_watch = true
+        this.msgExperiment = msgExperiment
+    }
+    reset() {
+        this.do_need_watch = false
+    }
 }
 
 

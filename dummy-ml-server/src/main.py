@@ -1,9 +1,13 @@
-from fastapi import FastAPI,WebSocket
+from fastapi import FastAPI,WebSocket  # type: ignore
 from typing import Optional
 import sys
 import time
 from queue import Queue
 import random
+from io import TextIOWrapper
+import json
+import threading
+from DumpQueueThread import DumpQueueThread
 app = FastAPI()
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,7 +23,7 @@ class EEGClient:
     client:Optional[WebSocket]=None
 
 
-eeg_queue = Queue(250)
+eeg_queue:Queue = Queue(250)
 
 def iprint(*args,**kwargs):
     print(*args,**kwargs,file=sys.stderr)
@@ -32,7 +36,7 @@ async def eeg_streaming(ws:WebSocket):
        
         while True:
             msg = await EEGClient.client.receive_json()
-            iprint(msg)
+            eeg_queue.put(msg)
 
     finally:
         EEGClient.client = None
@@ -49,10 +53,17 @@ def check_headset():
         'status':status
     }
 
+
+
+
 @app.websocket("/begin_offline_mode")
 async def begin_offline_mode(ws:WebSocket):
+    dump_thread = DumpQueueThread(eeg_queue)
     try:
         await ws.accept()
+        
+        dump_thread.start()
+        experiment_file:TextIOWrapper = open('./data/experiment.json','a')
         while True:
             await ws.send_json({
                 "cmd":"next"
@@ -60,9 +71,12 @@ async def begin_offline_mode(ws:WebSocket):
 
             data:dict = await ws.receive_json()
             print(data)
+            experiment_file.write(json.dumps(data)+",\n")
 
     finally:
-        pass
+        dump_thread.stop()
+        experiment_file.close()
+    
 
 possible_result = [
     {'grid':0,'index':list(range(9))},

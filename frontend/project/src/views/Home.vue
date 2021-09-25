@@ -2,7 +2,9 @@
   <div class="home">
     <!-- <router-link to="/hyps">hybrid-P300-SSVP</router-link> -->
     <headset/>
-    <button @click="go" id="hyps-btn">hybrid-P300-SSVP-Online mode</button>
+    <button @click="goOnline" >hybrid-P300-SSVP-Online mode</button>
+    <br>
+    <button @click="goOffline">hybrid-P300-SSVP-Offline mode</button>
   </div>
 </template>
 
@@ -16,9 +18,12 @@ export default {
     'headset': ()=>import("@/components/headset-status/HeadsetStatus.vue")
   },
   methods: {
-    go(){
-      //  document.body.requestFullscreen()
+    goOnline(){
       this.$router.push("/hyps/online")
+    },
+    goOffline(){
+      this.$router.push("/hyps/offline")
+
     }
   },
 

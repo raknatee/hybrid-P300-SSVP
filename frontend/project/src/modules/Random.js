@@ -20,4 +20,8 @@ const shuffle = (array) => {
     return array
 }
 
-export { randRange, randInt, rangeRandomArray }
+const choise = (array) => {
+    return array[Math.floor(Math.random() * array.length)]
+}
+
+export { randRange, randInt, rangeRandomArray, choise }

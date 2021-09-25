@@ -10,19 +10,13 @@ const routes = [{
         component: Home
     },
     {
-        path: '/hyps/online',
+        path: '/hyps/:mode',
         name: 'HYPS',
 
         component: () =>
-            import ('../views/HYPS-canvas/online.vue')
+            import ('../views/HYPS-canvas/Home.vue')
     },
-    {
-        path: '/hyps-dom/online',
-        name: 'HYPS-Dom',
 
-        component: () =>
-            import ('../views/HYPS/online.vue')
-    }
 ]
 
 const router = new VueRouter({

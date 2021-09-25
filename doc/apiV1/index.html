@@ -48,6 +48,9 @@ client (EEG client) -> api
                 </code>
             </li>
 
+            <li>
+                <p>ML-server needs to store the data to data storage (this case, I decided to use Queue)</p>
+            </li>
 
             <li>
                 <p>repeat step 2</p>
@@ -94,8 +97,8 @@ client (EEG client) -> api
 
         <h1 id="begin_offline_mode-api">/begin_offline_mode <span class="protocol">WS</span></h1>
         <p>A WS connection for begining the offline mode</p>
-        <p>status: <span class="status okay">dummy API</span> <span class="status unfinish">real API</span> </p>
-        <p>related apps: <span class="status unfinish">Web GUI</span> </p>
+        <p>status: <span class="status okay">dummy API</span> <span class="status not-test-yet">real API</span> </p>
+        <p>related apps: <span class="status okay">Web GUI</span> <span class="status okay">dummy eeg-client</span> <span class="status unfinish">real eeg-client</span></p>
 
         <h2>Setup</h2>
         <ol>
@@ -131,13 +134,17 @@ client <- api
                         <p> highlight the target <strong>sleep 1000 ms</strong> </p>
                     </li>
                     <li>
+                        <p> back to Zero state <strong>sleep 1000 ms</strong> </p>
+                    </li>
+                    <li>
                         <p>run HYPS <strong>sleep ?? ms</strong></p>
                     </li>
                 </ul>
             </li>
 
             <li>
-                <p>Server/This API saves those data then finishs this round then repeat next round (repeat step 2)</p>
+                <p>Server/This API saves those data (those data mean timestamp of each alphabet) then finishs this round then repeat next round (repeat step 2)</p>
+
                 <code>
 client -> api
 
@@ -168,7 +175,7 @@ client -> api
     <div>
         <h1 id="begin_online_mode-api">/begin_online_mode <span class="protocol">WS</span></h1>
         <p>status: <span class="status okay">dummy API</span> <span class="status unfinish">real API</span> </p>
-        <p>related apps: <span class="status okay">Web GUI</span> </p>
+        <p>related apps: <span class="status okay">Web GUI</span> <span class="status okay">dummy eeg-client</span> <span class="status unfinish">real eeg-client</span></p>
 
         <h2>Setup</h2>
         <ol>
@@ -210,6 +217,10 @@ client -> api
     "begin_time":&lt;timestamp(float of s)&gt;,
 }
             </code>
+            </li>
+
+            <li>
+                <p>Basically, ML-server would have maybe Queue for collecting EEG-signal. After it get 'begin_time', it might match EEG-signal and make a prediction.</p>
             </li>
             <li>
                 <p>This API guesses then repeat Step 2</p>
