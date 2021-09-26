@@ -40,6 +40,14 @@ code {
     width: 90vw;
 }
 
+.big-head {
+    background-color: #337474;
+    text-align: center;
+    padding: 1rem;
+    border-radius: 1rem;
+    color: white;
+}
+
 .status {
     color: #ffffff;
     padding: .2rem;

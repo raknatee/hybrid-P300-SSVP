@@ -1,4 +1,10 @@
 ##############################
+# Dataset files ignore
+##############################
+*-data.json
+
+
+##############################
 # Python ignore
 ##############################
 # Byte-compiled / optimized / DLL files

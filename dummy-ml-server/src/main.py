@@ -63,7 +63,7 @@ async def begin_offline_mode(ws:WebSocket):
         await ws.accept()
         
         dump_thread.start()
-        experiment_file:TextIOWrapper = open('./data/experiment.json','a')
+        experiment_file:TextIOWrapper = open('./data/experiment-data.json','a')
         while True:
             await ws.send_json({
                 "cmd":"next"

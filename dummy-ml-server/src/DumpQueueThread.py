@@ -14,10 +14,9 @@ class DumpQueueThread(Thread):
     def run(self):
         eeg_file:TextIOWrapper
         try:
-            eeg_file = open('./data/eeg_data.json','a')
+            eeg_file = open('./data/eeg_data-data.json','a')
             while self.is_running and (not self.queue.empty()):
                 data = json.dumps(self.queue.get())+",\n"
-                print(data)
                 eeg_file.write(data)
         finally:
             eeg_file.close()
