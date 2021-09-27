@@ -7,4 +7,5 @@ RUN pip install uvicorn[standard]
 RUN pip install websockets
 
 EXPOSE 8000
+EXPOSE 8001
 CMD uvicorn --host 0.0.0.0 main:app --forwarded-allow-ips '*' --reload 

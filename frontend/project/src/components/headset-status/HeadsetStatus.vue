@@ -15,7 +15,7 @@ export default {
     },
     mounted() {
         this.interval = setInterval(async()=>{
-            let resp = await restAPIGet('http://localhost:8001/check_headset')
+            let resp = await restAPIGet('http://localhost:8000/check_headset')
             this.status = resp.status
         },1000)
     },

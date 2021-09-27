@@ -3,7 +3,7 @@
 ############
 HOST = 'localhost'
 PORT = '8001'
-SERIAL_PORT = 'COM3'
+SERIAL_PORT = 'COM5'
 
 ############
 #   App Config
