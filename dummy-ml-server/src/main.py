@@ -7,7 +7,6 @@ import random
 
 import json
 
-from DumpQueueThread import DumpQueueThread
 from utils.iprint import iprint
 app = FastAPI()
 
@@ -20,49 +19,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# from eeg_stream_endpoint.eeg_stream import app as eeg_stream_app
-# app.include_router(eeg_stream_app)
-
-from eeg_stream_endpoint.eeg_stream import EEGClientListeningThread
-eeg_client_listening_thread= EEGClientListeningThread()
-eeg_client_listening_thread.start()
-
-from eeg_stream_endpoint.eeg_stream import EEGClient
-@app.get("/check_headset")
-def check_headset():
-    status:str
-    if(EEGClient.client is None):
-        status = "no connection"
-    else:
-        status = "connected"
-    print(f"{status=}")
-    return {
-        'status':status
-    }
-
-
-
-from eeg_stream_endpoint.eeg_stream import eeg_queue
 
 @app.websocket("/begin_offline_mode")
 async def begin_offline_mode(ws:WebSocket):
-    dump_thread = DumpQueueThread(eeg_queue)
-    try:
-        await ws.accept()
-        
-        dump_thread.start()
-        experiment_file:TextIO = open('./data/experiment-data.json','w')
-        while True:
-            await ws.send_json({
-                "cmd":"next"
-            })
+    
+   
+    await ws.accept()
+    
 
-            data:dict = await ws.receive_json()
-            experiment_file.write(json.dumps(data)+"\n")
+    while True:
+        await ws.send_json({
+            "cmd":"next"
+        })
 
-    finally:
-        dump_thread.stop()
-        experiment_file.close()
+        data:dict = await ws.receive_json()
+    
+
+
     
 
 possible_result = [

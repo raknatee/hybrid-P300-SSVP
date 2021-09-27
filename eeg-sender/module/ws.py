@@ -18,13 +18,14 @@ class EEGClient(Thread):
     def run(self):
 
         async def hello():
-            uri:str = f"ws://{config.HOST}:{config.PORT}"
+            uri:str = f"ws://{config.HOST}:{config.PORT}/eeg_streaming"
             async with websockets.connect(uri) as ws:
                 print("Connected")
                 while True:
                     while not self.queue.empty():
                         data =json.dumps(self.get_data_from_queue())
-                        print(data)
                         await ws.send(data)
+                        await ws.recv()
+                        print(data)
               
         asyncio.run(hello())

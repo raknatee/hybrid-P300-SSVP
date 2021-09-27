@@ -77,7 +77,7 @@ export default {
       tick();
     },
     setUpWSOnline(){
-      this.ws = new WebSocket("ws://localhost:8000/begin_online_mode")
+      this.ws = new WebSocket(`ws://${location.hostname}:8000/begin_online_mode`)
       this.ws.onmessage = async (msg) =>{
           msg = getJsonFromWSMessage(msg)
           if(msg['cmd'] == "next"){
@@ -98,7 +98,7 @@ export default {
       }
     },
     setUpWSOffline(){
-      this.ws = new WebSocket("ws://localhost:8000/begin_offline_mode")
+      this.ws = new WebSocket(`ws://${location.hostname}:8000/begin_offline_mode`)
       this.ws.onmessage = async (msg) =>{
         msg = getJsonFromWSMessage(msg)
 
