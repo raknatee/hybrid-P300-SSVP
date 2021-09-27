@@ -37,19 +37,11 @@ def check_headset():
     }
 
 
-@app.websocket("/eeg_streaming")
-async def eeg_streaming(ws:WebSocket):
-    try:
-        await ws.accept()
-        EEGClient.client = ws
-
-        while True:
-            msg = await EEGClient.client.receive_json()
-            eeg_queue.put(msg) 
-            await EEGClient.client.send_text('1')
-
-    finally:
-        EEGClient.client = None
+@app.post("/eeg")
+def eeg(json_data:dict):
+    with open("./data/eeg_data-data.json","a") as data_file:
+        for package in json_data['data']:
+            data_file.write(json.dumps(package)+"\n")
 
 
 @app.websocket("/begin_offline_mode")
