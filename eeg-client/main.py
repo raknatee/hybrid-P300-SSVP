@@ -4,7 +4,8 @@ from module.ws import EEGClient
 import config
 import json
 from datetime import datetime
-
+import time
+import sys
 
 eeg_client = EEGClient()
 eeg_client.start()
@@ -28,6 +29,13 @@ def add_to_buffer(sample):
 board = OpenBCICyton(port=config.SERIAL_PORT, daisy=False)
 try:
     board.start_stream(add_to_buffer)
+except KeyboardInterrupt:
+    board.stop_stream()
+    while True:
+        print(f"please wait for submiting data left {eeg_client.queue.qsize()}")
+        if(eeg_client.is_done()):
+            quit()
+        time.sleep(1)
 finally:
     if config.DO_LOCAL_SAVE:
         local_file.close()

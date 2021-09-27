@@ -2,7 +2,7 @@ from fastapi import FastAPI,WebSocket  # type: ignore
 from typing import Optional,TextIO
 import sys
 import time
-
+from queue import Queue
 import random
 
 import json
@@ -20,14 +20,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# from eeg_stream_endpoint.eeg_stream import app as eeg_stream_app
-# app.include_router(eeg_stream_app)
 
-from eeg_stream_endpoint.eeg_stream import EEGClientListeningThread
-eeg_client_listening_thread= EEGClientListeningThread()
-eeg_client_listening_thread.start()
+class EEGClient:
+    client:Optional[WebSocket] = None
 
-from eeg_stream_endpoint.eeg_stream import EEGClient
+eeg_queue:Queue  = Queue(300*10)
 @app.get("/check_headset")
 def check_headset():
     status:str
@@ -35,14 +32,25 @@ def check_headset():
         status = "no connection"
     else:
         status = "connected"
-    print(f"{status=}")
     return {
         'status':status
     }
 
 
+@app.websocket("/eeg_streaming")
+async def eeg_streaming(ws:WebSocket):
+    try:
+        await ws.accept()
+        EEGClient.client = ws
 
-from eeg_stream_endpoint.eeg_stream import eeg_queue
+        while True:
+            msg = await EEGClient.client.receive_json()
+            eeg_queue.put(msg) 
+            await EEGClient.client.send_text('1')
+
+    finally:
+        EEGClient.client = None
+
 
 @app.websocket("/begin_offline_mode")
 async def begin_offline_mode(ws:WebSocket):
@@ -61,6 +69,7 @@ async def begin_offline_mode(ws:WebSocket):
             experiment_file.write(json.dumps(data)+"\n")
 
     finally:
+        iprint("closing file")
         dump_thread.stop()
         experiment_file.close()
     
