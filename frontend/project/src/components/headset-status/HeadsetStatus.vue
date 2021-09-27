@@ -20,6 +20,7 @@ export default {
         },1000)
     },
     beforeDestroy() {
+        console.log("clear check headset")
         clearInterval(this.interval)
     }
 }

@@ -1,13 +1,14 @@
 from fastapi import FastAPI,WebSocket  # type: ignore
-from typing import Optional
+from typing import Optional,TextIO
 import sys
 import time
-from queue import Queue
+
 import random
-from io import TextIOWrapper
+
 import json
-import threading
+
 from DumpQueueThread import DumpQueueThread
+from utils.iprint import iprint
 app = FastAPI()
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,28 +20,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class EEGClient:
-    client:Optional[WebSocket]=None
+# from eeg_stream_endpoint.eeg_stream import app as eeg_stream_app
+# app.include_router(eeg_stream_app)
 
+from eeg_stream_endpoint.eeg_stream import EEGClientListeningThread
+eeg_client_listening_thread= EEGClientListeningThread()
+eeg_client_listening_thread.start()
 
-eeg_queue:Queue = Queue(250)
-
-def iprint(*args,**kwargs):
-    print(*args,**kwargs,file=sys.stderr)
-
-@app.websocket("/eeg_streaming")
-async def eeg_streaming(ws:WebSocket):
-    try:
-        await ws.accept()
-        EEGClient.client = ws
-       
-        while True:
-            msg = await EEGClient.client.receive_json()
-            eeg_queue.put(msg)
-
-    finally:
-        EEGClient.client = None
-
+from eeg_stream_endpoint.eeg_stream import EEGClient
 @app.get("/check_headset")
 def check_headset():
     status:str
@@ -55,6 +42,7 @@ def check_headset():
 
 
 
+from eeg_stream_endpoint.eeg_stream import eeg_queue
 
 @app.websocket("/begin_offline_mode")
 async def begin_offline_mode(ws:WebSocket):
@@ -63,15 +51,14 @@ async def begin_offline_mode(ws:WebSocket):
         await ws.accept()
         
         dump_thread.start()
-        experiment_file:TextIOWrapper = open('./data/experiment-data.json','a')
+        experiment_file:TextIO = open('./data/experiment-data.json','w')
         while True:
             await ws.send_json({
                 "cmd":"next"
             })
 
             data:dict = await ws.receive_json()
-            print(data)
-            experiment_file.write(json.dumps(data)+",\n")
+            experiment_file.write(json.dumps(data)+"\n")
 
     finally:
         dump_thread.stop()
