@@ -22,9 +22,9 @@ services:
 
     ml-server:
         build:
-            context: ./dummy-ml-server
+            context: ./ml-server
             dockerfile: Dockerfile
         ports:
             - "8000:8000"
         volumes:
-            - ./dummy-ml-server/src:/home/src
+            - ./ml-server/src:/home/src

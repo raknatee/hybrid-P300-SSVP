@@ -9,8 +9,7 @@ class EEGPackage:
     def add(self,data):
         self.data.append(data)
   
-        if(len(self.data)>=300):
-            print("sending")
-            res = requests.post(f"http://{config.HOST}:{config.PORT}/eeg",json={"data":self.data})
-        
+        if(len(self.data)>=config.DATA_SIZE):
+            res = requests.post(f"http://{config.HOST}:{config.PORT}/eeg_offline",json={"data":self.data})
+            
             self.data = []

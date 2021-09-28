@@ -7,7 +7,7 @@ import random
 
 import json
 
-from DumpQueueThread import DumpQueueThread
+
 from utils.iprint import iprint
 app = FastAPI()
 
@@ -21,23 +21,8 @@ app.add_middleware(
 )
 
 
-class EEGClient:
-    client:Optional[WebSocket] = None
 
-eeg_queue:Queue  = Queue(300*10)
-@app.get("/check_headset")
-def check_headset():
-    status:str
-    if(EEGClient.client is None):
-        status = "no connection"
-    else:
-        status = "connected"
-    return {
-        'status':status
-    }
-
-
-@app.post("/eeg")
+@app.post("/eeg_offline")
 def eeg(json_data:dict):
     with open("./data/eeg_data-data.json","a") as data_file:
         for package in json_data['data']:
@@ -46,11 +31,11 @@ def eeg(json_data:dict):
 
 @app.websocket("/begin_offline_mode")
 async def begin_offline_mode(ws:WebSocket):
-    dump_thread = DumpQueueThread(eeg_queue)
+ 
     try:
         await ws.accept()
         
-        dump_thread.start()
+  
         experiment_file:TextIO = open('./data/experiment-data.json','w')
         while True:
             await ws.send_json({
@@ -62,7 +47,6 @@ async def begin_offline_mode(ws:WebSocket):
 
     finally:
         iprint("closing file")
-        dump_thread.stop()
         experiment_file.close()
     
 
