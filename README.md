@@ -1,6 +1,6 @@
 # hybrid-P300-SSVP
 
-## Dummy Mode
+## Get Started
 dummy mode is a simulation of ml-server and eeg-client for demonstrate the client(web-GUI) which all endpoints already implemented and followed by Document
 
 1. start
