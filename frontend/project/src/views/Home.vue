@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <!-- <router-link to="/hyps">hybrid-P300-SSVP</router-link> -->
-    <headset/>
+    <!-- <headset/> -->
     <button @click="goOnline" >hybrid-P300-SSVP-Online mode</button>
     <br>
     <button @click="goOffline">hybrid-P300-SSVP-Offline mode</button>
@@ -15,7 +15,7 @@
 export default {
   name: 'Home',
    components:{
-    'headset': ()=>import("@/components/headset-status/HeadsetStatus.vue")
+    // 'headset': ()=>import("@/components/headset-status/HeadsetStatus.vue")
   },
   methods: {
     goOnline(){

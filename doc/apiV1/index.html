@@ -16,9 +16,9 @@
 <body>
 
     <h1 class="big-head">ML-server API V1</h1>
-    <p>color: <span class="status okay">okay</span> <span class="status not-test-yet">not test yet</span> <span class="status unfinish">unfinish</span></p>
-    <hr>
-    <div>
+    <!-- <p>color: <span class="status okay">okay</span> <span class="status not-test-yet">not test yet</span> <span class="status unfinish">unfinish</span></p>
+    <hr> -->
+    <!-- <div>
 
         <h1 id="eeg_streaming-api">/eeg_streaming <span class="protocol">WS</span></h1>
         <p>We would have another process to send EEG signal to the server</p>
@@ -50,8 +50,36 @@ client (EEG client) -> api
         </ol>
         <hr>
 
-    </div>
+    </div> -->
+
     <div>
+
+        <h1 id="eeg_streaming-api">/eeg_offline <span class="protocol">HTTP POST</span></h1>
+        <p>For EEG client submits a EEG signal package and save in a file.</p>
+        <h2>Request body</h2>
+        <code>
+{
+    "data":[
+
+        {"timestamp": &lt;timestamp(float of s)&gt;,
+        "data":[&lt;float&gt;,&lt;float&gt;,...,&lt;float&gt;]},
+
+        {"timestamp": &lt;timestamp(float of s)&gt;,
+        "data":[&lt;float&gt;,&lt;float&gt;,...,&lt;float&gt;]},
+
+        ...
+
+        {"timestamp": &lt;timestamp(float of s)&gt;,
+        "data":[&lt;float&gt;,&lt;float&gt;,...,&lt;float&gt;]},
+    
+    ]
+    
+}
+        </code>
+        <hr>
+
+    </div>
+    <!-- <div>
 
         <h1 id="check_headset-api">/check_headset <span class="protocol">HTTP GET</span></h1>
         <p>status: <span class="status okay">dummy API</span> <span class="status unfinish">real API</span> </p>
@@ -66,7 +94,7 @@ client (EEG client) -> api
         </ol>
         <hr>
 
-    </div>
+    </div> -->
 
     <!-- <div>
 
@@ -89,8 +117,8 @@ client (EEG client) -> api
 
         <h1 id="begin_offline_mode-api">/begin_offline_mode <span class="protocol">WS</span></h1>
         <p>A WS connection for begining the offline mode</p>
-        <p>status: <span class="status okay">dummy API</span> <span class="status not-test-yet">real API</span> </p>
-        <p>related apps: <span class="status okay">Web GUI</span> <span class="status okay">dummy eeg-client</span> <span class="status unfinish">real eeg-client</span></p>
+        <!-- <p>status: <span class="status okay">dummy API</span> <span class="status not-test-yet">real API</span> </p>
+        <p>related apps: <span class="status okay">Web GUI</span> <span class="status okay">dummy eeg-client</span> <span class="status unfinish">real eeg-client</span></p> -->
 
         <h2>Setup</h2>
         <ol>
@@ -166,8 +194,8 @@ client -> api
 
     <div>
         <h1 id="begin_online_mode-api">/begin_online_mode <span class="protocol">WS</span></h1>
-        <p>status: <span class="status okay">dummy API</span> <span class="status unfinish">real API</span> </p>
-        <p>related apps: <span class="status okay">Web GUI</span> <span class="status okay">dummy eeg-client</span> <span class="status unfinish">real eeg-client</span></p>
+        <!-- <p>status: <span class="status okay">dummy API</span> <span class="status unfinish">real API</span> </p>
+        <p>related apps: <span class="status okay">Web GUI</span> <span class="status okay">dummy eeg-client</span> <span class="status unfinish">real eeg-client</span></p> -->
 
         <h2>Setup</h2>
         <ol>

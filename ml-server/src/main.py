@@ -2,12 +2,12 @@ from fastapi import FastAPI,WebSocket  # type: ignore
 from typing import Optional,TextIO
 import sys
 import time
-from queue import Queue
+
 import random
 
 import json
-
-from DumpQueueThread import DumpQueueThread
+import mongo.collections.eeg as eeg_collection
+import mongo.collections.experiment as experiment_collection
 from utils.iprint import iprint
 app = FastAPI()
 
@@ -21,57 +21,29 @@ app.add_middleware(
 )
 
 
-class EEGClient:
-    client:Optional[WebSocket] = None
 
-eeg_queue:Queue  = Queue(300*10)
-@app.get("/check_headset")
-def check_headset():
-    status:str
-    if(EEGClient.client is None):
-        status = "no connection"
-    else:
-        status = "connected"
-    return {
-        'status':status
-    }
-
-
-@app.websocket("/eeg_streaming")
-async def eeg_streaming(ws:WebSocket):
-    try:
-        await ws.accept()
-        EEGClient.client = ws
-
-        while True:
-            msg = await EEGClient.client.receive_json()
-            eeg_queue.put(msg) 
-            await EEGClient.client.send_text('1')
-
-    finally:
-        EEGClient.client = None
+@app.post("/eeg_offline")
+def eeg(json_data:dict):
+    eeg_collection.insert_eeg_signals(json_data)
 
 
 @app.websocket("/begin_offline_mode")
 async def begin_offline_mode(ws:WebSocket):
-    dump_thread = DumpQueueThread(eeg_queue)
-    try:
-        await ws.accept()
-        
-        dump_thread.start()
-        experiment_file:TextIO = open('./data/experiment-data.json','w')
-        while True:
-            await ws.send_json({
-                "cmd":"next"
-            })
+ 
+   
+    await ws.accept()
+    
 
-            data:dict = await ws.receive_json()
-            experiment_file.write(json.dumps(data)+"\n")
+    
+    while True:
+        await ws.send_json({
+            "cmd":"next"
+        })
 
-    finally:
-        iprint("closing file")
-        dump_thread.stop()
-        experiment_file.close()
+        data:dict = await ws.receive_json()
+        experiment_collection.insert_experiment_data(data)
+
+
     
 
 possible_result = [

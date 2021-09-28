@@ -1,41 +1,48 @@
 from typing import TextIO
 from pyOpenBCI import OpenBCICyton # type: ignore
-from module.ws import EEGClient
 import config
 import json
 from datetime import datetime
-import time
-import sys
+import numpy as np
 
-eeg_client = EEGClient()
-eeg_client.start()
+from typing import Union
+
+from modules.package import EEGPackage
+
+eeg_package = EEGPackage()
 
 local_file:TextIO
 if config.DO_LOCAL_SAVE:
     local_file = open('./test-data.json','w')
+
+SCALE_FACTOR_EEG = (4500000)/24/(2**23-1) #uV/count
 def add_to_buffer(sample):
+
+    temp:np.ndarray = np.array(sample.channels_data) * SCALE_FACTOR_EEG
     data = {
         'timestamp':datetime.now().timestamp(),
-        'data':sample.channels_data
+        'data': temp.tolist()
     }
-    eeg_client.add(data)
+   
+    eeg_package.add(data)
 
     if config.DO_LOCAL_SAVE:
         local_file.write(json.dumps(data)+"\n")
 
 
-  
+from modules.Dummy import OpenBCICytonDummy
+board:Union[OpenBCICyton,OpenBCICytonDummy]
 
-board = OpenBCICyton(port=config.SERIAL_PORT, daisy=False)
+if config.DUMMY_MODE:
+    board = OpenBCICytonDummy()
+else:
+    board = OpenBCICyton(port=config.SERIAL_PORT, daisy=False)
+
 try:
     board.start_stream(add_to_buffer)
 except KeyboardInterrupt:
     board.stop_stream()
-    while True:
-        print(f"please wait for submiting data left {eeg_client.queue.qsize()}")
-        if(eeg_client.is_done()):
-            quit()
-        time.sleep(1)
+    print(len(eeg_package.data))
 finally:
     if config.DO_LOCAL_SAVE:
         local_file.close()

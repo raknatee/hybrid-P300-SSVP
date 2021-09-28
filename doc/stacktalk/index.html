@@ -25,18 +25,22 @@
     <p>Frontend and ML service would be deployed on Docker container which are cool.Only EEG-client cannot because we want to connect EEG headset with Serial Port(USB). Serial Port could not (year 2021) work with Docker on Windows OS & Mac but it can work
         with Linux.</p>
     <hr>
-    <h1>EEG streaming Client</h1>
+    <h1 id="eeg-client">EEG streaming Client</h1>
     <p>This application needs someone(or thing) to stream EEG signal to our main core which is ML server.</p>
     <p>Normally, Open-BCI (EEG headset brand) has 2 types of EEG connecter that are Bluetooth and Wifi (I would call it White and Orange because of its color). Most researchers use LSL (Labstreaminglayer > <a href="https://labstreaminglayer.readthedocs.io/info/getting_started.html">click me for more information</a>        ) protocol to create a streaming pipeline which is based on TCP.The main objective of LSL is for data streaming over the local network. Therefore, I decided to use WS (Websocket) for this because it's more production mode.</p>
+    <h3>2021-09-28 Update!</h3>
+    <p>I found problem when client did spaming 250 Hz of EEG data to server. I found FastAPI server cannot receive the data. Therefore, I changed from WS to HTTP with BATCH of data. Actually, I think we can keep using WS but please do the batch (batch means
+        like pack 250 messages into 1 message and sent them together)</p>
     <h2>Bluetooth (White)</h2>
-    <p>I would create a WS over Serial connection. To stream the data to ML-server.
+    <p>I would create a HTTP over Serial connection. To send the data to ML-server.
     </p>
     <h2>Wifi (Orange)</h2>
     <p>Currently (2021), Wifi module doesn't support.</p>
     <h2>Stack</h2>
     <ol>
         <li>python lib <a href="https://pypi.org/project/pyOpenBCI/">pyopenbci</a></li>
-        <li>python Websocket client <a href="https://websockets.readthedocs.io/en/stable/">link</a> </li>
+        <li>python Requests (http client) <a href="https://docs.python-requests.org/en/latest/ ">requests</a> </li>
+        <!-- <li>python Websocket client <a href="https://websockets.readthedocs.io/en/stable/">link</a> </li> -->
     </ol>
     <hr>
     <h1>Frontend</h1>
