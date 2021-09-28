@@ -11,20 +11,29 @@ services:
             - /home/project/node_modules
         environment: 
             - CHOKIDAR_USEPOLLING=true
-    
-    # eeg-client:
-    #     build:
-    #         context: ./dummy-eeg-client
-    #     volumes:
-    #         - ./dummy-eeg-client/src:/home/src
-    #     depends_on:
-    #        - ml-server
 
     ml-server:
         build:
             context: ./ml-server
-            dockerfile: Dockerfile
+            dockerfile: Dockerfile.dev
+        env_file: 
+            - ex-of-secret.env
         ports:
             - "8000:8000"
         volumes:
             - ./ml-server/src:/home/src
+            - ./ml-server--vscode-server:/root/.vscode-server
+
+    mongo:
+        image: mongo:3.6.22-xenial
+ 
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+        env_file: 
+            - ex-of-secret.env
+        ports:
+            - 27017:27017
+        volumes: 
+            - mongo_volume:/data/db
+volumes: 
+  mongo_volume:

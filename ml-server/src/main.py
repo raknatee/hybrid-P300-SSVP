@@ -2,12 +2,12 @@ from fastapi import FastAPI,WebSocket  # type: ignore
 from typing import Optional,TextIO
 import sys
 import time
-from queue import Queue
+
 import random
 
 import json
-
-
+import mongo.collections.eeg as eeg_collection
+import mongo.collections.experiment as experiment_collection
 from utils.iprint import iprint
 app = FastAPI()
 
@@ -24,30 +24,26 @@ app.add_middleware(
 
 @app.post("/eeg_offline")
 def eeg(json_data:dict):
-    with open("./data/eeg_data-data.json","a") as data_file:
-        for package in json_data['data']:
-            data_file.write(json.dumps(package)+"\n")
+    eeg_collection.insert_eeg_signals(json_data)
 
 
 @app.websocket("/begin_offline_mode")
 async def begin_offline_mode(ws:WebSocket):
  
-    try:
-        await ws.accept()
-        
-  
-        experiment_file:TextIO = open('./data/experiment-data.json','w')
-        while True:
-            await ws.send_json({
-                "cmd":"next"
-            })
+   
+    await ws.accept()
+    
 
-            data:dict = await ws.receive_json()
-            experiment_file.write(json.dumps(data)+"\n")
+    
+    while True:
+        await ws.send_json({
+            "cmd":"next"
+        })
 
-    finally:
-        iprint("closing file")
-        experiment_file.close()
+        data:dict = await ws.receive_json()
+        experiment_collection.insert_experiment_data(data)
+
+
     
 
 possible_result = [

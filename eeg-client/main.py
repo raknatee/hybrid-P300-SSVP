@@ -3,8 +3,8 @@ from pyOpenBCI import OpenBCICyton # type: ignore
 import config
 import json
 from datetime import datetime
-import time
-import sys
+import numpy as np
+
 from typing import Union
 
 from modules.package import EEGPackage
@@ -15,11 +15,13 @@ local_file:TextIO
 if config.DO_LOCAL_SAVE:
     local_file = open('./test-data.json','w')
 
-
+SCALE_FACTOR_EEG = (4500000)/24/(2**23-1) #uV/count
 def add_to_buffer(sample):
+
+    temp:np.ndarray = np.array(sample.channels_data) * SCALE_FACTOR_EEG
     data = {
         'timestamp':datetime.now().timestamp(),
-        'data':sample.channels_data
+        'data': temp.tolist()
     }
    
     eeg_package.add(data)

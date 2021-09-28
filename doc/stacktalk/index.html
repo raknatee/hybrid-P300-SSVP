@@ -32,14 +32,15 @@
     <p>I found problem when client did spaming 250 Hz of EEG data to server. I found FastAPI server cannot receive the data. Therefore, I changed from WS to HTTP with BATCH of data. Actually, I think we can keep using WS but please do the batch (batch means
         like pack 250 messages into 1 message and sent them together)</p>
     <h2>Bluetooth (White)</h2>
-    <p>I would create a WS over Serial connection. To stream the data to ML-server.
+    <p>I would create a HTTP over Serial connection. To send the data to ML-server.
     </p>
     <h2>Wifi (Orange)</h2>
     <p>Currently (2021), Wifi module doesn't support.</p>
     <h2>Stack</h2>
     <ol>
         <li>python lib <a href="https://pypi.org/project/pyOpenBCI/">pyopenbci</a></li>
-        <li>python Websocket client <a href="https://websockets.readthedocs.io/en/stable/">link</a> </li>
+        <li>python Requests (http client) <a href="https://docs.python-requests.org/en/latest/ ">requests</a> </li>
+        <!-- <li>python Websocket client <a href="https://websockets.readthedocs.io/en/stable/">link</a> </li> -->
     </ol>
     <hr>
     <h1>Frontend</h1>
