@@ -26,9 +26,6 @@ services:
 
     mongo:
         image: mongo:3.6.22-xenial
- 
-        environment:
-            MONGO_INITDB_ROOT_USERNAME: root
         env_file: 
             - ex-of-secret.env
         ports:

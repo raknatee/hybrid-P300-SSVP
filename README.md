@@ -5,19 +5,14 @@ dummy mode is a simulation of ml-server and eeg-client for demonstrate the clien
 
 1. start
 ```bash
-docker-compose -f docker-compose.yml up --build
+docker-compose -f docker-compose.yml up --build -d
 ```
 
-2. To simulate like we already plugged and connected the headset and it can do data streaming to ml-server.
-   1.  cd to eeg-client
-   2.  configure config.py change DUMMY_MODE = True
-   3.  start
+2. check localhost:8080
 
-```bash
-pipenv run python main.py
-```
+3. check a EEG headset and run EEG-client. Please go to "eeg-client" for more details. It also supports DUMMY mode.
 
-3. shutdown
+4. shutdown
 ```bash
 docker-compose -f docker-compose.yml down
 ```
