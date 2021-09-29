@@ -62,7 +62,7 @@ class AppState {
     }
     toTarget(indexs, msgExperiment) {
         // indexs => {gridIndex,alpIndex}
-        // when the target is showed, mshExperiment is assigned value for ml-server
+        // when the target is showed, msgExperiment is assigned value for ml-server
         this.appState = State.Targeting
         this.indexs = indexs
 
