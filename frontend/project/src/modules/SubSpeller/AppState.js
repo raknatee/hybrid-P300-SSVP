@@ -56,9 +56,12 @@ class AppState {
     }
     toFlashingP300() {
         this.subSpellers.forEach((e) => {
-            e.createRandomOrder()
+            e.setStartForP300()
         })
+
         this.appState = State.FlashingP300
+
+
     }
     toTarget(indexs, msgExperiment) {
         // indexs => {gridIndex,alpIndex}
