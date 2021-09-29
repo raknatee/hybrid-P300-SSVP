@@ -4,6 +4,11 @@
 *-data.json
 
 ##############################
+# Config files ignore
+##############################
+eeg_client_config.py
+
+##############################
 # VS code server ignore
 ##############################
 *--vscode-server/

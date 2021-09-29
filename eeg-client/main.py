@@ -1,14 +1,24 @@
 from typing import TextIO
 from pyOpenBCI import OpenBCICyton # type: ignore
-import config
 import json
 from datetime import datetime
 import numpy as np
-
 from typing import Union
 
-from modules.package import EEGPackage
+import os
 
+
+
+
+if(not os.path.exists("./eeg_client_config.py")):
+    from config_template import config_template
+    with open("./eeg_client_config.py",'w') as config_file:
+        config_file.write(config_template)
+    raise FileNotFoundError("created the configurate file, please run this again")
+else:
+    import eeg_client_config as config
+    
+from modules.package import EEGPackage
 eeg_package = EEGPackage()
 
 local_file:TextIO

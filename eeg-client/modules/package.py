@@ -1,5 +1,5 @@
 import requests
-import config
+import eeg_client_config as config
 class EEGPackage:
     data:list
 

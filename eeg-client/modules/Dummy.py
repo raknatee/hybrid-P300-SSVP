@@ -1,6 +1,7 @@
 from threading import Thread
-import time
-import config
+
+import eeg_client_config as config
+
 
 class MockData:
     channels_data:list

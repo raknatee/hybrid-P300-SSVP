@@ -1,3 +1,5 @@
+config_template ="""
+
 ############
 #   Connection Config
 ############
@@ -17,3 +19,6 @@ DO_LOCAL_SAVE = False
 #   Package Config
 ############
 DATA_SIZE = 100
+
+
+"""
