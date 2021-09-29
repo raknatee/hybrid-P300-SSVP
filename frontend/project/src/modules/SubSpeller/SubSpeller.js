@@ -7,6 +7,7 @@ import { randInt, rangeRandomArray } from "@/modules/Random.js"
 import { style } from "@/modules/renderer/Style.js"
 import { State } from "./AppState.js"
 
+
 class SubSpeller {
     constructor(index, x, y) {
         this.gridIndex = index
@@ -23,18 +24,21 @@ class SubSpeller {
         this.h = getSizeH(.08)
         this.wMargin = getSizeW(.01)
         this.gridHelper = new GridHelper(this.x, this.y, 3, this.w, this.h, this.wMargin)
+        this.state = null
+
 
         // timing
-        this.previousTime = null
-        this.currentIndex = 0
-        this.state = null
+        this.startTime = null
+        this.currentIndexes = []
+        this.spawnTime = 200 // ms
+        this.ttl = 200 // ms
 
         // P300
         this.randomIndex = []
 
-        // For Offline mode
-        this.do_need_watch = false
-        this.last_index_which_insert_to_msg_experiment = -1
+        // For Offline mode creates a message
+        this.do_need_to_watch_the_target = false
+
 
 
     }
@@ -57,54 +61,83 @@ class SubSpeller {
             i++;
         })
     }
-    createRandomOrder() {
+    setStartForP300() {
+        // TODO : if we want to have a overlap array, I need to make sure that. 
+        // Do not have two alphabets which are close togerther SHOW at the same time
+
         this.randomIndex = rangeRandomArray(this.alphabets.length)
+        this.startTime = getNow()
+        for (let i = 0; i < this.randomIndex.length; i++) {
+
+            setTimeout(() => {
+                this._pushToCurrentIndex(i)
+
+            }, this.spawnTime * i)
+
+
+
+
+        }
+
+    }
+    _pushToCurrentIndex(i) {
+
+        this.currentIndexes.push({
+            'index': this.randomIndex[i],
+            'time': getNow()
+        })
+
+        if (this.do_need_to_watch_the_target) {
+            let targetIndex = this.state.getTargetIndex()
+            let is_activated = false
+            if (targetIndex.alpIndex === this.randomIndex[i]) {
+                is_activated = true
+            } else {
+                is_activated = false
+            }
+            let timeForStamp = getNow()
+            if (is_activated) {
+                console.log(timeForStamp, targetIndex.alpIndex, this.randomIndex[i])
+            }
+            this.msgExperiment.data.push({
+                "timestamp": timeForStamp,
+                "is_target_activated": is_activated
+            })
+        }
     }
     renderFlash(_this) {
-        if (this.state.getCurrentState() != State.FlashingP300 && this.randomIndex.length > 0) {
+        if (this.state.getCurrentState() != State.FlashingP300) {
             return
         }
+        if (this.currentIndexes.length <= 0) {
+            return
+        }
+
         let now = getNow()
 
-        if (this.previousTime === null || now - this.previousTime >= .2) {
-            this.previousTime = now
-            this.currentIndex = this.randomIndex.pop()
+
+        if (now - this.currentIndexes[0].time >= this.ttl / 1000) {
+            this.currentIndexes.shift()
         }
+
+
+
 
 
         let max = 255
         let min = 0
         let color = this.sinWave.getYNow() * (max - min) + min
         _this.ctx.fillStyle = `rgb(${color},${color},${color})`;
-        const coor = this.gridHelper.getCoordinate(this.currentIndex)
-        _this.ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * 1.2, style.fontSize * 1.3)
 
-        if (!this.do_need_watch) {
-            return
-        }
-        if (this.currentIndex == undefined) {
-            return
-        }
-        if (this.currentIndex == this.last_index_which_insert_to_msg_experiment) {
-            return
-        }
-        this.last_index_which_insert_to_msg_experiment = this.currentIndex
-
-        let targetIndex = this.state.getTargetIndex()
-        let is_activated = false
-        if (targetIndex.alpIndex === this.currentIndex) {
-            is_activated = true
-        } else {
-            is_activated = false
-        }
-        let timeForStamp = getNow()
-        if (is_activated) {
-            console.log(timeForStamp, is_activated)
-        }
-        this.msgExperiment.data.push({
-            "timestamp": timeForStamp,
-            "is_target_activated": is_activated
+        this.currentIndexes.forEach((e) => {
+            const coor = this.gridHelper.getCoordinate(e.index)
+            _this.ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * 1.2, style.fontSize * 1.3)
         })
+
+
+
+
+
 
 
     }
@@ -123,11 +156,11 @@ class SubSpeller {
 
     }
     setOfflineWatcher(msgExperiment) {
-        this.do_need_watch = true
+        this.do_need_to_watch_the_target = true
         this.msgExperiment = msgExperiment
     }
     reset() {
-        this.do_need_watch = false
+        this.do_need_to_watch_the_target = false
     }
 }
 
