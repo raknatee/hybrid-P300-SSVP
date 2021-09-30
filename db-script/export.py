@@ -11,6 +11,6 @@ for database in config.DATABASE_NAMES:
     os.mkdir(os.path.join(folder_name,database))
     for collection in config.COLLECTION_NAMES:
         data = Mongo.get_instance()[database][collection].find({},{'_id':0})
-        with open(os.path.join(folder_name,database,f"{collection}.json"),"w") as save_file:
+        with open(os.path.join(folder_name,database,f"{collection}-data.json"),"w") as save_file:
             for e in data:
                 save_file.write(json.dumps(e)+"\n")
