@@ -1,10 +1,7 @@
 ##############
-# database config
+# database export config
 ##############
 DATABASE_NAMES = ['EEG-Database']
-COLLECTION_NAMES = ['test-collection','test-experiment-collection']
-
-
 
 
 

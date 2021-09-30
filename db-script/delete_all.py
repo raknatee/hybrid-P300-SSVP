@@ -7,6 +7,10 @@ folder_name = create_folder_name()
 from connector import Mongo
 import config
 
-for database in config.DATABASE_NAMES:
-    for collection in config.COLLECTION_NAMES:
-        data = Mongo.get_instance()[database][collection].delete_many({})
+answer = input(f"this script will drop {config.DATABASE_NAMES} y/Y:")
+if(answer.upper() == "Y" ):
+    for database in config.DATABASE_NAMES:
+        data = Mongo.get_instance().drop_database(database)
+   
+else:
+    print("cancel")
