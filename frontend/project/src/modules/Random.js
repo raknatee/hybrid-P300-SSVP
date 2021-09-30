@@ -5,11 +5,13 @@ const randInt = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+const rangeArray = (range) => {
+    return [...Array(range).keys()]
+}
 
 const rangeRandomArray = (range) => {
-    let rangeArray = [...Array(range).keys()]
 
-    return shuffle(rangeArray)
+    return shuffle(rangeArray(range))
 
 }
 const shuffle = (array) => {
@@ -24,4 +26,25 @@ const choise = (array) => {
     return array[Math.floor(Math.random() * array.length)]
 }
 
-export { randRange, randInt, rangeRandomArray, choise }
+// const checkerboard = (range) => {
+//     let rArr = rangeArray(range)
+//     let oddArr = shuffle(rArr.filter((e) => e % 2 == 1))
+//     let evenArr = shuffle(rArr.filter((e) => e % 2 == 0))
+
+//     const merge = (arr1, arr2) => {
+//         let returned = []
+//         let arrs = [arr1, arr2]
+//         let pointer = 0
+//         let mergeN = arr1.length + arr2.length
+//         for (let i = 0; i < mergeN; i++) {
+//             returned.push(arrs[pointer].pop())
+//             pointer = (pointer + 1) % 2
+//         }
+//         return returned
+//     }
+//     let returned = merge(oddArr, evenArr)
+//     console.log(returned)
+//     return returned
+
+// }
+export { randRange, randInt, rangeRandomArray, choise, rangeArray }

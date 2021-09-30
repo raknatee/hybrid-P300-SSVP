@@ -11,10 +11,10 @@ const State = {
 }
 
 class AppState {
-    constructor(vueThis) {
+    constructor(vueThis, spawn, ttl) {
         this.appState = State.ZERO
         this.vueThis = vueThis
-        this.subSpellers = this.setUpSubSpellers()
+        this.subSpellers = this.setUpSubSpellers(spawn, ttl)
         this.subSpellers.forEach((e) => {
             e.setState(this)
         })
@@ -22,7 +22,7 @@ class AppState {
         this.msgExperiment = null
 
     }
-    setUpSubSpellers() {
+    setUpSubSpellers(spawn, ttl) {
         this.vueThis.ctx.font = `${style.fontSize}px Arial`;
 
         this.vueThis.ctx.fillStyle = "black";
@@ -40,7 +40,7 @@ class AppState {
                 continue;
             }
             let coor = gridHelper.getCoordinate(i);
-            let thisSubSpller = new SubSpeller(i, coor.x, coor.y)
+            let thisSubSpller = new SubSpeller(i, coor.x, coor.y, spawn, ttl)
             subSpellers.push(thisSubSpller);
         }
         return subSpellers
@@ -49,7 +49,7 @@ class AppState {
         this.appState = State.ZERO
 
     }
-    resetSubSpellersForOfflineMode() {
+    doneRound() {
         this.subSpellers.forEach(subSpeller => {
             subSpeller.reset()
         })

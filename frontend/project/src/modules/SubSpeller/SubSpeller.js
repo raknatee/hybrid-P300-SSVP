@@ -9,7 +9,7 @@ import { State } from "./AppState.js"
 
 
 class SubSpeller {
-    constructor(index, x, y) {
+    constructor(index, x, y, spawnTime, ttl) {
         this.gridIndex = index
         this.alphabets = subSpellerData[this.gridIndex]
 
@@ -30,8 +30,8 @@ class SubSpeller {
         // timing
         this.startTime = null
         this.currentIndexes = []
-        this.spawnTime = 200 // ms
-        this.ttl = 200 // ms
+        this.spawnTime = spawnTime // ms
+        this.ttl = ttl // ms
 
         // P300
         this.randomIndex = []
@@ -66,6 +66,7 @@ class SubSpeller {
         // Do not have two alphabets which are close togerther SHOW at the same time
 
         this.randomIndex = rangeRandomArray(this.alphabets.length)
+        console.log(this.randomIndex)
         this.startTime = getNow()
         for (let i = 0; i < this.randomIndex.length; i++) {
 
