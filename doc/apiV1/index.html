@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../global-style.css">
+
+</head>
+
+<body>
+
+    <h1 class="big-head">ML-server API V1</h1>
+    <!-- <p>color: <span class="status okay">okay</span> <span class="status not-test-yet">not test yet</span> <span class="status unfinish">unfinish</span></p>
+    <hr> -->
+    <!-- <div>
+
+        <h1 id="eeg_streaming-api">/eeg_streaming <span class="protocol">WS</span></h1>
+        <p>We would have another process to send EEG signal to the server</p>
+        <p>status: <span class="status okay">dummy API</span> <span class="status unfinish">real API</span> </p>
+        <p>related apps: <span class="status okay">dummy eeg-client</span> <span class="status unfinish">real eeg-client</span></p>
+        <h2>Flow program</h2>
+        <ol>
+            <li>
+                <p>EEG WS client connects</p>
+            </li>
+            <li>
+                <p>client sends</p>
+                <code>
+client (EEG client) -> api
+{
+    "timestamp": &lt;timestamp(float of s)&gt;,
+    "data":[&lt;float&gt;,&lt;float&gt;,...,&lt;float&gt;] #size = 8
+}
+                </code>
+            </li>
+
+            <li>
+                <p>ML-server needs to store the data to data storage (this case, I decided to use Queue)</p>
+            </li>
+
+            <li>
+                <p>repeat step 2</p>
+            </li>
+        </ol>
+        <hr>
+
+    </div> -->
+
+    <div>
+
+        <h1 id="eeg_streaming-api">/eeg_offline <span class="protocol">HTTP POST</span></h1>
+        <p>For EEG client submits a EEG signal package and save in a file.</p>
+        <h2>Request body</h2>
+        <code>
+{
+    "data":[
+
+        {"timestamp": &lt;timestamp(float of s)&gt;,
+        "data":[&lt;float&gt;,&lt;float&gt;,...,&lt;float&gt;]},
+
+        {"timestamp": &lt;timestamp(float of s)&gt;,
+        "data":[&lt;float&gt;,&lt;float&gt;,...,&lt;float&gt;]},
+
+        ...
+
+        {"timestamp": &lt;timestamp(float of s)&gt;,
+        "data":[&lt;float&gt;,&lt;float&gt;,...,&lt;float&gt;]},
+    
+    ]
+    
+}
+        </code>
+        <hr>
+
+    </div>
+    <!-- <div>
+
+        <h1 id="check_headset-api">/check_headset <span class="protocol">HTTP GET</span></h1>
+        <p>status: <span class="status okay">dummy API</span> <span class="status unfinish">real API</span> </p>
+
+        <h2>Response body</h2>
+        <code>
+{
+    "status": "connected" | "no connection"
+}
+        </code>
+        </li>
+        </ol>
+        <hr>
+
+    </div> -->
+
+    <!-- <div>
+
+        <h1 id="get_sample_eeg-api">/sample_eeg <span class="protocol">HTTP GET</span></h1>
+        <p>return first EEG data which is in current quene</p>
+        <h2>Response body</h2>
+        <code>
+{
+    "timestamp": &lt;timestamp(float of s)&gt;,
+    "data":[&lt;float&gt;,&lt;float&gt;,...,&lt;float&gt;] #size = 8
+}
+        </code>
+        </li>
+        </ol>
+        <hr>
+
+    </div> -->
+
+    <div>
+
+        <h1 id="begin_offline_mode-api">/begin_offline_mode <span class="protocol">WS</span></h1>
+        <p>A WS connection for begining the offline mode</p>
+        <!-- <p>status: <span class="status okay">dummy API</span> <span class="status not-test-yet">real API</span> </p>
+        <p>related apps: <span class="status okay">Web GUI</span> <span class="status okay">dummy eeg-client</span> <span class="status unfinish">real eeg-client</span></p> -->
+
+        <h2>Setup</h2>
+        <ol>
+            <li>Client knows what they need to do right? (how to run experiments)</li>
+            <li>target alphabets are decided by client side</li>
+            <li>Client needs to send timestamp of each round</li>
+        </ol>
+        <h2>Flow program</h2>
+        <ol>
+            <li>
+                <p>client connecting</p>
+                <ul>
+                    <li>If client or server want to end the experiment, just close a connection.</li>
+                </ul>
+            </li>
+            <li>
+                <p>
+                    before client run the experiment, this API must send something to tell Im ready (because in the future we can add something like Next button)
+                </p>
+
+                <code>
+client <- api
+
+{"cmd":"next"}
+                </code>
+
+            </li>
+
+
+            <li>
+                <p>client run the experiment</p>
+                <ul>
+                    <li>
+                        <p>Gap for each round <strong>sleep 1000 ms</strong> </p>
+                    </li>
+                    <li>
+                        <p> highlight the target <strong>sleep 1000 ms</strong> </p>
+                    </li>
+                    <li>
+                        <p> back to Zero state <strong>sleep 1000 ms</strong> </p>
+                    </li>
+                    <li>
+                        <p>run HYPS <strong>sleep ?? ms</strong></p>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                <p>Server/This API saves those data (those data mean timestamp of each alphabet) then finishs this round then repeat next round (repeat step 2)</p>
+
+                <code>
+client -> api
+
+{
+    "target_grid": &lt;int&gt;
+    "target_index": &lt;int&gt;
+    "data":[
+                {
+                    "timestamp": &lt;timestamp(float of s)&gt;,
+                    "is_target_activated": &lt;bool&gt;
+                },
+                {
+                    "timestamp": &lt;timestamp(float of s)&gt;,
+                    "is_target_activated": &lt;bool&gt;
+                }
+                ...  # noted: number == size of that grid
+            ]
+            
+
+}
+                </code>
+            </li>
+        </ol>
+        <hr>
+    </div>
+
+
+    <div>
+        <h1 id="begin_online_mode-api">/begin_online_mode <span class="protocol">WS</span></h1>
+        <!-- <p>status: <span class="status okay">dummy API</span> <span class="status unfinish">real API</span> </p>
+        <p>related apps: <span class="status okay">Web GUI</span> <span class="status okay">dummy eeg-client</span> <span class="status unfinish">real eeg-client</span></p> -->
+
+        <h2>Setup</h2>
+        <ol>
+            <li>Client does not know anything. They just do the HYPS</li>
+            <li>After did the round, Client just wait for API/Server to tell what grid and index should be</li>
+        </ol>
+
+        <h2>Flow program</h2>
+        <ol>
+            <li>
+                <p>client connecting</p>
+            </li>
+            <li>
+                <p>Server/API tells that we are going to begin the experiment</p>
+                <code>
+client <- api
+
+{"cmd":"next"}
+            </code>
+            </li>
+            <li>
+                <p>client run the experiment</p>
+                <ul>
+                    <li>
+                        <p>Gap for each round <strong>sleep 1000 ms</strong> </p>
+                    </li>
+                    <li>
+                        <p>run HYPS <strong>sleep ?? ms</strong> </p>
+                    </li>
+
+                </ul>
+            </li>
+            <li>
+                <p>Client says ok Im done</p>
+                <code>
+client -> api
+
+{
+    "begin_time":&lt;timestamp(float of s)&gt;,
+}
+            </code>
+            </li>
+
+            <li>
+                <p>Basically, ML-server would have maybe Queue for collecting EEG-signal. After it get 'begin_time', it might match EEG-signal and make a prediction.</p>
+            </li>
+            <li>
+                <p>This API guesses then repeat Step 2</p>
+                <ul>
+                    <li>
+                        <p>Gap for model prediction <strong>sleep ?? ms</strong> </p>
+                    </li>
+
+
+                </ul>
+                <code>
+client <- api
+{
+    "cmd": "output_model"
+    "guessed_grid": &lt;int&gt;,
+    "guessed_index": &lt;int&gt;
+    
+}
+            </code>
+            </li>
+        </ol>
+    </div>
+</body>
+
+</html>
