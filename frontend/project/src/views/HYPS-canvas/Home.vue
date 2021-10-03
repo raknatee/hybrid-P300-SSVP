@@ -1,6 +1,15 @@
 <template lang="">
     <div class="layout">
+        <h1>Step 1</h1>
+        <h1>Database Config</h1>
+        <p>please set this and do submit first before going to next step</p>
 
+        <textarea v-model="DBConfig" rows="7" cols="50"></textarea>
+        <button @click="submitDBConfig">submit</button>
+        <p>{{DBConfigStatus}}</p>
+
+        <hr>
+        <h1>Step 2</h1>
         <h1>P300 Config</h1>
         <textarea v-model="P300Config" rows="7" cols="50"></textarea>
         <br>
@@ -30,6 +39,8 @@ import { sleep } from "@/modules/Time.js";
 import { UserText } from "@/modules/SubSpeller/UserText.js";
 // import {choise} from "@/modules/Random.js"
 import { repeat } from "@/modules/ArrayHelper.js";
+import { restAPIPost } from "@/modules/RestAPIHelper/RestAPIHelper.js";
+
 export default {
   data() {
     return {
@@ -39,6 +50,13 @@ export default {
       userText: [],
       ws: null,
       begin_time: null,
+      p_id: "",
+      DBConfigStatus: "",
+      DBConfig: `
+{
+  "current_participant_id" : "SXX"
+}
+      `,
 
       P300Config: `
 {
@@ -47,7 +65,7 @@ export default {
 }
       
       `,
-      ExperimentConfigOffline:`
+      ExperimentConfigOffline: `
 {
   "targets":[
     {
@@ -66,7 +84,7 @@ export default {
   "repeat": 2
 }
       
-      `
+      `,
     };
   },
 
@@ -86,7 +104,25 @@ export default {
         this.run();
       }, 500);
     },
-
+    async submitDBConfig() {
+      let config = JSON.parse(this.DBConfig);
+      this.p_id  = config["current_participant_id"]
+    
+      await restAPIPost(
+        "http://localhost:8000/db",
+        {
+          current_mode: this.mode,
+          current_participant_id: this.p_id,
+        },
+        () => {
+        
+          this.DBConfigStatus = "okay";
+        },
+        () => {
+          this.DBConfigStatus = "error";
+        }
+      );
+    },
     run() {
       if (this.mode === "online") {
         this.setUpWSOnline();
@@ -97,9 +133,13 @@ export default {
       this.canvas.width = getSizeW(1);
       this.canvas.height = getSizeH(1);
 
-      let P300Config = JSON.parse(this.P300Config)
-     
-      this.appState = new AppState(this,P300Config['spawn'],P300Config['ttl']);
+      let P300Config = JSON.parse(this.P300Config);
+
+      this.appState = new AppState(
+        this,
+        P300Config["spawn"],
+        P300Config["ttl"]
+      );
 
       // const nextBtn = new NextSSVP(getSizeW(.55),getSizeH(.9),this.appState)
 
@@ -116,7 +156,7 @@ export default {
       tick();
     },
     setUpWSOnline() {
-      this.ws = new WebSocket("ws://localhost:8000/begin_online_mode");
+      this.ws = new WebSocket(`ws://localhost:8000/begin_online_mode/${this.p_id}`);
       this.ws.onmessage = async (msg) => {
         msg = getJsonFromWSMessage(msg);
         if (msg["cmd"] == "next") {
@@ -141,28 +181,29 @@ export default {
       };
     },
     setUpWSOffline() {
-      let ExperimentConfig = JSON.parse(this.ExperimentConfigOffline)
-      let targets = []
+      let ExperimentConfig = JSON.parse(this.ExperimentConfigOffline);
+      let targets = [];
 
-      for(let i=0;i<ExperimentConfig['targets'].length;i++){
-       
-        let currentTargetObject = ExperimentConfig['targets'][i]
-        targets.push(...repeat([currentTargetObject['target']],currentTargetObject['repeat']))
+      for (let i = 0; i < ExperimentConfig["targets"].length; i++) {
+        let currentTargetObject = ExperimentConfig["targets"][i];
+        targets.push(
+          ...repeat(
+            [currentTargetObject["target"]],
+            currentTargetObject["repeat"]
+          )
+        );
       }
 
-      targets = repeat(targets,ExperimentConfig['repeat'])
-    
-      this.ws = new WebSocket("ws://localhost:8000/begin_offline_mode");
+      targets = repeat(targets, ExperimentConfig["repeat"]);
+
+      this.ws = new WebSocket(`ws://localhost:8000/begin_offline_mode/${this.p_id}`);
       this.ws.onmessage = async (msg) => {
         msg = getJsonFromWSMessage(msg);
 
-      
-
         if (msg["cmd"] == "next") {
-     
           if (targets.length <= 0) {
             this.ws.close();
-            console.log("done the experiment")
+            console.log("done the experiment");
             return;
           }
           let target = targets.shift();

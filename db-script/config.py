@@ -2,7 +2,7 @@
 # database export config
 ##############
 DATABASE_NAMES = ['EEG-Database']
-
+COLLECTION_IGNORE = ['General-Collection']
 
 
 

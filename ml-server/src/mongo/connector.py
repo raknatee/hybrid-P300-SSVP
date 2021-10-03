@@ -1,6 +1,6 @@
 from typing import Optional
-import pymongo
-from pymongo.mongo_client import MongoClient
+import pymongo #type:ignore
+from pymongo.mongo_client import MongoClient #type:ignore
 import os
 
 class Mongo:
