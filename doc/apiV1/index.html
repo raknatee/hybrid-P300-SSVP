@@ -53,9 +53,37 @@ client (EEG client) -> api
     </div> -->
 
     <div>
+        <h1 id="db_setup-api">/db <span class="protocol">HTTP POST</span></h1>
+        <p>GUI needs to set those information to
+            <a href="../data-model/index.html#general-collection-model">Generial Collection</a> for eeg-client and ML-server because they need to use it for collection naming.</p>
+        <h2>Request body</h2>
+        <code>{
+    current_mode: "offline" | "online"
+    current_participant_id: &lt;string&gt; # Ex: S01, S02
+}
+</code>
 
-        <h1 id="eeg_streaming-api">/eeg_offline <span class="protocol">HTTP POST</span></h1>
-        <p>For EEG client submits a EEG signal package and save in a file.</p>
+    </div>
+    <div>
+        <h1>/db <span class="protocol">HTTP GET</span></h1>
+
+        <h2>Response body </h2>
+        <code>{
+    current_mode: "offline" | "online"
+    current_participant_id: &lt;string&gt; # Ex: S01, S02
+}
+</code>
+        <hr>
+    </div>
+    <div>
+
+        <h1 id="eeg_streaming-api">/eeg_offline/&lt;PARTICIPANT-ID&gt; <br> <span class="protocol">HTTP POST</span></h1>
+        <p>For EEG client submits a EEG signal package and save in the database.</p>
+        <p>This API needs to set PARTICIPANT-ID from
+            <a href="#db_setup-api">
+               /db
+            </a>
+        </p>
         <h2>Request body</h2>
         <code>
 {
@@ -115,7 +143,7 @@ client (EEG client) -> api
 
     <div>
 
-        <h1 id="begin_offline_mode-api">/begin_offline_mode <span class="protocol">WS</span></h1>
+        <h1 id="begin_offline_mode-api">/begin_offline_mode/&lt;PARTICIPANT-ID&gt; <br> <span class="protocol">WS</span></h1>
         <p>A WS connection for begining the offline mode</p>
         <!-- <p>status: <span class="status okay">dummy API</span> <span class="status not-test-yet">real API</span> </p>
         <p>related apps: <span class="status okay">Web GUI</span> <span class="status okay">dummy eeg-client</span> <span class="status unfinish">real eeg-client</span></p> -->
@@ -194,10 +222,42 @@ client -> api
         </ol>
         <hr>
     </div>
+    <div>
 
+        <h1 id="eeg_streaming-api">/eeg_online/&lt;PARTICIPANT-ID&gt; <br> <span class="protocol">HTTP POST</span></h1>
+        <p>For EEG client submits a EEG signal package and save in the database.</p>
+        <p>Future Plan: add Timeout Index of Mongo </p>
+        <p>This API needs to set PARTICIPANT-ID from
+            <a href="#db_setup-api">
+               /db
+            </a>
+        </p>
+        <h2>Request body</h2>
+        <code>
+{
+    "data":[
+
+        {"timestamp": &lt;timestamp(float of s)&gt;,
+        "data":[&lt;float&gt;,&lt;float&gt;,...,&lt;float&gt;]},
+
+        {"timestamp": &lt;timestamp(float of s)&gt;,
+        "data":[&lt;float&gt;,&lt;float&gt;,...,&lt;float&gt;]},
+
+        ...
+
+        {"timestamp": &lt;timestamp(float of s)&gt;,
+        "data":[&lt;float&gt;,&lt;float&gt;,...,&lt;float&gt;]},
+    
+    ]
+    
+}
+        </code>
+        <hr>
+
+    </div>
 
     <div>
-        <h1 id="begin_online_mode-api">/begin_online_mode <span class="protocol">WS</span></h1>
+        <h1 id="begin_online_mode-api">/begin_online_mode/&lt;PARTICIPANT-ID&gt; <br> <span class="protocol">WS</span></h1>
         <!-- <p>status: <span class="status okay">dummy API</span> <span class="status unfinish">real API</span> </p>
         <p>related apps: <span class="status okay">Web GUI</span> <span class="status okay">dummy eeg-client</span> <span class="status unfinish">real eeg-client</span></p> -->
 
