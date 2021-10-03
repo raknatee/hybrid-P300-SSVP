@@ -3,6 +3,7 @@ config_template ="""
 ############
 #   Connection Config
 ############
+PROTOCOL = "http"
 HOST = 'localhost'
 PORT = '8000'
 SERIAL_PORT = 'COM3'
