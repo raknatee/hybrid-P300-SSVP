@@ -12,9 +12,11 @@ for database in config.DATABASE_NAMES:
     for collection in Mongo.get_instance()[database].list_collection_names():
         if(collection in config.COLLECTION_IGNORE):
             continue
-        data = [doc for doc in Mongo.get_instance()[database][collection].find({},{'_id':0})]
+        documents = [doc for doc in Mongo.get_instance()[database][collection].find({})]
+        for document in documents:
+            document["_id"] = str(document["_id"])
         with open(os.path.join(folder_name,database,f"{collection}-data.json"),"w") as save_file:
             
-            save_file.write(json.dumps({"documents":data}))
+            save_file.write(json.dumps({"documents":documents}))
 
 print("done!!!!!")
