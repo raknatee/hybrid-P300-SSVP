@@ -26,25 +26,28 @@ const choise = (array) => {
     return array[Math.floor(Math.random() * array.length)]
 }
 
-// const checkerboard = (range) => {
-//     let rArr = rangeArray(range)
-//     let oddArr = shuffle(rArr.filter((e) => e % 2 == 1))
-//     let evenArr = shuffle(rArr.filter((e) => e % 2 == 0))
+const checkerboard = (range) => {
+    let AllArr = extractWhiteBlack(rangeArray(range))
 
-//     const merge = (arr1, arr2) => {
-//         let returned = []
-//         let arrs = [arr1, arr2]
-//         let pointer = 0
-//         let mergeN = arr1.length + arr2.length
-//         for (let i = 0; i < mergeN; i++) {
-//             returned.push(arrs[pointer].pop())
-//             pointer = (pointer + 1) % 2
-//         }
-//         return returned
-//     }
-//     let returned = merge(oddArr, evenArr)
-//     console.log(returned)
-//     return returned
+    
+    let whiteArr = shuffle(AllArr[0])
+    let blackArr = shuffle(AllArr[1])
 
-// }
-export { randRange, randInt, rangeRandomArray, choise, rangeArray }
+    return [...whiteArr,...blackArr]
+
+   
+    
+
+}
+
+const extractWhiteBlack = (arr) =>{
+    let whiteBlackArrs = [[],[]]
+    let pointer = 0
+    for(let i =0;i<arr.length;i++){
+        whiteBlackArrs[pointer].push(arr[i])
+        pointer = (pointer+1)%2
+    }
+    return whiteBlackArrs
+
+}
+export { randRange, randInt, rangeRandomArray, choise, rangeArray,checkerboard }

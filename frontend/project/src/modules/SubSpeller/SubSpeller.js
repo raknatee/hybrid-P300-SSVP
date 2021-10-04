@@ -3,7 +3,7 @@ import { getSizeW, getSizeH } from "@/modules/renderer/Sizing.js"
 import { GridHelper } from "@/modules/renderer/GridHelper.js"
 import { SinWave, getNow } from "@/modules/SinWave.js"
 // eslint-disable-next-line no-unused-vars
-import { randInt, rangeRandomArray } from "@/modules/Random.js"
+import { randInt, rangeRandomArray,checkerboard } from "@/modules/Random.js"
 import { style } from "@/modules/renderer/Style.js"
 import { State } from "./AppState.js"
 
@@ -65,8 +65,8 @@ class SubSpeller {
         // TODO : if we want to have a overlap array, I need to make sure that. 
         // Do not have two alphabets which are close togerther SHOW at the same time
 
-        this.randomIndex = rangeRandomArray(this.alphabets.length)
-        console.log(this.randomIndex)
+        this.randomIndex = checkerboard(this.alphabets.length)
+        
         this.startTime = getNow()
         for (let i = 0; i < this.randomIndex.length; i++) {
 
