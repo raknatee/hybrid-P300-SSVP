@@ -6,6 +6,8 @@
 </template>
 <script>
 import {restAPIGet} from "@/modules/RestAPIHelper/RestAPIHelper.js"
+import {HOST_CONFIG,getSecureProtocol} from "@/modules/HOST.js"
+
 export default {
     data(){
         return {
@@ -15,7 +17,7 @@ export default {
     },
     mounted() {
         this.interval = setInterval(async()=>{
-            let resp = await restAPIGet('http://localhost:8000/check_headset')
+            let resp = await restAPIGet(`http${getSecureProtocol()}://${HOST_CONFIG.ML_SERVER_HOSTNAME}:${HOST_CONFIG.ML_SERVER_PORT}/check_headset`)
             this.status = resp.status
         },1000)
     },

@@ -4,6 +4,7 @@ import time
 import random
 import mongo.collections.eeg as eeg_collection
 import mongo.collections.experiment as experiment_collection
+from mongo.db_info import get_db_info
 from utils.iprint import iprint
 app = FastAPI()
 
@@ -28,12 +29,17 @@ def db_post(json_data:dict):
 def db_get():
     return general_collection.get_data()
 
+
+
+@app.get("/db/{db_name}")
+def db_info(db_name:str):
+    return get_db_info(db_name)
+ 
 @app.post("/eeg_offline/{p_id}")
 def eeg(json_data:dict,p_id:str):
     collection_name = f"{p_id}-EEG-offline-collection"
     eeg_collection.insert_eeg_signals(json_data,collection_name)
- 
-
+    
 @app.websocket("/begin_offline_mode/{p_id}")
 async def begin_offline_mode(ws:WebSocket,p_id:str):
  

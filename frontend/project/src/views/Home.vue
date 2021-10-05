@@ -5,6 +5,8 @@
     <button @click="goOnline" >hybrid-P300-SSVP-Online mode</button>
     <br>
     <button @click="goOffline">hybrid-P300-SSVP-Offline mode</button>
+    <br>
+    <router-link :to="{path:'/dbview'}">Database viewer</router-link>
   </div>
 </template>
 

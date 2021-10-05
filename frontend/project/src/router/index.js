@@ -16,6 +16,13 @@ const routes = [{
         component: () =>
             import ('../views/HYPS-canvas/Home.vue')
     },
+    {
+        path: '/dbview',
+        name: "DBView",
+        component: () =>
+            import("../views/DBView/Home.vue")
+        
+    }
 
 ]
 

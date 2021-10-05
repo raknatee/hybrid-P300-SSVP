@@ -1,6 +1,6 @@
 import os
 import json
-from bson.objectid import ObjectId
+from bson.objectid import ObjectId #type: ignore
 
 folder_name = input("which folder?:")
 from connector import Mongo

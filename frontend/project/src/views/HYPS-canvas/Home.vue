@@ -40,6 +40,7 @@ import { UserText } from "@/modules/SubSpeller/UserText.js";
 // import {choise} from "@/modules/Random.js"
 import { repeat } from "@/modules/ArrayHelper.js";
 import { restAPIPost } from "@/modules/RestAPIHelper/RestAPIHelper.js";
+import {HOST_CONFIG,getSecureProtocol} from "@/modules/HOST.js"
 
 export default {
   data() {
@@ -54,7 +55,7 @@ export default {
       DBConfigStatus: "",
       DBConfig: `
 {
-  "current_participant_id" : "SXX"
+  "current_participant_id" : "AXXSXX"
 }
       `,
 
@@ -109,7 +110,7 @@ export default {
       this.p_id  = config["current_participant_id"]
     
       await restAPIPost(
-        "http://localhost:8000/db",
+        `http${getSecureProtocol()}://${HOST_CONFIG.ML_SERVER_HOSTNAME}:${HOST_CONFIG.ML_SERVER_PORT}/db`,
         {
           current_mode: this.mode,
           current_participant_id: this.p_id,
@@ -156,7 +157,7 @@ export default {
       tick();
     },
     setUpWSOnline() {
-      this.ws = new WebSocket(`ws://localhost:8000/begin_online_mode/${this.p_id}`);
+      this.ws = new WebSocket(`ws${getSecureProtocol()}://${HOST_CONFIG.ML_SERVER_HOSTNAME}:${HOST_CONFIG.ML_SERVER_PORT}/begin_online_mode/${this.p_id}`);
       this.ws.onmessage = async (msg) => {
         msg = getJsonFromWSMessage(msg);
         if (msg["cmd"] == "next") {
@@ -196,7 +197,7 @@ export default {
 
       targets = repeat(targets, ExperimentConfig["repeat"]);
 
-      this.ws = new WebSocket(`ws://localhost:8000/begin_offline_mode/${this.p_id}`);
+      this.ws = new WebSocket(`ws${getSecureProtocol()}://${HOST_CONFIG.ML_SERVER_HOSTNAME}:${HOST_CONFIG.ML_SERVER_PORT}/begin_offline_mode/${this.p_id}`);
       this.ws.onmessage = async (msg) => {
         msg = getJsonFromWSMessage(msg);
 
