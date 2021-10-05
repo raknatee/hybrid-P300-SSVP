@@ -75,6 +75,18 @@ client (EEG client) -> api
 </code>
         <hr>
     </div>
+    <div id="database_viewer">
+        <h1>/db/&lt;DATABASE-NAME&gt; <span class="protocol">HTTP GET</span></h1>
+        <p>Return number of documents in each collection in particular Mongo database</p>
+        <h2>Response body </h2>
+        <code>{
+    &lt;Collection name&gt;: &lt;int&gt;
+    ...
+    &lt;Collection name&gt;: &lt;int&gt;
+}
+</code>
+        <hr>
+    </div>
     <div>
 
         <h1 id="eeg_streaming-api">/eeg_offline/&lt;PARTICIPANT-ID&gt; <br> <span class="protocol">HTTP POST</span></h1>
