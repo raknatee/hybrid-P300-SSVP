@@ -41,6 +41,15 @@
         <li>python Requests (http client) <a href="https://docs.python-requests.org/en/latest/ ">requests</a> </li>
         <!-- <li>python Websocket client <a href="https://websockets.readthedocs.io/en/stable/">link</a> </li> -->
     </ol>
+    <h2>Development Tips</h2>
+    <ul>
+        <li>Package Manager: <a href="https://pipenv.pypa.io/en/latest/">pipenv</a> </li>
+        <li>IDE & Editor: VSCode with Python Extension</li>
+        <ul>
+            <li>I recommened to create a venv using pipenv. After that, we can select the right venv inside VSCode. So, it might be helpful.</li>
+        </ul>
+
+    </ul>
     <hr>
     <h1>Frontend</h1>
     <p>I decided to use Web (actually it is HTML canvas) for GUI. I had tried to use normal HTML DOM (virtual DOM in VueJS) but I found it cannot perform the experiment because this application has a LOT of changing over the time. Forturnately, HTML Canvas
@@ -53,8 +62,24 @@
         <li>VueJS (for router)</li>
         <li><a href="https://www.w3schools.com/html/html5_canvas.asp">HTML Canvas</a> </li>
     </ul>
+    <h2>Development Tips</h2>
+    <ul>
+        <li>Package Manager: Docker</li>
+        <li>IDE & Editor: VSCode with Vue Extension</li>
+    </ul>
     <hr>
     <h1>ML-server</h1>
+    <p>Backend API for managing everything in our Application, based on <a href="https://fastapi.tiangolo.com/">FastAPI</a></p>
+    <h2>Development Tips</h2>
+    <ul>
+        <li>Package Manager: Docker</li>
+        <li>IDE & Editor: VSCode</li>
+        <ul>
+            <li>Let's talk, ML-server is based inside Docker container. So, we want to make VSCode can fully understand our env and system</li>
+            <li>I decided to use VSCode remote to Docker container <a href="https://code.visualstudio.com/docs/remote/containers">Developing inside a Container</a></li>
+            <li>After we get inside container, I decided to install VSCode extenstion (inside container), you might have seen I already created a ml-server--vscode-server volume for this propose.</li>
+        </ul>
+    </ul>
 </body>
 
 </html>
