@@ -58,9 +58,10 @@
 
     <code>{
     _id: ObjectId(),
-    type: "experiment_config"
-    current_mode: "offline" | "online"
-    current_participant_id: &lt;string&gt; # Ex: S01, S02
+    type: "experiment_config",
+    current_mode: "offline" | "online",
+    current_participant_id: &lt;string&gt;, # Ex: A01S01, A01S02
+    eeg_client_status: "connected" | "unconnected"
 }
 </code>
 

@@ -89,15 +89,22 @@ client (EEG client) -> api
     </div>
     <div>
 
-        <h1 id="eeg_streaming-api">/eeg_offline/&lt;PARTICIPANT-ID&gt; <br> <span class="protocol">HTTP POST</span></h1>
+        <h1 id="eeg_streaming-api">/eeg_offline/&lt;PARTICIPANT-ID&gt; <br> <span class="protocol">WS</span></h1>
         <p>For EEG client submits a EEG signal package and save in the database.</p>
         <p>This API needs to set PARTICIPANT-ID from
             <a href="#db_setup-api">
                /db
             </a>
         </p>
-        <h2>Request body</h2>
-        <code>
+        <h2>Flow</h2>
+        <ol>
+            <li>
+                <p>WS connection</p>
+
+
+            </li>
+            <li>Client submits information.</li>
+            <code>client -> api
 {
     "data":[
 
@@ -115,7 +122,20 @@ client (EEG client) -> api
     ]
     
 }
-        </code>
+                        </code>
+            <li>
+                <p>Server acks back</p>
+                <code>client <- api
+1
+</code>
+            </li>
+            <li>
+                <p>repeat step 2</p>
+            </li>
+        </ol>
+
+        <br>
+
         <hr>
 
     </div>
@@ -236,34 +256,12 @@ client -> api
     </div>
     <div>
 
-        <h1 id="eeg_streaming-api">/eeg_online/&lt;PARTICIPANT-ID&gt; <br> <span class="protocol">HTTP POST</span></h1>
-        <p>For EEG client submits a EEG signal package and save in the database.</p>
-        <p>Future Plan: add Timeout Index of Mongo </p>
-        <p>This API needs to set PARTICIPANT-ID from
-            <a href="#db_setup-api">
-               /db
-            </a>
+        <h1 id="eeg_online-api">/eeg_online/&lt;PARTICIPANT-ID&gt; <br> <span class="protocol">WS</span></h1>
+        <p>Same as
+            <a href="#eeg_streaming-api">/eeg_offline</a> but for online mode.
         </p>
-        <h2>Request body</h2>
-        <code>
-{
-    "data":[
+        <p>Future Plan: add Timeout Index of Mongo </p>
 
-        {"timestamp": &lt;timestamp(float of s)&gt;,
-        "data":[&lt;float&gt;,&lt;float&gt;,...,&lt;float&gt;]},
-
-        {"timestamp": &lt;timestamp(float of s)&gt;,
-        "data":[&lt;float&gt;,&lt;float&gt;,...,&lt;float&gt;]},
-
-        ...
-
-        {"timestamp": &lt;timestamp(float of s)&gt;,
-        "data":[&lt;float&gt;,&lt;float&gt;,...,&lt;float&gt;]},
-    
-    ]
-    
-}
-        </code>
         <hr>
 
     </div>
