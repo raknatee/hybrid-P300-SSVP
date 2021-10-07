@@ -15,6 +15,12 @@ pip install pipenv
 pipenv install
 ```
 
+## For Windows User
+
+Please install a device.
+
+VCP driver https://ftdichip.com/drivers/vcp-drivers/
+
 ## Configure
 
 check eeg_client_config.py (if you dont have this file, please run this program and it will create this file for you)
