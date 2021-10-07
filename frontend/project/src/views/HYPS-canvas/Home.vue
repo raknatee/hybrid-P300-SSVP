@@ -20,7 +20,9 @@
 
         </div>
       
-       
+        <p>Before running the experiment please set your EEG headset and run EEG-client. You can check that is it okay or not by click DBViewer </p>
+        <router-link to="/dbview"  target="_blank">Click me for DBViewer </router-link>
+        <br>
         <button @click="fullScreen">click me for fullscreen and run the experiment</button>
         
         <canvas id="canvas"></canvas>

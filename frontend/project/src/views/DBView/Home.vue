@@ -1,5 +1,6 @@
 <template lang="">
     <div>
+        <p>Currently, I havent implemented an auto refrech. Please click this below button by yourself.</p>
         <button @click.prevent="fetchAPI">fetch</button>
         <p v-for="(value,key) in databaseInfo" :key="(value,key)">{{key}} {{value}}</p>
     </div>

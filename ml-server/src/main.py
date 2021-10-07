@@ -18,6 +18,7 @@ app.add_middleware(
 )
 
 import mongo.collections.general as general_collection
+from mongo.collections.general import EEGClientStatus
 general_collection.init_document()
 
 @app.post("/db")
@@ -35,10 +36,20 @@ def db_get():
 def db_info(db_name:str):
     return get_db_info(db_name)
  
-@app.post("/eeg_offline/{p_id}")
-def eeg(json_data:dict,p_id:str):
+@app.websocket("/eeg_offline/{p_id}")
+async def eeg_offline(ws:WebSocket,p_id:str):
     collection_name = f"{p_id}-EEG-offline-collection"
-    eeg_collection.insert_eeg_signals(json_data,collection_name)
+    try:
+        await ws.accept()
+        general_collection.set_eeg_client_status(EEGClientStatus.connected)
+        while True:
+            json_data = await ws.receive_json()
+            eeg_collection.insert_eeg_signals(json_data,collection_name)
+            await ws.send_text("1")
+    finally:
+        general_collection.set_eeg_client_status(EEGClientStatus.unconnected)
+
+
     
 @app.websocket("/begin_offline_mode/{p_id}")
 async def begin_offline_mode(ws:WebSocket,p_id:str):
@@ -75,10 +86,19 @@ possible_result = [
 ]
  
 
-@app.post("/eeg_online/{p_id}")
-def eeg_online(json_data:dict,p_id:str):
+
+@app.websocket("/eeg_online/{p_id}")
+async def eeg_online(ws:WebSocket,p_id:str):
     collection_name = f"{p_id}-EEG-online-collection"
-    eeg_collection.insert_eeg_signals(json_data,collection_name)
+    try:
+        await ws.accept()
+        general_collection.set_eeg_client_status(EEGClientStatus.connected)
+        while True:
+            json_data = await ws.receive_json()
+            eeg_collection.insert_eeg_signals(json_data,collection_name)
+            await ws.send_text("1")
+    finally:
+        general_collection.set_eeg_client_status(EEGClientStatus.unconnected)
 
 
 def ml_predict():
