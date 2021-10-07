@@ -35,10 +35,14 @@ def db_get():
 def db_info(db_name:str):
     return get_db_info(db_name)
  
-@app.post("/eeg_offline/{p_id}")
-def eeg(json_data:dict,p_id:str):
+@app.websocket("/eeg_offline/{p_id}")
+async def eeg(ws:WebSocket,p_id:str):
     collection_name = f"{p_id}-EEG-offline-collection"
-    eeg_collection.insert_eeg_signals(json_data,collection_name)
+    await ws.accept()
+    while True:
+        json_data = await ws.receive_json()
+        eeg_collection.insert_eeg_signals(json_data,collection_name)
+        await ws.send_text("1")
     
 @app.websocket("/begin_offline_mode/{p_id}")
 async def begin_offline_mode(ws:WebSocket,p_id:str):
