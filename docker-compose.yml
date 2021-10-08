@@ -6,8 +6,13 @@ services:
       dockerfile: Dockerfile.py39
     volumes:
       - ./dataset:/home/dataset
+      - ./model:/home/model
       - ./src:/home/src
-
+      - ./.vscode-server:/root/.vscode-server
+    ports:
+      - "8888:8888"
+    env_file:
+        - ex-of-secret.env
     deploy:
       resources:
         reservations:
@@ -15,3 +20,14 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
+
+  mongo:
+        image: mongo:3.6.22-xenial
+        env_file:
+            - ex-of-secret.env
+        ports:
+            - 27017:27017
+        volumes:
+            - mongo_volume:/data/db
+volumes:
+  mongo_volume:
