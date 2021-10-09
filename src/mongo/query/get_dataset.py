@@ -1,3 +1,4 @@
+from typing import Any
 from mne.io.array.array import RawArray #type: ignore
 from numpy.core.numerictypes import cast #type: ignore
 from module.experiment_info import ExperimentInfo, get_thailand_power_line_noise 
@@ -7,7 +8,7 @@ from dataclasses import dataclass
 import mne #type: ignore
 import numpy as np
 from numpy import ndarray
-
+from module.dataset_helper import SupervisedData
 
 @dataclass(init=True)
 class ExperimentDoc:
@@ -58,10 +59,17 @@ def _get_eeg_docs(p_id: str)->list[EEGDoc]:
     ]
 
 
-@dataclass(init=False)
-class P300Data:
+
+class P300Data(SupervisedData):
     target: bool
     eeg: ndarray
+    def get_x(self) -> Any:
+        return self.eeg
+    def get_y(self) -> Any:
+        return self.target
+
+    def __str__(self) -> str:
+        return f"{self.target},{self.eeg}"
 
 def get_p300_dataset_by_p_id(
         p_id: str, experiment_info: ExperimentInfo,do_pad:bool=True,output_size:int=128) -> list[P300Data]:
@@ -70,7 +78,7 @@ def get_p300_dataset_by_p_id(
     experiment_docs = _get_p300_experiment_docs(p_id)
     eeg_docs = _get_eeg_docs(p_id)
 
-    dataset = []
+    dataset:list[P300Data] = []
     experiment_doc:ExperimentDoc
     for experiment_doc in experiment_docs:
         eeg_round = get_eeg_in_round(experiment_doc.min,experiment_doc.max+experiment_info.p300_interval.end_time,eeg_docs,experiment_info)
