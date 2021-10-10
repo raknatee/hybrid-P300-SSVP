@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document & Daily</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../global-style.css">
+    <style>
+        .grid_2_col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1 class="big-head">Series 001</h1>
+    <h1>P300 Part</h1>
+    <h2>2021-10-10</h2>
+    <ul>
+        <li>
+            <p>
+                dataset :
+                <a href="../index.html#data-collection-attempt-1">Attempt1</a> , with all channels
+            </p>
+        </li>
+        <li>
+            <p>hyper-params</p>
+        </li>
+        <ul>
+            <li>
+                <p>LEARNING_RATE = 1e-3 </p>
+            </li>
+            <li>
+                <p>
+                    L2_RATE = 1e-6
+                </p>
+            </li>
+            <li>
+                <p>
+                    EPOCH = 10000
+                </p>
+            </li>
+        </ul>
+        <li>
+            <p>data processing</p>
+            <ul>
+                <li>
+                    <p>Notch and bypass</p>
+                </li>
+                <li>
+                    <p>balances class => finally, I got 18 sets for target and 18 sets non-target data.</p>
+                </li>
+                <li>
+                    <p>doesnt split the data for train and test</p>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <p>model = CNN_1D_FC( [EEG_CHANNEL,512,256,128], [1792,512,128] )</p>
+
+        </li>
+    </ul>
+
+
+    <div class="grid_2_col">
+        <div>
+            <h3>
+                sample output A01S01
+            </h3>
+            <pre>
+[0, 1, 0, 1, 1, 1]
+[0, 0, 0, 0, 0, 0]
+0.3333333333333333
+
+[0, 1, 0, 1, 1, 1]
+[1, 1, 1, 1, 1, 1]
+0.6666666666666666
+
+[0, 1, 0, 1, 1, 1]
+[1, 1, 1, 1, 1, 1]
+0.6666666666666666
+
+[0, 1, 0, 1, 1, 1]
+[1, 1, 1, 1, 1, 1]
+0.6666666666666666
+
+[0, 1, 0, 1, 1, 1]
+[0, 0, 0, 0, 0, 0]
+0.3333333333333333      
+        </pre>
+
+        </div>
+
+        <div>
+
+            <h3>
+                sample output A01S02
+            </h3>
+            <pre>
+[0, 1, 0, 1, 1, 1]
+[0, 1, 0, 0, 1, 1]
+0.8333333333333334
+
+[0, 1, 0, 1, 1, 1]
+[0, 0, 1, 1, 1, 1]
+0.6666666666666666
+
+[0, 1, 0, 1, 1, 1]
+[1, 1, 1, 1, 1, 1]
+0.6666666666666666
+
+[0, 1, 0, 1, 1, 1]
+[1, 1, 1, 1, 1, 1]
+0.6666666666666666
+
+[0, 1, 0, 1, 1, 1]
+[1, 1, 1, 1, 1, 1]
+0.6666666666666666
+    </pre>
+        </div>
+        <div>
+
+
+            <h3>
+                sample output A01S03
+            </h3>
+            <pre>
+[0, 1, 0, 1, 1, 1] 
+[0, 0, 0, 0, 0, 0] 
+0.3333333333333333 
+
+[0, 1, 0, 1, 1, 1] 
+[0, 1, 0, 1, 1, 1] 
+1.0 
+
+[0, 1, 0, 1, 1, 1] 
+[0, 1, 0, 1, 1, 1] 
+1.0 
+
+[0, 1, 0, 1, 1, 1] 
+[0, 1, 0, 1, 1, 1] 
+1.0 
+
+[0, 1, 0, 1, 1, 1] 
+[0, 1, 0, 1, 1, 1] 
+1.0
+    </pre>
+        </div>
+    </div>
+
+
+</body>
