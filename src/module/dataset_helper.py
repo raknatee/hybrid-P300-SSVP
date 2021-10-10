@@ -2,6 +2,9 @@ from __future__ import annotations
 from typing import Any, TypeVar,Generic
 from abc import ABCMeta,abstractmethod
 import random
+
+from torch import Tensor
+
 T = TypeVar('T')
 
 class SupervisedData(metaclass=ABCMeta):
@@ -61,3 +64,18 @@ def train_test_splitter(data:list[SupervisedData],train_size:float,shuffle=True)
     random.shuffle(data)
     mid = int(len(data)*train_size)
     return (data[:mid],data[mid:])
+
+
+def to_one_hot(y:Tensor)->list[int]:
+    return (list(map(int,(y>.5).flatten().tolist())))
+
+def acc(y_true:list[int],y_hat:list[int])->float:
+    assert len(y_true) == len(y_hat)
+    correct:int = 0
+
+    for i in range(len(y_true)):
+        if(y_true[i] == y_hat[i]):
+            correct +=1
+  
+    return correct/len(y_true)
+    

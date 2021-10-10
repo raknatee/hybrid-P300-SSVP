@@ -9,6 +9,7 @@ class CNN_1D_FC(Module):
 
         cnn_params:list[Module] = []
         for i in range(len(cnn_layers)-1):
+         
             cnn_params.append(
                 Conv1d(cnn_layers[i],cnn_layers[i+1],kernel_size=3)
             )

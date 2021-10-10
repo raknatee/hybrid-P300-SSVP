@@ -87,15 +87,21 @@ def get_p300_dataset_by_p_id(
 
         # I prefer to use this format (n,channel)
         eeg_numpy = eeg_numpy.T
-    
+        eeg_time_point:ndarray = eeg_mne.times
+
+        
      
-        r = len(eeg_numpy)/eeg_mne.times[-1]
+      
         for i,target in enumerate(experiment_doc.data) :
             this_p300 = P300Data()
             this_p300.target = target
 
-            start_time = i*experiment_info.p300_experiment_config.spawn + experiment_info.p300_interval.after_p300_started
-            this_p300.eeg = eeg_numpy[int(start_time*r):int( (start_time+experiment_info.p300_interval.end_time)*r )]
+            start_time = (i*experiment_info.p300_experiment_config.spawn) + experiment_info.p300_interval.after_p300_started
+
+            index_this_time = (eeg_time_point[:] >= start_time) & (eeg_time_point[:]<= start_time+experiment_info.p300_interval.end_time)
+
+        
+            this_p300.eeg = eeg_numpy[index_this_time]
 
             if do_pad:
                 current_size:int = this_p300.eeg.shape[0]

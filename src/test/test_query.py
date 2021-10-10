@@ -18,6 +18,7 @@ def test_get_p300_dataset_torch():
     assert len(data) == 138
     
 
+
     ori_data  = DataExtractor(get_p300_dataset_by_p_id("A01S01",ATTEMPT1))
     data2 = ori_data._split_class()
     assert len(data2['True']) + len(data2['False']) == 138
