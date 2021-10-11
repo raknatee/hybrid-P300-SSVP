@@ -1,49 +1,43 @@
 from __future__ import annotations
-from typing import Any, TypeVar,Generic
-from abc import ABCMeta,abstractmethod
+from typing import Any
 import random
 
-from torch import Tensor
 
-T = TypeVar('T')
 
-class SupervisedData(metaclass=ABCMeta):
-    @abstractmethod
-    def get_y(self)->Any:
-        pass
+from mongo.query.get_dataset import P300Data
 
-    @abstractmethod
-    def get_x(self)->Any:
-        pass
 
-class DataExtractor:
-    data:list[SupervisedData]
-    filtered_data:list[SupervisedData]
-    def __init__(self,data:list[SupervisedData]) -> None:
+
+
+
+class P300DataFilter:
+    data:list[P300Data]
+    filtered_data:list[P300Data]
+    def __init__(self,data:list[P300Data]) -> None:
         super().__init__()
         self.data = data
         self.filtered_data = []
 
-    def random_seed(self,seed:int)->DataExtractor:
+    def random_seed(self,seed:int)->P300DataFilter:
         random.seed(seed)
         return self
 
 
-    def _split_class(self)->dict[str,list[SupervisedData]]:
-        count_dict:dict[str,list[SupervisedData]] = {}
+    def _split_class(self)->dict[str,list[P300Data]]:
+        count_dict:dict[str,list[P300Data]] = {}
         for each_data in self.data:
             
-            if(str(each_data.get_y()) not in count_dict):
-                count_dict[str(each_data.get_y())] = []
+            if(str(each_data.target) not in count_dict):
+                count_dict[str(each_data.target)] = []
                 
-            count_dict[str(each_data.get_y())].append(each_data)
+            count_dict[str(each_data.target)].append(each_data)
             
 
         return count_dict
 
     
      
-    def balance_class(self)->DataExtractor:
+    def balance_class(self)->P300DataFilter:
         count_dict = self._split_class()
         min_number = min([len(count_dict[data]) for data in count_dict])
         for clazz in count_dict:
@@ -54,28 +48,25 @@ class DataExtractor:
         
         return self
 
-    def shuffle(self)->DataExtractor:
+    def filtering_eeg_channel(self,selected_channel:list[int])->P300DataFilter:
+       
+        for each_data in self.filtered_data:
+            each_data.eeg = each_data.eeg[:,selected_channel]
+           
+        return self
+
+    def shuffle(self)->P300DataFilter:
         random.shuffle(self.filtered_data)
         return self
-    def done(self)->list[SupervisedData]:
-        return self.filtered_data
+    def done(self)->list[P300Data]:
+        if(len(self.filtered_data)!=0):
+            return self.filtered_data
+        return self.data
     
-def train_test_splitter(data:list[SupervisedData],train_size:float,shuffle=True)->tuple[list[SupervisedData],list[SupervisedData]]:
-    random.shuffle(data)
+def train_test_splitter(data:list[Any],train_size:float,shuffle=True)->tuple[list[Any],list[Any]]:
+    if shuffle:
+        random.shuffle(data)
     mid = int(len(data)*train_size)
     return (data[:mid],data[mid:])
 
 
-def to_one_hot(y:Tensor)->list[int]:
-    return (list(map(int,(y>.5).flatten().tolist())))
-
-def acc(y_true:list[int],y_hat:list[int])->float:
-    assert len(y_true) == len(y_hat)
-    correct:int = 0
-
-    for i in range(len(y_true)):
-        if(y_true[i] == y_hat[i]):
-            correct +=1
-  
-    return correct/len(y_true)
-    

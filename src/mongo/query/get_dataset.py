@@ -1,14 +1,14 @@
-from typing import Any
+from dataclasses import dataclass
+
+import mne #type: ignore
 from mne.io.array.array import RawArray #type: ignore
-from numpy.core.numerictypes import cast #type: ignore
+import numpy as np
+from numpy import ndarray
+
 from module.experiment_info import ExperimentInfo, get_thailand_power_line_noise 
 from mongo.connector import Mongo
 from mongo.naming import MAIN_DATABASE
-from dataclasses import dataclass
-import mne #type: ignore
-import numpy as np
-from numpy import ndarray
-from module.dataset_helper import SupervisedData
+
 
 @dataclass(init=True)
 class ExperimentDoc:
@@ -16,7 +16,7 @@ class ExperimentDoc:
     min:float
     data:list[bool]
 
-def _get_p300_experiment_docs(p_id: str)->list[ExperimentDoc]:
+def get_experiment_docs(p_id: str)->list[ExperimentDoc]:
     return [
         ExperimentDoc(d['max'],d['min'],d['data']) for d in Mongo.get_instance()[MAIN_DATABASE]
         [f"{p_id}-experiment-offline-collection"].aggregate([{
@@ -52,7 +52,7 @@ class EEGDoc:
     timestamp:float
     data:list[float]
 
-def _get_eeg_docs(p_id: str)->list[EEGDoc]:
+def get_eeg_docs(p_id: str)->list[EEGDoc]:
     return [
         EEGDoc(d['timestamp'],d['data']) for d in Mongo.get_instance()[MAIN_DATABASE]
         [f"{p_id}-EEG-offline-collection"].find({})
@@ -60,23 +60,14 @@ def _get_eeg_docs(p_id: str)->list[EEGDoc]:
 
 
 
-class P300Data(SupervisedData):
+class P300Data:
     target: bool
     eeg: ndarray
-    def get_x(self) -> Any:
-        return self.eeg
-    def get_y(self) -> Any:
-        return self.target
-
+ 
     def __str__(self) -> str:
         return f"{self.target},{self.eeg}"
 
-def get_p300_dataset_by_p_id(
-        p_id: str, experiment_info: ExperimentInfo,do_pad:bool=True,output_size:int=128) -> list[P300Data]:
-
-
-    experiment_docs = _get_p300_experiment_docs(p_id)
-    eeg_docs = _get_eeg_docs(p_id)
+def compose_p300_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDoc], experiment_info: ExperimentInfo,do_pad:bool=True,output_size:int=128) -> list[P300Data]:
 
     dataset:list[P300Data] = []
     experiment_doc:ExperimentDoc
@@ -89,9 +80,7 @@ def get_p300_dataset_by_p_id(
         eeg_numpy = eeg_numpy.T
         eeg_time_point:ndarray = eeg_mne.times
 
-        
-     
-      
+         
         for i,target in enumerate(experiment_doc.data) :
             this_p300 = P300Data()
             this_p300.target = target
@@ -109,11 +98,25 @@ def get_p300_dataset_by_p_id(
 
             dataset.append(this_p300)
           
-
-        
-
-
     return dataset
+
+
+class SSVPData:
+    eeg: ndarray
+
+
+def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDoc],experiment_info:ExperimentInfo)->list[SSVPData]:
+    returned:list[SSVPData] = []
+    for experiment_doc in experiment_docs:
+        this_data:SSVPData = SSVPData()
+        this_data.eeg = np.array([ eeg_doc.data for eeg_doc in eeg_docs if (experiment_doc.min <= eeg_doc.timestamp <= experiment_doc.max)])
+        this_data.eeg = this_data.eeg[:,:len(experiment_info.headset_info.channel_names)]
+        returned.append(this_data)
+
+
+    return returned
+
+
 
 def get_eeg_in_round(time_start:float,time_end:float,all_eeg:list[EEGDoc],experiment_info:ExperimentInfo)->list[list[float]]:
     returned:list[list[float]] = []
