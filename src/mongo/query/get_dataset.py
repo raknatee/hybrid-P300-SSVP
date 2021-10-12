@@ -109,8 +109,10 @@ def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDo
     returned:list[SSVPData] = []
     for experiment_doc in experiment_docs:
         this_data:SSVPData = SSVPData()
-        this_data.eeg = np.array([ eeg_doc.data for eeg_doc in eeg_docs if (experiment_doc.min <= eeg_doc.timestamp <= experiment_doc.max)])
-        this_data.eeg = this_data.eeg[:,:len(experiment_info.headset_info.channel_names)]
+        eeg_temp = [ eeg_doc.data[:len(experiment_info.headset_info.channel_names)] for eeg_doc in eeg_docs if (experiment_doc.min <= eeg_doc.timestamp <= experiment_doc.max)]
+        eeg_temp2:RawArray =  notch_filter(eeg_temp,experiment_info)
+        this_data.eeg = eeg_temp2.get_data().T
+        
         returned.append(this_data)
 
 
