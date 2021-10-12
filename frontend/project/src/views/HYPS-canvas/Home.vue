@@ -40,7 +40,7 @@ import { sleep } from "@/modules/Time.js";
 // import { NextSSVP } from "@/modules/SubSpeller/NextSSVP.js";
 import { UserText } from "@/modules/SubSpeller/UserText.js";
 // import {choise} from "@/modules/Random.js"
-import { repeat } from "@/modules/ArrayHelper.js";
+
 import { restAPIPost } from "@/modules/RestAPIHelper/RestAPIHelper.js";
 import {HOST_CONFIG,getSecureProtocol} from "@/modules/HOST.js"
 
@@ -70,24 +70,40 @@ export default {
       `,
       ExperimentConfigOffline: `
 {
-  "targets":[
+  "cmds":[
     {
-      "target":{"gridIndex":2,"alpIndex":2},
-      "repeat": 3
+      "cmd": "target",
+      "details":{"gridIndex":2,"alpIndex":2},
+      "repeat": 1
     },
     {
-      "target":{ "gridIndex": 10, "alpIndex": 1 },
-      "repeat": 3
+      "cmd": "sleep",
+      "details":{"time":10000},
+      "repeat": 1
     },
     {
-      "target":{ "gridIndex": 11, "alpIndex": 8 },
-      "repeat": 3
+      "cmd": "target",
+      "details":{ "gridIndex": 10, "alpIndex": 1 },
+      "repeat": 1
+    },
+    {
+      "cmd": "sleep",
+      "details":{"time":10000},
+      "repeat": 1
+    },
+    {
+      "cmd": "target",
+      "details":{ "gridIndex": 11, "alpIndex": 8 },
+      "repeat": 1
+    },
+    {
+      "cmd": "sleep",
+      "details":{"time":10000},
+      "repeat": 1
     }
   ],
   "repeat": 2
-}
-      
-      `,
+}`,
     };
   },
 
@@ -184,53 +200,80 @@ export default {
       };
     },
     setUpWSOffline() {
-      let ExperimentConfig = JSON.parse(this.ExperimentConfigOffline);
-      let targets = [];
+      let experimentConfig = JSON.parse(this.ExperimentConfigOffline);
 
-      for (let i = 0; i < ExperimentConfig["targets"].length; i++) {
-        let currentTargetObject = ExperimentConfig["targets"][i];
-        targets.push(
-          ...repeat(
-            [currentTargetObject["target"]],
-            currentTargetObject["repeat"]
-          )
-        );
+      let cmds = []
+      for(let round=0;round<experimentConfig['repeat'];round++){
+        for(let i=0;i<experimentConfig['cmds'].length;i++){
+          for(let j=0;j<experimentConfig['cmds'][i]['repeat'];j++){
+
+          let {cmd,details} = experimentConfig['cmds'][i]
+          cmds = [...cmds,{cmd,details}]
+          }
+        }
+
       }
-
-      targets = repeat(targets, ExperimentConfig["repeat"]);
-
+     
       this.ws = new WebSocket(`ws${getSecureProtocol()}://${HOST_CONFIG.ML_SERVER_HOSTNAME}:${HOST_CONFIG.ML_SERVER_PORT}/begin_offline_mode/${this.p_id}`);
+
       this.ws.onmessage = async (msg) => {
         msg = getJsonFromWSMessage(msg);
 
         if (msg["cmd"] == "next") {
-          if (targets.length <= 0) {
-            this.ws.close();
-            console.log("done the experiment");
-            return;
-          }
-          let target = targets.shift();
+                let currentCMD = cmds.shift()
 
-          let msgExperiment = {
-            target_grid: target.gridIndex,
-            terget_index: target.alpIndex,
-            data: [],
-          };
-          await sleep(1000);
-          this.appState.toTarget(target, msgExperiment);
-          await sleep(1000);
-          this.appState.toZERO();
-          await sleep(1000);
-          this.appState.toFlashingP300();
-          await sleep(3000);
-          this.appState.toZERO();
-          this.appState.doneRound();
-          console.log(msgExperiment);
-          this.ws.send(JSON.stringify(msgExperiment));
+                if(currentCMD['cmd']=="sleep"){
+                      let time= currentCMD["details"]["time"]
+                      console.log(`sleep for ${time}`)
+                      while(time>0){
+                        time = time -1000
+                     
+                        await sleep(1000)
+                        console.log(1)
+                      }
+                      currentCMD = cmds.shift()
+
+                }
+           
+
+                    if(currentCMD['cmd']=="target"){
+
+                      let target = currentCMD['details']
+
+                      let msgExperiment = {
+                      target_grid: target['gridIndex'],
+                      terget_index: target['alpIndex'],
+                      data: [],
+                      };
+                      await sleep(1000);
+                      this.appState.toTarget(target, msgExperiment);
+                      await sleep(1000);
+                      this.appState.toZERO();
+                      await sleep(1000);
+                      this.appState.toFlashingP300();
+                      await sleep(3000);
+                      this.appState.toZERO();
+                      this.appState.doneRound();
+                      console.log(msgExperiment);
+                      this.ws.send(JSON.stringify(msgExperiment));
+                    }
+                   
+
+                }
+                
+
+            }
+
+
+              
+          }   
+         
+         
+          
+          
         }
-      };
-    },
-  },
+    
+
 };
 </script>
 <style lang="scss" scoped>
