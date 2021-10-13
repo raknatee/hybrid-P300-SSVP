@@ -5,7 +5,7 @@ class SinWave {
         this.freq = freq
         this.phare = phare
     }
-    _get_y_t(time:number) {
+    _get_y_t(time:number):number {
         return Math.sin(2 * Math.PI * this.freq * time + this.phare)
     }
     getYNow():number {

@@ -27,11 +27,11 @@ const choise = <T>(array:T[]):T => {
 }
 
 const checkerboard = (range:number):number[] => {
-    let AllArr = extractWhiteBlack(rangeArray(range))
+    const AllArr = extractWhiteBlack(rangeArray(range))
 
     
-    let whiteArr = shuffle(AllArr[0])
-    let blackArr = shuffle(AllArr[1])
+    const whiteArr = shuffle(AllArr[0])
+    const blackArr = shuffle(AllArr[1])
 
     return [...whiteArr,...blackArr]
 
@@ -41,9 +41,9 @@ const checkerboard = (range:number):number[] => {
 }
 
 const extractWhiteBlack = (arr:number[]):number[][] =>{
-    let whiteBlackArrs:number[][] = [[],[]]
-    let pointer:number = 0
-    for(let i:number =0;i<arr.length;i++){
+    const whiteBlackArrs:number[][] = [[],[]]
+    let pointer = 0
+    for(let i =0;i<arr.length;i++){
         whiteBlackArrs[pointer].push(arr[i])
         pointer = (pointer+1)%2
     }

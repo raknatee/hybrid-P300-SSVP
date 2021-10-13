@@ -1,4 +1,5 @@
-const setBG = (_this) => {
+const setBG = (_this:any) => {
+
     _this.ctx.fillStyle = "white";
     _this.ctx.fillRect(0, 0, _this.canvas.width, _this.canvas.height);
 }

@@ -7,6 +7,20 @@ const routes: Array<RouteRecordRaw> = [
     name: "Home",
     component: Home,
   },
+  {
+    path: '/hyps/:mode',
+    name: 'HYPS',
+
+    component: () =>
+        import ('../views/HYPS/Home.vue')
+},
+  {
+    path: '/dbview',
+    name: "DBView",
+    component: () =>
+        import("../views/DBView/Home.vue")
+    
+  }
   // {
   //   path: "/about",
   //   name: "About",
