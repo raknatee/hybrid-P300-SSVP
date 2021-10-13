@@ -3,7 +3,7 @@ const HOST_CONFIG = {
     ML_SERVER_PORT: 8000
 
 }
-const getSecureProtocol = () =>{
+const getSecureProtocol = ():string =>{
     if(location.protocol === "https:"){
         return "s"
     }

@@ -1,20 +1,20 @@
-const randRange = (min, max) => {
+const randRange = (min:number, max:number):number => {
     return Math.random() * (max - min) + min
 }
-const randInt = (min, max) => {
+const randInt = (min:number, max:number):number => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-const rangeArray = (range) => {
+const rangeArray = (range:number):number[] => {
     return [...Array(range).keys()]
 }
 
-const rangeRandomArray = (range) => {
+const rangeRandomArray = (range:number):number[] => {
 
     return shuffle(rangeArray(range))
 
 }
-const shuffle = (array) => {
+const shuffle = <T>(array:T[]):T[] => {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
@@ -22,16 +22,16 @@ const shuffle = (array) => {
     return array
 }
 
-const choise = (array) => {
+const choise = <T>(array:T[]):T => {
     return array[Math.floor(Math.random() * array.length)]
 }
 
-const checkerboard = (range) => {
-    let AllArr = extractWhiteBlack(rangeArray(range))
+const checkerboard = (range:number):number[] => {
+    const AllArr = extractWhiteBlack(rangeArray(range))
 
     
-    let whiteArr = shuffle(AllArr[0])
-    let blackArr = shuffle(AllArr[1])
+    const whiteArr = shuffle(AllArr[0])
+    const blackArr = shuffle(AllArr[1])
 
     return [...whiteArr,...blackArr]
 
@@ -40,8 +40,8 @@ const checkerboard = (range) => {
 
 }
 
-const extractWhiteBlack = (arr) =>{
-    let whiteBlackArrs = [[],[]]
+const extractWhiteBlack = (arr:number[]):number[][] =>{
+    const whiteBlackArrs:number[][] = [[],[]]
     let pointer = 0
     for(let i =0;i<arr.length;i++){
         whiteBlackArrs[pointer].push(arr[i])

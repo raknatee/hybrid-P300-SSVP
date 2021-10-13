@@ -11,24 +11,30 @@ const subSpellerData = [
     null, ['ฦ', 'ฝ', 'ใ'],
     ['7', '8', '9', '4', '5', '6', '1', '2', '3', '0', 'BS']
 ]
-const fp = (freq, phare) => {
-    return {
-        'freq': freq,
-        'phare': phare
-    }
+
+class fp{
+    freq:number
+    phare:number
+
+	constructor(freq:number,phare:number) {
+        this.freq = freq
+        this.phare = phare
+	}
+   
 }
+
 const wavesData = [
-    fp(12.4, 0),
-    fp(12.6, .35),
-    fp(12.8, .7),
-    fp(13, 1.05),
-    fp(13.2, 1.4),
-    fp(13.4, 1.75),
-    fp(13.6, .1),
-    fp(13.8, .45),
+    new fp(12.4, 0),
+    new fp(12.6, .35),
+    new fp(12.8, .7),
+    new fp(13, 1.05),
+    new fp(13.2, 1.4),
+    new fp(13.4, 1.75),
+    new fp(13.6, .1),
+    new fp(13.8, .45),
     null, null,
-    fp(14, .8),
-    fp(14.2, 1.15),
+    new fp(14, .8),
+    new fp(14.2, 1.15),
 ]
 export {
     subSpellerData,

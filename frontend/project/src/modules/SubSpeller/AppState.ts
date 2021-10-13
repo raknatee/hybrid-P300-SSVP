@@ -1,17 +1,35 @@
-import { GridHelper } from "@/modules/renderer/GridHelper.js";
-import { SubSpeller } from "@/modules/SubSpeller/SubSpeller.js";
-import { style } from "@/modules/renderer/Style.js";
-import { getSizeW, getSizeH } from "@/modules/renderer/Sizing.js";
+import { GridHelper } from "@/modules/renderer/GridHelper";
+import { SubSpeller } from "@/modules/SubSpeller/SubSpeller";
+import { style } from "@/modules/renderer/Style";
+import { getSizeW, getSizeH } from "@/modules/renderer/Sizing";
 
-
-const State = {
-    ZERO: 0,
-    FlashingP300: 1,
-    Targeting: 2
+enum State{
+    ZERO,
+    FlashingP300,
+    Targeting
 }
 
+// const State = {
+//     ZERO: 0,
+//     FlashingP300: 1,
+//     Targeting: 2
+// }
+class TargetIndex{
+    gridIndex:number
+    alpIndex:number
+    constructor(gridIndex:number,alpIndex:number){
+        this.gridIndex=gridIndex
+        this.alpIndex=alpIndex
+    }
+}
 class AppState {
-    constructor(vueThis, spawn, ttl) {
+    appState:State
+    vueThis:any
+    subSpellers:SubSpeller[]
+    msgExperiment:any
+    targetIndex:TargetIndex|undefined
+    constructor(vueThis:any, spawn:number, ttl:number) {
+      
         this.appState = State.ZERO
         this.vueThis = vueThis
         this.subSpellers = this.setUpSubSpellers(spawn, ttl)
@@ -22,7 +40,7 @@ class AppState {
         this.msgExperiment = null
 
     }
-    setUpSubSpellers(spawn, ttl) {
+    setUpSubSpellers(spawn:number, ttl:number):SubSpeller[] {
         this.vueThis.ctx.font = `${style.fontSize}px Arial`;
 
         this.vueThis.ctx.fillStyle = "black";
@@ -39,22 +57,22 @@ class AppState {
             if (i == 8 || i == 9) {
                 continue;
             }
-            let coor = gridHelper.getCoordinate(i);
-            let thisSubSpller = new SubSpeller(i, coor.x, coor.y, spawn, ttl)
+            const coor = gridHelper.getCoordinate(i);
+            const thisSubSpller = new SubSpeller(i, coor.x, coor.y, spawn, ttl)
             subSpellers.push(thisSubSpller);
         }
         return subSpellers
     }
-    toZERO() {
+    toZERO():void {
         this.appState = State.ZERO
 
     }
-    doneRound() {
+    doneRound():void {
         this.subSpellers.forEach(subSpeller => {
             subSpeller.reset()
         })
     }
-    toFlashingP300() {
+    toFlashingP300():void {
         this.subSpellers.forEach((e) => {
             e.setStartForP300()
         })
@@ -63,28 +81,28 @@ class AppState {
 
 
     }
-    toTarget(indexs, msgExperiment) {
+    toTarget(targetIndex:TargetIndex, msgExperiment:any):void {
         // indexs => {gridIndex,alpIndex}
         // when the target is showed, msgExperiment is assigned value for ml-server
         this.appState = State.Targeting
-        this.indexs = indexs
+        this.targetIndex = targetIndex
 
-        let targetSubSpeller = this.findSubSpellerByID(this.indexs.gridIndex)
+        const targetSubSpeller = this.findSubSpellerByID(this.targetIndex.gridIndex)!
         targetSubSpeller.setOfflineWatcher(msgExperiment)
 
     }
-    getCurrentState() {
+    getCurrentState():State {
         return this.appState
     }
-    getTargetIndex() {
-        return this.indexs
+    getTargetIndex():TargetIndex|undefined {
+        return this.targetIndex
     }
-    findSubSpellerByID(gridID) {
+    findSubSpellerByID(gridID:number):SubSpeller|undefined {
         return this.subSpellers.find((subSpeller) => subSpeller.gridIndex === gridID)
     }
-    findAlphabetByIndex(gridID, index) {
+    findAlphabetByIndex(gridID:number, index:number) {
         const subSpeller = this.subSpellers.find((subSpeller) => subSpeller.gridIndex === gridID)
-        return subSpeller.alphabets[index]
+        return subSpeller!.alphabets[index]
     }
 
 }

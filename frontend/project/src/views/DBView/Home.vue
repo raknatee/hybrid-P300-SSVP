@@ -1,15 +1,14 @@
 <template lang="">
-    <div>
-        <p>Currently, I havent implemented an auto refrech. Please click this below button by yourself.</p>
+     <p>Currently, I havent implemented an auto refrech. Please click this below button by yourself.</p>
         <button @click.prevent="fetchAPI">fetch</button>
-        <p v-for="(value,key) in databaseInfo" :key="(value,key)">{{key}} {{value}}</p>
-    </div>
+    <p v-for="(value,key) in databaseInfo" :key="(value,key)">{{key}} {{value}}</p>
 </template>
 <script>
+import { restAPIGet } from "@/modules/RestAPIHelper/RestAPIHelper.ts";
+import {HOST_CONFIG,getSecureProtocol} from "@/modules/HOST.ts"
+import { defineComponent } from "vue"
 
-import { restAPIGet } from "@/modules/RestAPIHelper/RestAPIHelper.js";
-import {HOST_CONFIG,getSecureProtocol} from "@/modules/HOST.js"
-export default {
+export default defineComponent({
     data(){
         return{
             databaseInfo:null
@@ -23,8 +22,5 @@ export default {
             this.databaseInfo = data
         }
     },
-}
+})
 </script>
-<style lang="">
-    
-</style>

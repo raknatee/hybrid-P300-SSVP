@@ -28,88 +28,64 @@
         <canvas id="canvas"></canvas>
     </div>
 </template>
-<script>
-import { setBG } from "@/modules/renderer/BasicSetup.js";
-import { getSizeW, getSizeH } from "@/modules/renderer/Sizing.js";
+<script lang="ts">
+import { setBG } from "@/modules/renderer/BasicSetup";
+import { getSizeW, getSizeH } from "@/modules/renderer/Sizing";
 
-import { getJsonFromWSMessage } from "@/modules/RestAPIHelper/WSHelper.js";
-import { getNow } from "@/modules/SinWave.js";
+import { getJsonFromWSMessage } from "@/modules/RestAPIHelper/WSHelper";
+import { getNow } from "@/modules/SinWave";
 
-import { AppState } from "@/modules/SubSpeller/AppState.js";
-import { sleep } from "@/modules/Time.js";
-// import { NextSSVP } from "@/modules/SubSpeller/NextSSVP.js";
-import { UserText } from "@/modules/SubSpeller/UserText.js";
+import { AppState } from "@/modules/SubSpeller/AppState";
+import { sleep } from "@/modules/Time";
+// import { NextSSVP } from "@/modules/SubSpeller/NextSSVP";
+import { UserText } from "@/modules/SubSpeller/UserText";
 // import {choise} from "@/modules/Random.js"
 
-import { restAPIPost } from "@/modules/RestAPIHelper/RestAPIHelper.js";
-import {HOST_CONFIG,getSecureProtocol} from "@/modules/HOST.js"
+import { restAPIPost } from "@/modules/RestAPIHelper/RestAPIHelper";
+import {HOST_CONFIG,getSecureProtocol} from "@/modules/HOST"
+import { defineComponent,ref } from "vue"
+import {experimentConfigDefault,OfflineCommand} from "@/modules/experimentConfig/configs"
 
-export default {
-  data() {
-    return {
-      canvas: null,
-      ctx: null,
-      appState: null,
-      userText: [],
-      ws: null,
-      begin_time: null,
-      p_id: "",
-      DBConfigStatus: "",
-      DBConfig: `
-{
+export default defineComponent({
+  setup() {
+    let canvas:HTMLCanvasElement|undefined
+    let ctx:CanvasRenderingContext2D|undefined
+    let appState:AppState|undefined
+    const userText:string[] = []
+    let ws:WebSocket|undefined
+    let begin_time = 0
+    let p_id = ""
+    let DBConfigStatus = ref("")
+    let DBConfig = `{
   "current_participant_id" : "AXXSXX"
-}
-      `,
-
-      P300Config: `
+}`
+    let P300Config =  `
 {
   "spawn":200,
   "ttl":200
 }
       
-      `,
-      ExperimentConfigOffline: `
-{
-  "cmds":[
-    {
-      "cmd": "target",
-      "details":{"gridIndex":2,"alpIndex":2},
-      "repeat": 1
-    },
-    {
-      "cmd": "sleep",
-      "details":{"time":10000},
-      "repeat": 1
-    },
-    {
-      "cmd": "target",
-      "details":{ "gridIndex": 10, "alpIndex": 1 },
-      "repeat": 1
-    },
-    {
-      "cmd": "sleep",
-      "details":{"time":10000},
-      "repeat": 1
-    },
-    {
-      "cmd": "target",
-      "details":{ "gridIndex": 11, "alpIndex": 8 },
-      "repeat": 1
-    },
-    {
-      "cmd": "sleep",
-      "details":{"time":10000},
-      "repeat": 1
-    }
-  ],
-  "repeat": 2
-}`,
+      `
+    let ExperimentConfigOffline = JSON.stringify(experimentConfigDefault,null, 4)
+    return {
+      canvas,
+      ctx,
+      appState,
+      userText,
+      ws,
+      begin_time,
+      p_id,
+      DBConfigStatus,
+      DBConfig,
+
+      P300Config,
+      ExperimentConfigOffline,
     };
   },
 
   mounted() {
-    this.canvas = document.getElementById("canvas");
-    this.ctx = this.canvas.getContext("2d");
+    this.canvas = document.getElementById("canvas")! as HTMLCanvasElement;
+    this.ctx = this.canvas.getContext("2d")!;
   },
   computed: {
     mode() {
@@ -118,12 +94,13 @@ export default {
   },
   methods: {
     fullScreen() {
-      this.canvas.requestFullscreen();
+      this.canvas!.requestFullscreen();
       setTimeout(() => {
         this.run();
       }, 500);
     },
     async submitDBConfig() {
+      
       let config = JSON.parse(this.DBConfig);
       this.p_id  = config["current_participant_id"]
     
@@ -149,8 +126,9 @@ export default {
       if (this.mode === "offline") {
         this.setUpWSOffline();
       }
-      this.canvas.width = getSizeW(1);
-      this.canvas.height = getSizeH(1);
+
+      this.canvas!.width = getSizeW(1) as number;
+      this.canvas!.height = getSizeH(1) as number;
 
       let P300Config = JSON.parse(this.P300Config);
 
@@ -166,7 +144,7 @@ export default {
         setBG(this);
         UserText.render(this, this.userText.join(","));
         // nextBtn.render(this)
-        this.appState.subSpellers.forEach((subSpeller) => {
+        this.appState!.subSpellers.forEach((subSpeller) => {
           subSpeller.render(this);
         });
 
@@ -176,24 +154,24 @@ export default {
     },
     setUpWSOnline() {
       this.ws = new WebSocket(`ws${getSecureProtocol()}://${HOST_CONFIG.ML_SERVER_HOSTNAME}:${HOST_CONFIG.ML_SERVER_PORT}/begin_online_mode/${this.p_id}`);
-      this.ws.onmessage = async (msg) => {
-        msg = getJsonFromWSMessage(msg);
+      this.ws.onmessage = async (incomingMSG) => {
+        let msg = getJsonFromWSMessage(incomingMSG);
         if (msg["cmd"] == "next") {
           await sleep(1000);
           this.begin_time = getNow();
-          this.appState.toFlashingP300();
+          this.appState!.toFlashingP300();
           await sleep(3000);
-          this.appState.toZERO();
-          this.ws.send(
+          this.appState!.toZERO();
+          this.ws!.send(
             JSON.stringify({
               begin_time: this.begin_time,
             })
           );
         }
         if (msg["cmd"] == "output_model") {
-          let alp = this.appState.findAlphabetByIndex(
-            msg["guessed_grid"],
-            msg["guessed_index"]
+          let alp = this.appState!.findAlphabetByIndex(
+            msg.guessed_grid!,
+            msg.guessed_index!
           );
           this.userText.push(alp);
         }
@@ -202,13 +180,13 @@ export default {
     setUpWSOffline() {
       let experimentConfig = JSON.parse(this.ExperimentConfigOffline);
 
-      let cmds = []
+      let cmds:OfflineCommand[] = []
       for(let round=0;round<experimentConfig['repeat'];round++){
         for(let i=0;i<experimentConfig['cmds'].length;i++){
           for(let j=0;j<experimentConfig['cmds'][i]['repeat'];j++){
 
           let {cmd,details} = experimentConfig['cmds'][i]
-          cmds = [...cmds,{cmd,details}]
+          cmds = [...cmds,new OfflineCommand(cmd,details)]
           }
         }
 
@@ -216,11 +194,11 @@ export default {
      
       this.ws = new WebSocket(`ws${getSecureProtocol()}://${HOST_CONFIG.ML_SERVER_HOSTNAME}:${HOST_CONFIG.ML_SERVER_PORT}/begin_offline_mode/${this.p_id}`);
 
-      this.ws.onmessage = async (msg) => {
-        msg = getJsonFromWSMessage(msg);
+      this.ws.onmessage = async (incomingMSG) => {
+        let msg = getJsonFromWSMessage(incomingMSG);
 
         if (msg["cmd"] == "next") {
-                let currentCMD = cmds.shift()
+                let currentCMD = cmds.shift()!
 
                 if(currentCMD['cmd']=="sleep"){
                       let time= currentCMD["details"]["time"]
@@ -231,7 +209,7 @@ export default {
                         await sleep(1000)
                         console.log(1)
                       }
-                      currentCMD = cmds.shift()
+                      currentCMD = cmds.shift()!
 
                 }
            
@@ -246,16 +224,16 @@ export default {
                       data: [],
                       };
                       await sleep(1000);
-                      this.appState.toTarget(target, msgExperiment);
+                      this.appState!.toTarget(target, msgExperiment);
                       await sleep(1000);
-                      this.appState.toZERO();
+                      this.appState!.toZERO();
                       await sleep(1000);
-                      this.appState.toFlashingP300();
+                      this.appState!.toFlashingP300();
                       await sleep(3000);
-                      this.appState.toZERO();
-                      this.appState.doneRound();
+                      this.appState!.toZERO();
+                      this.appState!.doneRound();
                       console.log(msgExperiment);
-                      this.ws.send(JSON.stringify(msgExperiment));
+                      this.ws!.send(JSON.stringify(msgExperiment));
                     }
                    
 
@@ -274,7 +252,7 @@ export default {
         }
     
 
-};
+});
 </script>
 <style lang="scss" scoped>
 </style>
