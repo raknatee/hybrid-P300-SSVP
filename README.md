@@ -5,7 +5,7 @@ dummy mode is a simulation of ml-server and eeg-client for demonstrate the clien
 
 1. start
 ```bash
-docker-compose -f docker-compose.yml up --build -d
+docker-compose up --build -d
 ```
 
 2. check localhost:8080
@@ -14,5 +14,7 @@ docker-compose -f docker-compose.yml up --build -d
 
 4. shutdown
 ```bash
-docker-compose -f docker-compose.yml down
+docker-compose down
 ```
+
+** For Windows User, If you cannot access the application via Local Network please do Port Forward too (WSL2 Network needs to do it).
