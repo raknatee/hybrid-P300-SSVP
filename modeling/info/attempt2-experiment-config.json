@@ -1,0 +1,100 @@
+{
+
+    "cmds": [{
+            "cmd": "sleep",
+            "details": {
+                "time": 10000
+            },
+            "repeat": 1
+        },
+        {
+            "cmd": "target",
+            "details": {
+                "gridIndex": 6,
+                "alpIndex": 5
+            },
+            "repeat": 5
+        },
+        {
+            "cmd": "target",
+            "details": {
+                "gridIndex": 0,
+                "alpIndex": 4
+            },
+            "repeat": 5
+        },
+        {
+            "cmd": "target",
+            "details": {
+                "gridIndex": 10,
+                "alpIndex": 4
+            },
+            "repeat": 5
+        },
+        {
+            "cmd": "target",
+            "details": {
+                "gridIndex": 10,
+                "alpIndex": 0
+            },
+            "repeat": 5
+        },
+        {
+            "cmd": "target",
+            "details": {
+                "gridIndex": 11,
+                "alpIndex": 8
+            },
+            "repeat": 5
+        },
+        {
+            "cmd": "sleep",
+            "details": {
+                "time": 5000
+            },
+            "repeat": 1
+        },
+        {
+            "cmd": "target",
+            "details": {
+                "gridIndex": 0,
+                "alpIndex": 5
+            },
+            "repeat": 5
+        },
+        {
+            "cmd": "target",
+            "details": {
+                "gridIndex": 1,
+                "alpIndex": 0
+            },
+            "repeat": 5
+        },
+        {
+            "cmd": "target",
+            "details": {
+                "gridIndex": 4,
+                "alpIndex": 6
+            },
+            "repeat": 5
+        },
+        {
+            "cmd": "target",
+            "details": {
+                "gridIndex": 0,
+                "alpIndex": 0
+            },
+            "repeat": 5
+        },
+        {
+            "cmd": "target",
+            "details": {
+                "gridIndex": 7,
+                "alpIndex": 8
+            },
+            "repeat": 5
+        }
+    ],
+    "repeat": 6
+
+}
