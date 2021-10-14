@@ -1,4 +1,3 @@
-from typing import cast
 from mongo.query.get_dataset import SSVPData, compose_p300_dataset,get_eeg_docs,get_experiment_docs,compose_ssvp_dataset
 from mongo.query.get_torch_dataset import P300Dataset 
 from module.experiment_info import ATTEMPT1
