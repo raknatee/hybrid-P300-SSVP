@@ -9,6 +9,7 @@ services:
         volumes: 
             - ./frontend/project:/home/project
             - /home/project/node_modules
+            - ./frontend--vscode-server:/root/.vscode-server
          
         environment: 
             - CHOKIDAR_USEPOLLING=true
