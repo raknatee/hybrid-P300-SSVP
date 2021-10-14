@@ -67,20 +67,20 @@ class SubSpeller {
     setState(appState:AppState):void {
         this.state = appState
     }
-    render(_this:any):void {
+    render(vueThis:any):void {
 
        
-        this.renderFlash(_this)
-        this.renderTarget(_this)
+        this.renderFlash(vueThis)
+        this.renderTarget(vueThis)
 
         let i = 0
         this.alphabets.forEach(element => {
 
             const coord = this.gridHelper.getCoordinate(i)
 
-            _this.ctx.fillStyle = "black";
+            vueThis.ctx.fillStyle = "black";
 
-            _this.ctx.fillText(element, coord.x, coord.y);
+            vueThis.ctx.fillText(element, coord.x, coord.y);
             i++;
         })
     }

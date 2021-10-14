@@ -9,11 +9,6 @@ enum State{
     Targeting
 }
 
-// const State = {
-//     ZERO: 0,
-//     FlashingP300: 1,
-//     Targeting: 2
-// }
 class TargetIndex{
     gridIndex:number
     alpIndex:number

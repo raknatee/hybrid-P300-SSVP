@@ -39,6 +39,7 @@ import { AppState } from "@/modules/SubSpeller/AppState";
 import { sleep } from "@/modules/Time";
 // import { NextSSVP } from "@/modules/SubSpeller/NextSSVP";
 import { UserText } from "@/modules/SubSpeller/UserText";
+import { SysText } from "@/modules/SubSpeller/SysText"
 // import {choise} from "@/modules/Random.js"
 
 import { restAPIPost } from "@/modules/RestAPIHelper/RestAPIHelper";
@@ -51,7 +52,10 @@ export default defineComponent({
     let canvas:HTMLCanvasElement|undefined
     let ctx:CanvasRenderingContext2D|undefined
     let appState:AppState|undefined
-    const userText:string[] = []
+    // const userText:string[] = []
+    // let sysText = ""
+    const userText = ["d","u","m","m","y"]
+    let sysText = "10"
     let ws:WebSocket|undefined
     let begin_time = 0
     let p_id = ""
@@ -72,6 +76,7 @@ export default defineComponent({
       ctx,
       appState,
       userText,
+      sysText,
       ws,
       begin_time,
       p_id,
@@ -143,6 +148,7 @@ export default defineComponent({
       const tick = () => {
         setBG(this);
         UserText.render(this, this.userText.join(","));
+        SysText.render(this,this.sysText)
         // nextBtn.render(this)
         this.appState!.subSpellers.forEach((subSpeller) => {
           subSpeller.render(this);
@@ -204,11 +210,13 @@ export default defineComponent({
                       let time= currentCMD["details"]["time"]
                       console.log(`sleep for ${time}`)
                       while(time>0){
+                        this.sysText = (time/1000).toString()
                         time = time -1000
                      
                         await sleep(1000)
-                        console.log(1)
+                   
                       }
+                        this.sysText = ""
                       currentCMD = cmds.shift()!
 
                 }
