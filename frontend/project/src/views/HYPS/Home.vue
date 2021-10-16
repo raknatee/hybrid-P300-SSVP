@@ -52,10 +52,9 @@ export default defineComponent({
     let canvas:HTMLCanvasElement|undefined
     let ctx:CanvasRenderingContext2D|undefined
     let appState:AppState|undefined
-    // const userText:string[] = []
-    // let sysText = ""
-    const userText = ["d","u","m","m","y"]
-    let sysText = "10"
+    const userText:string[] = []
+    let sysText = ""
+  
     let ws:WebSocket|undefined
     let begin_time = 0
     let p_id = ""
@@ -197,13 +196,15 @@ export default defineComponent({
         }
 
       }
-     
+      
       this.ws = new WebSocket(`ws${getSecureProtocol()}://${HOST_CONFIG.ML_SERVER_HOSTNAME}:${HOST_CONFIG.ML_SERVER_PORT}/begin_offline_mode/${this.p_id}`);
 
       this.ws.onmessage = async (incomingMSG) => {
         let msg = getJsonFromWSMessage(incomingMSG);
 
         if (msg["cmd"] == "next") {
+                this.userText= []
+                this.userText.push(cmds.length.toString())
                 let currentCMD = cmds.shift()!
 
                 if(currentCMD['cmd']=="sleep"){
@@ -216,7 +217,9 @@ export default defineComponent({
                         await sleep(1000)
                    
                       }
-                        this.sysText = ""
+                      this.sysText = ""
+                      this.userText= []
+                      this.userText.push(cmds.length.toString())
                       currentCMD = cmds.shift()!
 
                 }
