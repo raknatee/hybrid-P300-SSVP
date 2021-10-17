@@ -9,6 +9,7 @@ from module.experiment_info import ExperimentInfo, get_thailand_power_line_noise
 from mongo.connector import Mongo
 from mongo.naming import MAIN_DATABASE
 
+from scipy import signal #type:ignore
 
 @dataclass(init=True)
 class ExperimentDoc:
@@ -72,7 +73,7 @@ def compose_p300_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDo
     dataset:list[P300Data] = []
     experiment_doc:ExperimentDoc
     for experiment_doc in experiment_docs:
-        eeg_round = get_eeg_in_round(experiment_doc.min,experiment_doc.max+experiment_info.p300_interval.end_time,eeg_docs,experiment_info)
+        eeg_round = get_eeg_in_round(experiment_doc.min,experiment_doc.max+experiment_info.p300_interval.end_time,eeg_docs,len(experiment_info.headset_info.channel_names))
         eeg_mne = notch_and_bypass_filter(eeg_round,experiment_info)
         eeg_numpy:ndarray = eeg_mne.get_data()
 
@@ -120,11 +121,11 @@ def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDo
 
 
 
-def get_eeg_in_round(time_start:float,time_end:float,all_eeg:list[EEGDoc],experiment_info:ExperimentInfo)->list[list[float]]:
+def get_eeg_in_round(time_start:float,time_end:float,all_eeg:list[EEGDoc],n_eeg_channel:int)->list[list[float]]:
     returned:list[list[float]] = []
     for d in all_eeg:
         if time_start <= d.timestamp <= time_end:
-            returned.append(d.data[:len(experiment_info.headset_info.channel_names)])
+            returned.append(d.data[:n_eeg_channel])
     return returned
 
 
@@ -133,9 +134,11 @@ def notch_and_bypass_filter(eeg_round:list[list[float]],experiment_info:Experime
 
     eeg_mne_arr:RawArray =  mne.io.RawArray(to_mne_format(eeg_round),mne.create_info(experiment_info.headset_info.channel_names,experiment_info.headset_info.sample_rate,ch_types))
         
-    eeg_mne_arr.notch_filter(get_thailand_power_line_noise(experiment_info),filter_length='auto', phase='zero')
     eeg_mne_arr.filter(4,50, method='iir')
+    eeg_mne_arr.notch_filter(get_thailand_power_line_noise(experiment_info),filter_length='auto', phase='zero')
     return eeg_mne_arr
+
+
 
 def to_mne_format(eeg:list[list[float]])->ndarray:
     return np.array(eeg).T * 1e-6

@@ -4,14 +4,14 @@ from torch.nn import BCELoss
 from torch.optim import Adam
 import mne #type:ignore
 from torch.utils.data import Dataset
-
+import torch
 
 from module.dataset_helper import P300DataFilter, train_test_splitter
 from module.eval_helper import acc, to_one_hot 
 from .model import CNN_1D_FC
 from module.experiment_info import ATTEMPT1
 from module.gpu_helper import to_gpu
-from mongo.query.get_torch_dataset import P300Dataset
+from mongo.query.torch_dataset import P300Dataset
 from mongo.query.get_dataset import  compose_p300_dataset, get_eeg_docs, get_experiment_docs
 
 
@@ -19,7 +19,7 @@ from mongo.query.get_dataset import  compose_p300_dataset, get_eeg_docs, get_exp
 EEG_CHANNEL = len(ATTEMPT1.headset_info.channel_names)
 LEARNING_RATE = 1e-3
 L2_RATE  = 1e-6
-EPOCH = 10
+EPOCH = 100
 MOD = EPOCH//5 
 
 def train(p_id:str):
@@ -80,5 +80,4 @@ def train(p_id:str):
     #         print(to_one_hot(y_true))
     #         print(to_one_hot(y_hat))
     #         print(acc(to_one_hot(y_true),to_one_hot(y_hat)))
-    
 
