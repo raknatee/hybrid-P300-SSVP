@@ -27,7 +27,7 @@ ATTEMPT1 = ExperimentInfo(headset_info=HeadsetInfo(230,['O2','OZ','O1','P8','P4'
 )
 
 ATTEMPT2 = ExperimentInfo(headset_info=HeadsetInfo(230,['O2','OZ','O1','P8','P4','P3','P7','FpZ']),
-                            p300_interval=P300TimeInterval(.2,.5),
+                            p300_interval=P300TimeInterval(.25,.3),
                             p300_experiment_config=P300ExperimentConfig(.2,.2)
 )
 

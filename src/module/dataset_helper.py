@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any
+from typing import Any, TypeVar
 import random
 
 
@@ -48,12 +48,7 @@ class P300DataFilter:
         
         return self
 
-    def filtering_eeg_channel(self,selected_channel:list[int])->P300DataFilter:
-       
-        for each_data in self.filtered_data:
-            each_data.eeg = each_data.eeg[:,selected_channel]
-           
-        return self
+   
 
     def shuffle(self)->P300DataFilter:
         random.shuffle(self.filtered_data)
@@ -62,8 +57,9 @@ class P300DataFilter:
         if(len(self.filtered_data)!=0):
             return self.filtered_data
         return self.data
-    
-def train_test_splitter(data:list[Any],train_size:float,shuffle=True)->tuple[list[Any],list[Any]]:
+
+T = TypeVar('T')
+def train_test_splitter(data:list[T],train_size:float,shuffle=True)->tuple[list[T],list[T]]:
     if shuffle:
         random.shuffle(data)
     mid = int(len(data)*train_size)

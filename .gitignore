@@ -1,6 +1,7 @@
 dataset/
 model/
 *.pkl
+*-gitignore*
 
 .vscode-server/
 .vscode/

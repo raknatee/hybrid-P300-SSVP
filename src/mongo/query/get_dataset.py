@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Callable
 
 import mne #type: ignore
 from mne.io.array.array import RawArray #type: ignore
@@ -68,13 +69,13 @@ class P300Data:
     def __str__(self) -> str:
         return f"{self.target},{self.eeg}"
 
-def compose_p300_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDoc], experiment_info: ExperimentInfo,do_pad:bool=True,output_size:int=128) -> list[P300Data]:
+def compose_p300_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDoc], experiment_info: ExperimentInfo,selected_eeg_channels:list[int],do_pad:bool=True,output_size:int=128,eeg_transform_func:Callable[[ndarray],ndarray]=None) -> list[P300Data]:
 
     dataset:list[P300Data] = []
     experiment_doc:ExperimentDoc
     for experiment_doc in experiment_docs:
         eeg_round = get_eeg_in_round(experiment_doc.min,experiment_doc.max+experiment_info.p300_interval.end_time,eeg_docs,len(experiment_info.headset_info.channel_names))
-        eeg_mne = notch_and_bypass_filter(eeg_round,experiment_info)
+        eeg_mne = notch_and_bandpass_filter(eeg_round,experiment_info)
         eeg_numpy:ndarray = eeg_mne.get_data()
 
         # I prefer to use this format (n,channel)
@@ -93,10 +94,13 @@ def compose_p300_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDo
         
             this_p300.eeg = eeg_numpy[index_this_time]
 
+            this_p300.eeg = this_p300.eeg[:,selected_eeg_channels]
             if do_pad:
                 current_size:int = this_p300.eeg.shape[0]
                 this_p300.eeg = np.pad(this_p300.eeg, ((0, output_size-current_size),(0,0)), constant_values=0)
 
+            if eeg_transform_func is not None:
+                this_p300.eeg = eeg_transform_func(this_p300.eeg)
             dataset.append(this_p300)
           
     return dataset
@@ -111,7 +115,7 @@ def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDo
     for experiment_doc in experiment_docs:
         this_data:SSVPData = SSVPData()
         eeg_temp = [ eeg_doc.data[:len(experiment_info.headset_info.channel_names)] for eeg_doc in eeg_docs if (experiment_doc.min <= eeg_doc.timestamp <= experiment_doc.max)]
-        eeg_temp2:RawArray =  notch_and_bypass_filter(eeg_temp,experiment_info)
+        eeg_temp2:RawArray =  notch_and_bandpass_filter(eeg_temp,experiment_info)
         this_data.eeg = eeg_temp2.get_data().T
         
         returned.append(this_data)
@@ -129,13 +133,13 @@ def get_eeg_in_round(time_start:float,time_end:float,all_eeg:list[EEGDoc],n_eeg_
     return returned
 
 
-def notch_and_bypass_filter(eeg_round:list[list[float]],experiment_info:ExperimentInfo)->RawArray:
+def notch_and_bandpass_filter(eeg_round:list[list[float]],experiment_info:ExperimentInfo)->RawArray:
     ch_types = ['eeg'] * (len(experiment_info.headset_info.channel_names) - 1) + ['stim']
 
     eeg_mne_arr:RawArray =  mne.io.RawArray(to_mne_format(eeg_round),mne.create_info(experiment_info.headset_info.channel_names,experiment_info.headset_info.sample_rate,ch_types))
         
-    eeg_mne_arr.filter(4,50, method='iir')
-    eeg_mne_arr.notch_filter(get_thailand_power_line_noise(experiment_info),filter_length='auto', phase='zero')
+    # eeg_mne_arr.notch_filter(get_thailand_power_line_noise(experiment_info),filter_length='auto', phase='zero')
+    eeg_mne_arr.filter(1,20, method='iir')
     return eeg_mne_arr
 
 

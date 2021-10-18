@@ -16,7 +16,7 @@ from mongo.query.get_dataset import  compose_p300_dataset, get_eeg_docs, get_exp
 
 
 
-EEG_CHANNEL = len(ATTEMPT1.headset_info.channel_names)
+EEG_CHANNEL = list(range(len(ATTEMPT1.headset_info.channel_names)))
 LEARNING_RATE = 1e-3
 L2_RATE  = 1e-6
 EPOCH = 100
@@ -30,7 +30,7 @@ def train(p_id:str):
     experiment_docs = get_experiment_docs(p_id)
 
   
-    data_with_data_clearning = P300DataFilter(compose_p300_dataset(eeg_docs,experiment_docs,ATTEMPT1)).random_seed(10).balance_class().done()
+    data_with_data_clearning = P300DataFilter(compose_p300_dataset(eeg_docs,experiment_docs,ATTEMPT1,EEG_CHANNEL)).random_seed(10).balance_class().done()
 
    
  
@@ -41,7 +41,7 @@ def train(p_id:str):
     data_loader:DataLoader = DataLoader(dataset,batch_size=10)
 
     model = CNN_1D_FC(
-        [EEG_CHANNEL,512,256,128],
+        [len(EEG_CHANNEL),512,256,128],
         [1792,512,128]
     )
     to_gpu(model)
