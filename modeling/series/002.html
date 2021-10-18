@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document & Daily</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../global-style.css">
+    <style>
+        .grid_2_col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1 class="big-head">Series 002</h1>
+    <h1>P300 Part</h1>
+    <h2>2021-10-18</h2>
+    <ul>
+        <li>
+            <p>
+                dataset :
+                <a href="../index.html#data-collection-attempt-2">Attempt2</a> , with only 4 channels => 3,4,5,6 => P8, P4, P3, P7
+            </p>
+        </li>
+        <li>
+            <p>hyper-params</p>
+        </li>
+        <ul>
+            <li>
+                <p>- </p>
+            </li>
+
+        </ul>
+        <li>
+            <p>data processing</p>
+            <ul>
+                <li>
+                    <p>Only band pass 1-20Hz</p>
+                </li>
+                <li>
+                    <p>For all channels find the mean</p>
+                    <img src="./img/1-false-all.png" alt="">
+                    <img src="./img/1-false-mean.png" alt="" width="400">
+                    <br>
+                    <img src="./img/2-true-all.png" alt="">
+                    <img src="./img/2-true-mean.png" alt="" width="400">
+
+                </li>
+                <li>
+                    <p>Convert to Image and norm /255</p>
+                </li>
+                <li>
+                    <p>balances class => finally, I got 300 sets for target and 300 sets non-target data.</p>
+                </li>
+
+            </ul>
+        </li>
+        <li>
+            <p>model = -</p>
+
+        </li>
+    </ul>
+
+
+
+</body>
