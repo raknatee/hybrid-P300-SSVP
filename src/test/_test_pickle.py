@@ -10,7 +10,7 @@ def test_load_data():
 
     eeg_docs = get_eeg_docs("A02S01")
     experiment_docs = get_experiment_docs("A02S01")
-    data_with_data_clearning = P300DataFilter(compose_p300_dataset(eeg_docs,experiment_docs,ATTEMPT2,[3,4,5,6],do_pad=False,eeg_transform_func=eeg_to_img)).balance_class().shuffle().done()
+    data_with_data_clearning = P300DataFilter(compose_p300_dataset(eeg_docs,experiment_docs,ATTEMPT2,[3,4,5,6],eeg_transform_func=eeg_to_img)).balance_class().shuffle().done()
 
     with open("used_for_pickle_please_delete_me.pkl","wb") as pkl_file:
         pickle.dump(data_with_data_clearning,pkl_file)

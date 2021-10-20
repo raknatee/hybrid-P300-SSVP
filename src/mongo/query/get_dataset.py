@@ -1,10 +1,11 @@
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, Optional, Sequence, Union
 
 import mne #type: ignore
 from mne.io.array.array import RawArray #type: ignore
 import numpy as np
 from numpy import ndarray
+from numpy.lib.arraysetops import isin
 
 from module.experiment_info import ExperimentInfo, get_thailand_power_line_noise 
 from mongo.connector import Mongo
@@ -18,7 +19,16 @@ class ExperimentDoc:
     min:float
     data:list[bool]
 
-def get_experiment_docs(p_id: str)->list[ExperimentDoc]:
+@dataclass(init=True)
+class ExperimentDocWithTargetGrid:
+    max:float
+    min:float
+    data:list[bool]
+    target_grid:int
+
+
+def get_experiment_docs(p_id: str)->list[ExperimentDoc,]:
+        
     return [
         ExperimentDoc(d['max'],d['min'],d['data']) for d in Mongo.get_instance()[MAIN_DATABASE]
         [f"{p_id}-experiment-offline-collection"].aggregate([{
@@ -49,6 +59,37 @@ def get_experiment_docs(p_id: str)->list[ExperimentDoc]:
         }])
     ]
 
+def get_experiment_docs_with_target_grid(p_id:str)->list[ExperimentDocWithTargetGrid]:
+    return [
+        ExperimentDocWithTargetGrid(d['max'],d['min'],d['data'],d['target_grid']) for d in Mongo.get_instance()[MAIN_DATABASE]
+        [f"{p_id}-experiment-offline-collection"].aggregate([{
+            '$project': {
+                'data': 1,'target_grid':1
+            }
+        }, {
+            '$addFields': {
+                'max': {
+                    '$max': '$data.timestamp'
+                },
+                'min': {
+                    '$min': '$data.timestamp'
+                }
+            }
+        }, {
+            '$project': {
+                'data': {
+                    '$filter': {
+                        'input': '$data.is_target_activated',
+                        'as': 'is_target_activated',
+                        'cond': {}
+                    }
+                },
+                'max': 1,
+                'min': 1,
+                'target_grid':1
+            }
+        }])
+    ]
 @dataclass(init=True)
 class EEGDoc:
     timestamp:float
@@ -69,7 +110,7 @@ class P300Data:
     def __str__(self) -> str:
         return f"{self.target},{self.eeg}"
 
-def compose_p300_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDoc], experiment_info: ExperimentInfo,selected_eeg_channels:list[int],do_pad:bool=True,output_size:int=128,eeg_transform_func:Callable[[ndarray],ndarray]=None) -> list[P300Data]:
+def compose_p300_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDoc], experiment_info: ExperimentInfo,selected_eeg_channels:Optional[list[int]]=None,do_pad:bool=False,output_size:int=128,eeg_transform_func:Optional[Callable[[ndarray],ndarray]]=None) -> list[P300Data]:
 
     dataset:list[P300Data] = []
     experiment_doc:ExperimentDoc
@@ -93,8 +134,8 @@ def compose_p300_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDo
 
         
             this_p300.eeg = eeg_numpy[index_this_time]
-
-            this_p300.eeg = this_p300.eeg[:,selected_eeg_channels]
+            if(selected_eeg_channels is not None):
+                this_p300.eeg = this_p300.eeg[:,selected_eeg_channels]
             if do_pad:
                 current_size:int = this_p300.eeg.shape[0]
                 this_p300.eeg = np.pad(this_p300.eeg, ((0, output_size-current_size),(0,0)), constant_values=0)
@@ -109,14 +150,28 @@ def compose_p300_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDo
 class SSVPData:
     eeg: ndarray
 
+class SSVPDataWithLabel:
+    eeg: ndarray
+    target_grid:int
 
-def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDoc],experiment_info:ExperimentInfo)->list[SSVPData]:
-    returned:list[SSVPData] = []
+def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:Sequence[Union[ExperimentDoc,ExperimentDocWithTargetGrid]],experiment_info:ExperimentInfo,selected_eeg_channels:list[int]=None)->list[Union[SSVPData,SSVPDataWithLabel]]:
+
+    returned:list[Union[SSVPData,SSVPDataWithLabel]] = []
+    
     for experiment_doc in experiment_docs:
-        this_data:SSVPData = SSVPData()
+        this_data:Union[SSVPData,SSVPDataWithLabel]
+        if isinstance(experiment_doc,ExperimentDoc):
+            this_data = SSVPData()
+        if isinstance(experiment_doc,ExperimentDocWithTargetGrid):
+            this_data = SSVPDataWithLabel()
+            this_data.target_grid = experiment_doc.target_grid
+        
         eeg_temp = [ eeg_doc.data[:len(experiment_info.headset_info.channel_names)] for eeg_doc in eeg_docs if (experiment_doc.min <= eeg_doc.timestamp <= experiment_doc.max)]
         eeg_temp2:RawArray =  notch_and_bandpass_filter(eeg_temp,experiment_info)
         this_data.eeg = eeg_temp2.get_data().T
+
+        if selected_eeg_channels is not None:
+            this_data.eeg = this_data.eeg[:,selected_eeg_channels]
         
         returned.append(this_data)
 

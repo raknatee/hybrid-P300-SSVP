@@ -30,7 +30,7 @@ def train(p_id:str):
     experiment_docs = get_experiment_docs(p_id)
 
   
-    data_with_data_clearning = P300DataFilter(compose_p300_dataset(eeg_docs,experiment_docs,ATTEMPT1,EEG_CHANNEL)).random_seed(10).balance_class().done()
+    data_with_data_clearning = P300DataFilter(compose_p300_dataset(eeg_docs,experiment_docs,ATTEMPT1,EEG_CHANNEL,do_pad=True)).random_seed(10).balance_class().done()
 
    
  

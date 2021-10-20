@@ -10,7 +10,7 @@ def test():
 
 
  
-    for data in [compose_p300_dataset(eeg_docs,experiment_docs,ATTEMPT2,do_pad=False,eeg_transform_func=eeg_to_img)]:
+    for data in [compose_p300_dataset(eeg_docs,experiment_docs,ATTEMPT2,eeg_transform_func=eeg_to_img)]:
         for d in data:
             
             assert isinstance(d.target,bool)

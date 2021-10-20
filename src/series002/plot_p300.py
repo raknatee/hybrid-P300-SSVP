@@ -1,8 +1,9 @@
+from typing import cast
 from matplotlib import pyplot as plt #type:ignore
 from PIL import Image #type:ignore
 import numpy as np
 from module.experiment_info import ATTEMPT2
-from mongo.query.get_dataset import compose_p300_dataset, get_eeg_docs, get_experiment_docs
+from mongo.query.get_dataset import ExperimentDoc, compose_p300_dataset, get_eeg_docs, get_experiment_docs
 
 from series002.modules.eeg_to_img import eeg_to_img
 from series002.main import SELECTED_EEG_CHANNELS
@@ -18,7 +19,7 @@ def main(p_id:str):
     experiment_docs = get_experiment_docs(p_id)[:20]
 
 
-    data_ori =  P300DataFilter(compose_p300_dataset(eeg_docs,experiment_docs,ATTEMPT2,SELECTED_EEG_CHANNELS,do_pad=False)).balance_class().done()
+    data_ori =  P300DataFilter(compose_p300_dataset(eeg_docs,experiment_docs,ATTEMPT2,SELECTED_EEG_CHANNELS)).balance_class().done()
    
     index= 0
     for each_ori in data_ori :

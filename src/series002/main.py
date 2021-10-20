@@ -1,3 +1,5 @@
+from operator import index
+from typing import Union, cast
 from torch.utils.data import DataLoader
 from torch import Tensor
 from torch.nn import BCELoss
@@ -8,11 +10,14 @@ import torch
 
 from module.dataset_helper import P300DataFilter, train_test_splitter
 from module.eval_helper import acc, to_one_hot 
+from module import object_saver
 
 from module.experiment_info import ATTEMPT2
 from module.gpu_helper import to_gpu
+from module.ssvp_module import ssvp_freq_info
+from module.ssvp_module.fbcca import predict
 from mongo.query.torch_dataset import P300Dataset
-from mongo.query.get_dataset import  P300Data, compose_p300_dataset, get_eeg_docs, get_experiment_docs
+from mongo.query.get_dataset import  P300Data, SSVPData, SSVPDataWithLabel, compose_p300_dataset, compose_ssvp_dataset, get_eeg_docs, get_experiment_docs, get_experiment_docs_with_target_grid
 
 import pickle
 import os
@@ -30,40 +35,22 @@ MOD = 100
 
 torch.manual_seed(7777)
 random.seed(7777)
+mne.set_log_file("./mne.log",overwrite=True)
 
-def load_data(p_id:str, is_save:bool)->list[P300Data]:
 
-    returned_data:list[P300Data]
-    def load()->list[P300Data]:
-        eeg_docs = get_eeg_docs(p_id)
-        experiment_docs = get_experiment_docs(p_id)
-        returned = P300DataFilter(compose_p300_dataset(eeg_docs,experiment_docs,ATTEMPT2,SELECTED_EEG_CHANNELS,do_pad=False,eeg_transform_func=eeg_to_img)).balance_class().shuffle().done()
-        return returned
+def load_data(p_id:str)->list[P300Data]:
+    eeg_docs = get_eeg_docs(p_id)
+    experiment_docs = get_experiment_docs(p_id)
+    returned = P300DataFilter(compose_p300_dataset(eeg_docs,experiment_docs,ATTEMPT2,SELECTED_EEG_CHANNELS,eeg_transform_func=eeg_to_img)).balance_class().shuffle().done()
+    return returned
 
-    if is_save:
-        file_name = f"dataset-{p_id}.pkl"
-        if not os.path.exists(file_name):
-
-    
-            data_with_data_clearning = load()
-            with open(file_name,"wb") as pkl_file:
-                pickle.dump(data_with_data_clearning,pkl_file)
-        
-        data_from_pkl:list[P300Data]
-        with open(file_name,"rb") as pkl_file:
-            data_from_pkl = pickle.load(pkl_file)
-        returned_data = data_from_pkl
-    else:
-        returned_data = load()
    
-    return returned_data
 def train(p_id:str):
-    mne.set_log_file("./mne.log",overwrite=True)
   
 
 
   
-    data_with_data_clearning = load_data(p_id,is_save=True)
+    data_with_data_clearning =  object_saver.load(lambda: load_data(p_id),f"./cache/{p_id}-P300.pkl")
 
  
     training_set,test_set = train_test_splitter(data_with_data_clearning,train_size=.7)
@@ -127,3 +114,24 @@ def train(p_id:str):
                     print(f"{acc(to_one_hot(y_val_true),to_one_hot(y_val_hat))} y_val_hat:{to_one_hot(y_val_hat)}")
                
 
+def ssvp(p_id:str):
+    def load()->list[Union[SSVPData,SSVPDataWithLabel]]:
+    
+        eeg_docs = get_eeg_docs(p_id)
+        experiment_docs = get_experiment_docs_with_target_grid(p_id)
+        return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT2,[*[0,1,2]])
+        # return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT2,[*[0,1,2],*[3,4,5,6]])
+
+    list_ssvp = object_saver.load(load,f"./cache/{p_id}-ssvp.pkl")
+
+    count_correct = 0
+    for ssvp in list_ssvp:
+        if( isinstance(ssvp,SSVPDataWithLabel) ): # For mypy
+            result = predict(ssvp.eeg,ATTEMPT2)
+            y_true = ssvp_freq_info.wave_data[ssvp.target_grid] 
+            y_hat = result
+            print(f"{y_true=},{y_hat=}")
+            if(y_true ==  y_hat ):
+                count_correct+=1
+
+    print(f"acc: {count_correct/len(list_ssvp)}")
