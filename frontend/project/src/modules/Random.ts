@@ -33,7 +33,13 @@ const checkerboard = (range:number):number[] => {
     const whiteArr = shuffle(AllArr[0])
     const blackArr = shuffle(AllArr[1])
 
-    return [...whiteArr,...blackArr]
+    if(Math.random()>0.5){
+        return [...whiteArr,...blackArr]
+    }else{
+        return [...blackArr,...whiteArr]
+
+    }
+
 
    
     

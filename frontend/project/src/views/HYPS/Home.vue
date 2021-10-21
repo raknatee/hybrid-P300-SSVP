@@ -10,6 +10,9 @@
 
         <hr>
         <h1>Step 2</h1>
+        <p>Config the Experiment. PS. I provided the template please click below</p>
+        <button @click="applyFullHYPS" >Full Offline HYPS</button>
+        <button @click="applyOnlySSVP" >Only SSVP</button>
         <h1>P300 Config</h1>
         <textarea v-model="P300Config" rows="7" cols="50"></textarea>
         <br>
@@ -47,6 +50,7 @@ import {HOST_CONFIG,getSecureProtocol} from "@/modules/HOST"
 import { defineComponent,ref } from "vue"
 import {experimentConfigDefault,RuntimeCommand} from "./experimentConfig/configs"
 import {HYPSCommands,DBConfig, CommandType, SleepDetails, TargetDetails} from "./experimentConfig/ConfigType"
+import {ssvpConfig} from "./experimentConfig/SSVPConfig/experimentDefault"
 export default defineComponent({
   setup() {
     let canvas:HTMLCanvasElement|undefined
@@ -59,17 +63,17 @@ export default defineComponent({
     let begin_time = 0
     let p_id = ""
     let DBConfigStatus = ref("")
-    let DBConfig = `{
-  "current_participant_id" : "AXXSXX"
-}`
-    let P300Config =  `
-{
-  "spawn":200,
-  "ttl":200
-}
-      
-      `
-    let ExperimentConfigOffline = JSON.stringify(experimentConfigDefault,null, 4)
+    let DBConfig = JSON.stringify({"current_participant_id" : "AXXSXX"},null,4)
+    let P300Config = ref("")
+    let ExperimentConfigOffline = ref("")
+    const applyFullHYPS = () =>{
+      ExperimentConfigOffline.value = JSON.stringify(experimentConfigDefault,null, 4)
+      P300Config.value = JSON.stringify({"spawn":200,"ttl":200},null,4)
+    }
+    const applyOnlySSVP = () =>{
+      ExperimentConfigOffline.value = JSON.stringify(ssvpConfig,null, 4)
+      P300Config.value = JSON.stringify({"spawn":0,"ttl":800},null,4)
+    }
     return {
       canvas,
       ctx,
@@ -84,6 +88,8 @@ export default defineComponent({
 
       P300Config,
       ExperimentConfigOffline,
+      applyFullHYPS,
+      applyOnlySSVP
     };
   },
 
