@@ -14,6 +14,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
         import ('../views/HYPS/Home.vue')
 },
+
   {
     path: '/dbview',
     name: "DBView",

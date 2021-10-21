@@ -1,12 +1,9 @@
-import {choise,randInt} from "@/modules/Random"
-enum CommandType{
-    target="target" ,
-    sleep = "sleep"
-}
-class OfflineCommand{
+import {SleepDetails,TargetDetails,HYPSCommands,CommandType} from "./ConfigType"
+
+class RuntimeCommand{
     cmd:CommandType
-    details:any
-    constructor(cmd:string,details:any){
+    details:SleepDetails|TargetDetails
+    constructor(cmd:string,details:SleepDetails|TargetDetails){
         switch(cmd){
             case CommandType.target:
                 this.cmd = CommandType.target
@@ -25,18 +22,18 @@ class OfflineCommand{
     }
 }
 
-const experimentConfigDefault:any = {
+const experimentConfigDefault:HYPSCommands = {
     
         "cmds": [
             {
-                "cmd": "sleep",
+                "cmd": CommandType.sleep,
                 "details": {
                     "time": 10000
                 },
                 "repeat": 1
             },
             {
-                "cmd": "target",
+                "cmd": CommandType.target,
                 "details": {
                     "gridIndex": 6,
                     "alpIndex": 5
@@ -44,7 +41,7 @@ const experimentConfigDefault:any = {
                 "repeat": 5
             },
             {
-                "cmd": "target",
+                "cmd": CommandType.target,
                 "details": {
                     "gridIndex": 0,
                     "alpIndex": 4
@@ -52,7 +49,7 @@ const experimentConfigDefault:any = {
                 "repeat": 5
             },
             {
-                "cmd": "target",
+                "cmd": CommandType.target,
                 "details": {
                     "gridIndex": 10,
                     "alpIndex": 4
@@ -60,7 +57,7 @@ const experimentConfigDefault:any = {
                 "repeat": 5
             },
             {
-                "cmd": "target",
+                "cmd": CommandType.target,
                 "details": {
                     "gridIndex": 10,
                     "alpIndex": 0
@@ -68,7 +65,7 @@ const experimentConfigDefault:any = {
                 "repeat": 5
             },
             {
-                "cmd": "target",
+                "cmd": CommandType.target,
                 "details": {
                     "gridIndex": 11,
                     "alpIndex": 8
@@ -76,14 +73,14 @@ const experimentConfigDefault:any = {
                 "repeat": 5
             },
             {
-                "cmd": "sleep",
+                "cmd": CommandType.sleep,
                 "details": {
                     "time": 5000
                 },
                 "repeat": 1
             },
             {
-                "cmd": "target",
+                "cmd": CommandType.target,
                 "details": {
                     "gridIndex": 0,
                     "alpIndex": 5
@@ -91,7 +88,7 @@ const experimentConfigDefault:any = {
                 "repeat": 5
             },
             {
-                "cmd": "target",
+                "cmd": CommandType.target,
                 "details": {
                     "gridIndex": 1,
                     "alpIndex": 0
@@ -99,7 +96,7 @@ const experimentConfigDefault:any = {
                 "repeat": 5
             },
             {
-                "cmd": "target",
+                "cmd": CommandType.target,
                 "details": {
                     "gridIndex": 4,
                     "alpIndex": 6
@@ -107,7 +104,7 @@ const experimentConfigDefault:any = {
                 "repeat": 5
             },
             {
-                "cmd": "target",
+                "cmd": CommandType.target,
                 "details": {
                     "gridIndex": 0,
                     "alpIndex": 0
@@ -115,7 +112,7 @@ const experimentConfigDefault:any = {
                 "repeat": 5
             },
             {
-                "cmd": "target",
+                "cmd": CommandType.target,
                 "details": {
                     "gridIndex": 7,
                     "alpIndex": 8
@@ -129,7 +126,7 @@ const experimentConfigDefault:any = {
 // for(let i=0;i<10;i++){
 //     experimentConfigDefault.cmds.push(
 //         {
-//             "cmd": "target",
+//             "cmd": CommandType.target,
 //             "details": { "gridIndex": choise([0,1,2,3,4,5,6,7,10,11]), "alpIndex": randInt(0,8) },
 //             "repeat": 5
 //         }
@@ -137,4 +134,4 @@ const experimentConfigDefault:any = {
 //     )
 // }
 
-export { experimentConfigDefault,OfflineCommand }
+export { experimentConfigDefault,RuntimeCommand }

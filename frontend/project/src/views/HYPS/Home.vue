@@ -45,8 +45,8 @@ import { SysText } from "@/modules/SubSpeller/SysText"
 import { restAPIPost } from "@/modules/RestAPIHelper/RestAPIHelper";
 import {HOST_CONFIG,getSecureProtocol} from "@/modules/HOST"
 import { defineComponent,ref } from "vue"
-import {experimentConfigDefault,OfflineCommand} from "@/modules/experimentConfig/configs"
-
+import {experimentConfigDefault,RuntimeCommand} from "./experimentConfig/configs"
+import {HYPSCommands,DBConfig, CommandType, SleepDetails, TargetDetails} from "./experimentConfig/ConfigType"
 export default defineComponent({
   setup() {
     let canvas:HTMLCanvasElement|undefined
@@ -102,10 +102,10 @@ export default defineComponent({
       setTimeout(() => {
         this.run();
       }, 500);
-    },
+},
     async submitDBConfig() {
       
-      let config = JSON.parse(this.DBConfig);
+      let config = JSON.parse(this.DBConfig) as DBConfig;
       this.p_id  = config["current_participant_id"]
     
       await restAPIPost(
@@ -183,15 +183,15 @@ export default defineComponent({
       };
     },
     setUpWSOffline() {
-      let experimentConfig = JSON.parse(this.ExperimentConfigOffline);
+      let experimentConfig = JSON.parse(this.ExperimentConfigOffline) as HYPSCommands;
 
-      let cmds:OfflineCommand[] = []
+      let cmds:RuntimeCommand[] = []
       for(let round=0;round<experimentConfig['repeat'];round++){
         for(let i=0;i<experimentConfig['cmds'].length;i++){
           for(let j=0;j<experimentConfig['cmds'][i]['repeat'];j++){
 
           let {cmd,details} = experimentConfig['cmds'][i]
-          cmds = [...cmds,new OfflineCommand(cmd,details)]
+          cmds = [...cmds,new RuntimeCommand(cmd,details)]
           }
         }
 
@@ -207,8 +207,10 @@ export default defineComponent({
                 this.userText.push(cmds.length.toString())
                 let currentCMD = cmds.shift()!
 
-                if(currentCMD['cmd']=="sleep"){
-                      let time= currentCMD["details"]["time"]
+                if(currentCMD['cmd'] === CommandType.sleep){
+
+                      let details = currentCMD["details"] as SleepDetails
+                      let time= details["time"]
                       console.log(`sleep for ${time}`)
                       while(time>0){
                         this.sysText = (time/1000).toString()
@@ -225,9 +227,9 @@ export default defineComponent({
                 }
            
 
-                    if(currentCMD['cmd']=="target"){
+                    if(currentCMD['cmd'] === CommandType.target){
 
-                      let target = currentCMD['details']
+                      let target = currentCMD['details'] as TargetDetails
 
                       let msgExperiment = {
                       target_grid: target['gridIndex'],
