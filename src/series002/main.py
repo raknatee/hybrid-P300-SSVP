@@ -19,8 +19,7 @@ from module.ssvp_module.fbcca import predict
 from mongo.query.torch_dataset import P300Dataset
 from mongo.query.get_dataset import  P300Data, SSVPData, SSVPDataWithLabel, compose_p300_dataset, compose_ssvp_dataset, get_eeg_docs, get_experiment_docs, get_experiment_docs_with_target_grid
 
-import pickle
-import os
+
 import random
 
 from series002.modules.eeg_to_img import eeg_to_img
@@ -35,7 +34,7 @@ MOD = 100
 
 torch.manual_seed(7777)
 random.seed(7777)
-mne.set_log_file("./mne.log",overwrite=True)
+mne.set_log_file("./logs/mne.log",overwrite=True)
 
 
 def load_data(p_id:str)->list[P300Data]:
@@ -49,8 +48,7 @@ def train(p_id:str):
   
 
 
-  
-    data_with_data_clearning =  object_saver.load(lambda: load_data(p_id),f"./cache/{p_id}-P300.pkl")
+    data_with_data_clearning =  object_saver.disk_cache(lambda: load_data(p_id),f"{p_id}-P300.pkl")
 
  
     training_set,test_set = train_test_splitter(data_with_data_clearning,train_size=.7)
@@ -122,7 +120,7 @@ def ssvp(p_id:str):
         return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT2,[*[0,1,2]])
         # return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT2,[*[0,1,2],*[3,4,5,6]])
 
-    list_ssvp = object_saver.load(load,f"./cache/{p_id}-ssvp.pkl")
+    list_ssvp = object_saver.disk_cache(load,f"{p_id}-ssvp.pkl")
 
     count_correct = 0
     for ssvp in list_ssvp:

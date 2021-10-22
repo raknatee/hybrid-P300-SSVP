@@ -113,9 +113,13 @@ class P300Data:
 def compose_p300_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDoc], experiment_info: ExperimentInfo,selected_eeg_channels:Optional[list[int]]=None,do_pad:bool=False,output_size:int=128,eeg_transform_func:Optional[Callable[[ndarray],ndarray]]=None) -> list[P300Data]:
 
     dataset:list[P300Data] = []
+    # P300_DELAY_START = 0.25
+    # P300_DELAY_END = 0.3
+    P300_DELAY_START = 0.2
+    P300_DELAY_END = 0.5
     experiment_doc:ExperimentDoc
     for experiment_doc in experiment_docs:
-        eeg_round = get_eeg_in_round(experiment_doc.min,experiment_doc.max+experiment_info.p300_interval.end_time,eeg_docs,len(experiment_info.headset_info.channel_names))
+        eeg_round = get_eeg_in_round(experiment_doc.min,experiment_doc.max+P300_DELAY_END,eeg_docs,len(experiment_info.headset_info.channel_names))
         eeg_mne = notch_and_bandpass_filter(eeg_round,experiment_info)
         eeg_numpy:ndarray = eeg_mne.get_data()
 
@@ -128,9 +132,9 @@ def compose_p300_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDo
             this_p300 = P300Data()
             this_p300.target = target
 
-            start_time = (i*experiment_info.p300_experiment_config.spawn) + experiment_info.p300_interval.after_p300_started
+            start_time = (i*experiment_info.p300_experiment_config.spawn) + P300_DELAY_START
 
-            index_this_time = (eeg_time_point[:] >= start_time) & (eeg_time_point[:]<= start_time+experiment_info.p300_interval.end_time)
+            index_this_time = (eeg_time_point[:] >= start_time) & (eeg_time_point[:]<= start_time+P300_DELAY_END)
 
         
             this_p300.eeg = eeg_numpy[index_this_time]

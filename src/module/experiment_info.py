@@ -5,10 +5,7 @@ class HeadsetInfo:
     sample_rate:float
     channel_names:list[str]
 
-@dataclass(init=True)
-class P300TimeInterval:
-    after_p300_started:float
-    end_time:float
+
 
 @dataclass(init=True)
 class P300ExperimentConfig:
@@ -17,17 +14,14 @@ class P300ExperimentConfig:
 @dataclass(init=True)
 class ExperimentInfo:
     headset_info:HeadsetInfo
-    p300_interval:P300TimeInterval
     p300_experiment_config:P300ExperimentConfig
 
 
 ATTEMPT1 = ExperimentInfo(headset_info=HeadsetInfo(230,['O2','OZ','O1','P8','P4','P3','P7']),
-                            p300_interval=P300TimeInterval(.2,.5),
                             p300_experiment_config=P300ExperimentConfig(.2,.2)
 )
 
 ATTEMPT2 = ExperimentInfo(headset_info=HeadsetInfo(230,['O2','OZ','O1','P8','P4','P3','P7','FpZ']),
-                            p300_interval=P300TimeInterval(.25,.3),
                             p300_experiment_config=P300ExperimentConfig(.2,.2)
 )
 
