@@ -6,14 +6,14 @@ enum CMDType{
 class RoundCMD{
     cmd:CMDType
     guessed_grid:number|undefined
-    guessed_index:number|undefined
+    guessed_index_order:number|undefined
 
 
-    constructor(cmd:CMDType,guessed_grid?:number,guessed_index?:number){
+    constructor(cmd:CMDType,guessed_grid?:number,guessed_index_order?:number){
      
         this.cmd= cmd
         this.guessed_grid=guessed_grid
-        this.guessed_index = guessed_index
+        this.guessed_index_order = guessed_index_order
     }
    
 }

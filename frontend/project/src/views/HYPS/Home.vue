@@ -11,8 +11,13 @@
         <hr>
         <h1>Step 2</h1>
         <p>Config the Experiment. PS. I provided the template please click below</p>
-        <button @click="applyFullHYPS" >Full Offline HYPS</button>
+
+        <div v-if="mode=='offline'">
+            <button @click="applyFullHYPS" >Full Offline HYPS</button>
         <button @click="applyOnlySSVP" >Only SSVP</button>
+        </div>
+
+      
         <h1>P300 Config</h1>
         <textarea v-model="P300Config" rows="7" cols="50"></textarea>
         <br>
@@ -96,6 +101,10 @@ export default defineComponent({
   mounted() {
     this.canvas = document.getElementById("canvas")! as HTMLCanvasElement;
     this.ctx = this.canvas.getContext("2d")!;
+
+    if(this.mode=="online"){
+      this.P300Config = JSON.stringify({"spawn":200,"ttl":200},null,4)
+    }
   },
   computed: {
     mode() {
@@ -158,12 +167,16 @@ export default defineComponent({
         this.appState!.subSpellers.forEach((subSpeller) => {
           subSpeller.render(this);
         });
-
-        window.requestAnimationFrame(tick);
+        if(window.innerHeight == screen.height){
+          window.requestAnimationFrame(tick);
+        }else{
+          console.log("done experiment")
+        }
       };
       tick();
     },
     setUpWSOnline() {
+
       this.ws = new WebSocket(`ws${getSecureProtocol()}://${HOST_CONFIG.ML_SERVER_HOSTNAME}:${HOST_CONFIG.ML_SERVER_PORT}/begin_online_mode/${this.p_id}`);
       this.ws.onmessage = async (incomingMSG) => {
         let msg = getJsonFromWSMessage(incomingMSG);
@@ -180,9 +193,9 @@ export default defineComponent({
           );
         }
         if (msg["cmd"] == "output_model") {
-          let alp = this.appState!.findAlphabetByIndex(
+          let alp = this.appState!.findAlphabetByIndexOrder(
             msg.guessed_grid!,
-            msg.guessed_index!
+            msg.guessed_index_order!
           );
           this.userText.push(alp);
         }
@@ -248,7 +261,7 @@ export default defineComponent({
                       this.appState!.toZERO();
                       await sleep(1000);
                       this.appState!.toFlashingP300();
-                      await sleep(3000);
+                      await sleep(2000);
                       this.appState!.toZERO();
                       this.appState!.doneRound();
                       console.log(msgExperiment);

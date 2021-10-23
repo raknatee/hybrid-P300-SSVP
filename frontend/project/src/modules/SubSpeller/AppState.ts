@@ -95,9 +95,10 @@ class AppState {
     findSubSpellerByID(gridID:number):SubSpeller|undefined {
         return this.subSpellers.find((subSpeller) => subSpeller.gridIndex === gridID)
     }
-    findAlphabetByIndex(gridID:number, index:number) {
+    findAlphabetByIndexOrder(gridID:number, index:number):string {
         const subSpeller = this.subSpellers.find((subSpeller) => subSpeller.gridIndex === gridID)
-        return subSpeller!.alphabets[index]
+        const i =  subSpeller!.randomIndex[index]
+        return subSpeller!.alphabets[i]
     }
 
 }

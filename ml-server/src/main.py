@@ -80,8 +80,8 @@ possible_result = [
     {'grid':5,'index':list(range(9))},
     {'grid':6,'index':list(range(9))},
     {'grid':7,'index':list(range(9))},
-    {'grid':10,'index':list(range(3))},
-    {'grid':11,'index':list(range(11))},
+    {'grid':10,'index':list(range(9))},
+    {'grid':11,'index':list(range(9))},
 
 ]
  
@@ -106,8 +106,8 @@ def ml_predict():
     time.sleep(2)
     guess = random.choice(possible_result)
     return {
-        "guessed_grid": guess['grid'],
-        "guessed_index": random.choice(guess['index'])
+        "guessed_grid": 1,
+        "guessed_index_order": 0
     }
 
 @app.websocket("/begin_online_mode/{p_id}")
