@@ -167,11 +167,11 @@ export default defineComponent({
         this.appState!.subSpellers.forEach((subSpeller) => {
           subSpeller.render(this);
         });
-        if(window.innerHeight == screen.height){
+        // if(window.innerHeight == screen.height){
           window.requestAnimationFrame(tick);
-        }else{
-          console.log("done experiment")
-        }
+        // }else{
+          // console.log("done experiment")
+        // }
       };
       tick();
     },
