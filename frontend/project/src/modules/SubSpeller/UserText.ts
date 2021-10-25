@@ -2,10 +2,10 @@ import { getSizeW, getSizeH } from "@/modules/renderer/Sizing";
 
 
 class UserText {
-    static render(vueThis:any, text:string) {
+    static render(ctx:CanvasRenderingContext2D, text:string):void {
        
-        vueThis.ctx.fillStyle = "black";
-        vueThis.ctx.fillText(text, getSizeW(.1), getSizeH(.9));
+      ctx.fillStyle = "black";
+       ctx.fillText(text, getSizeW(.1), getSizeH(.9));
 
 
     }

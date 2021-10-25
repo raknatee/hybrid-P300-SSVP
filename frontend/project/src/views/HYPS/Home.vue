@@ -146,13 +146,14 @@ export default defineComponent({
         this.setUpWSOffline();
       }
 
-      this.canvas!.width = getSizeW(1) as number;
-      this.canvas!.height = getSizeH(1) as number;
+      this.canvas!.width = getSizeW(1) ;
+      this.canvas!.height = getSizeH(1) ;
 
       let P300Config = JSON.parse(this.P300Config);
 
       this.appState = new AppState(
-        this,
+        this.canvas!,
+        this.ctx!,
         P300Config["spawn"],
         P300Config["ttl"]
       );
@@ -161,17 +162,15 @@ export default defineComponent({
 
       const tick = () => {
         setBG(this);
-        UserText.render(this, this.userText.join(","));
-        SysText.render(this,this.sysText)
+        UserText.render(this.ctx!, this.userText.join(","));
+        SysText.render(this.ctx!,this.sysText)
         // nextBtn.render(this)
         this.appState!.subSpellers.forEach((subSpeller) => {
-          subSpeller.render(this);
+          subSpeller.render(this.ctx!);
         });
-        // if(window.innerHeight == screen.height){
+     
           window.requestAnimationFrame(tick);
-        // }else{
-          // console.log("done experiment")
-        // }
+     
       };
       tick();
     },

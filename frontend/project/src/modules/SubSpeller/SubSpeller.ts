@@ -67,20 +67,20 @@ class SubSpeller {
     setState(appState:AppState):void {
         this.state = appState
     }
-    render(vueThis:any):void {
+    render(ctx:CanvasRenderingContext2D):void {
 
        
-        this.renderFlash(vueThis)
-        this.renderTarget(vueThis)
+        this.renderFlash(ctx)
+        this.renderTarget(ctx)
 
         let i = 0
         this.alphabets.forEach(element => {
 
             const coord = this.gridHelper.getCoordinate(i)
 
-            vueThis.ctx.fillStyle = "black";
+           ctx.fillStyle = "black";
 
-            vueThis.ctx.fillText(element, coord.x, coord.y);
+           ctx.fillText(element, coord.x, coord.y);
             i++;
         })
     }
@@ -128,7 +128,7 @@ class SubSpeller {
             })
         }
     }
-    renderFlash(_this:any):void {
+    renderFlash(ctx:CanvasRenderingContext2D):void {
       
         if (this.state!.getCurrentState() != State.FlashingP300) {
             return
@@ -151,11 +151,11 @@ class SubSpeller {
         const max = 255
         const min = 0
         const color = this.sinWave.getYNow() * (max - min) + min
-        _this.ctx.fillStyle = `rgb(${color},${color},${color})`;
+        ctx.fillStyle = `rgb(${color},${color},${color})`;
 
         this.currentIndexes.forEach((e) => {
             const coor = this.gridHelper.getCoordinate(e.index)
-            _this.ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * 1.2, style.fontSize * 1.3)
+            ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * 1.2, style.fontSize * 1.3)
         })
 
 
@@ -165,7 +165,7 @@ class SubSpeller {
 
 
     }
-    renderTarget(_this:any):void {
+    renderTarget(ctx:CanvasRenderingContext2D):void {
        
         if (this.state!.getCurrentState() != State.Targeting) {
             return
@@ -175,9 +175,9 @@ class SubSpeller {
             return
         }
 
-        _this.ctx.fillStyle = "red"
+      ctx.fillStyle = "red"
         const coor = this.gridHelper.getCoordinate(targetIndexs!.alpIndex)
-        _this.ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * 1.2, style.fontSize * 1.3)
+      ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * 1.2, style.fontSize * 1.3)
 
     }
     setOfflineWatcher(msgExperiment:any):void {
