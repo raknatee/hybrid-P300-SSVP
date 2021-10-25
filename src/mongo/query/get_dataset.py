@@ -1,11 +1,12 @@
 from dataclasses import dataclass
 from typing import Callable, Optional, Sequence, Union
+from matplotlib import pyplot as plt #type:ignore
 
 import mne #type: ignore
 from mne.io.array.array import RawArray #type: ignore
 import numpy as np
 from numpy import ndarray
-from numpy.lib.arraysetops import isin
+
 
 from module.experiment_info import ExperimentInfo, get_thailand_power_line_noise 
 from mongo.connector import Mongo
@@ -158,11 +159,12 @@ class SSVPDataWithLabel:
     eeg: ndarray
     target_grid:int
 
-def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:Sequence[Union[ExperimentDoc,ExperimentDocWithTargetGrid]],experiment_info:ExperimentInfo,selected_eeg_channels:list[int]=None)->list[Union[SSVPData,SSVPDataWithLabel]]:
+def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:Sequence[Union[ExperimentDoc,ExperimentDocWithTargetGrid]],experiment_info:ExperimentInfo,selected_eeg_channels:list[int]=None,debug=False)->list[Union[SSVPData,SSVPDataWithLabel]]:
 
     returned:list[Union[SSVPData,SSVPDataWithLabel]] = []
+ 
     
-    for experiment_doc in experiment_docs:
+    for index,experiment_doc in enumerate(experiment_docs) :
         this_data:Union[SSVPData,SSVPDataWithLabel]
         if isinstance(experiment_doc,ExperimentDoc):
             this_data = SSVPData()
@@ -170,8 +172,18 @@ def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:Sequence[Union[Ex
             this_data = SSVPDataWithLabel()
             this_data.target_grid = experiment_doc.target_grid
         
-        eeg_temp = [ eeg_doc.data[:len(experiment_info.headset_info.channel_names)] for eeg_doc in eeg_docs if (experiment_doc.min <= eeg_doc.timestamp <= experiment_doc.max)]
-        eeg_temp2:RawArray =  notch_and_bandpass_filter(eeg_temp,experiment_info)
+        eeg_temp = [ eeg_doc.data[:len(experiment_info.headset_info.channel_names)] for eeg_doc in eeg_docs if (experiment_doc.min <= eeg_doc.timestamp <= experiment_doc.max +experiment_info.p300_experiment_config.ttl )]
+        if(debug):
+            eeg_temp_but_non_target:list[list[float]] = [ eeg_doc.data[:len(experiment_info.headset_info.channel_names)] for eeg_doc in eeg_docs if (experiment_doc.max <= eeg_doc.timestamp <= experiment_doc.max + 1 )]
+            eeg_temp2_but_non_target:RawArray = notch_and_bandpass_filter(eeg_temp_but_non_target,experiment_info,bandpass_filter=(6,10))
+            eeg_temp2_but_non_target.plot_psd()
+            
+            plt.savefig(f"./logs/plot-non-target-{experiment_doc.max}-gitignore.png")
+
+        eeg_temp2:RawArray =  notch_and_bandpass_filter(eeg_temp,experiment_info,bandpass_filter=(6,10))
+        if(debug):
+            eeg_temp2.plot_psd()
+            plt.savefig(f"./logs/plot-target-{experiment_doc.min}-gitignore.png")
         this_data.eeg = eeg_temp2.get_data().T
 
         if selected_eeg_channels is not None:
@@ -192,13 +204,13 @@ def get_eeg_in_round(time_start:float,time_end:float,all_eeg:list[EEGDoc],n_eeg_
     return returned
 
 
-def notch_and_bandpass_filter(eeg_round:list[list[float]],experiment_info:ExperimentInfo)->RawArray:
+def notch_and_bandpass_filter(eeg_round:list[list[float]],experiment_info:ExperimentInfo,bandpass_filter:tuple[float,float]=(1,20))->RawArray:
     ch_types = ['eeg'] * (len(experiment_info.headset_info.channel_names) - 1) + ['stim']
 
     eeg_mne_arr:RawArray =  mne.io.RawArray(to_mne_format(eeg_round),mne.create_info(experiment_info.headset_info.channel_names,experiment_info.headset_info.sample_rate,ch_types))
         
     # eeg_mne_arr.notch_filter(get_thailand_power_line_noise(experiment_info),filter_length='auto', phase='zero')
-    eeg_mne_arr.filter(1,20, method='iir')
+    eeg_mne_arr.filter(bandpass_filter[0],bandpass_filter[1], method='iir')
     return eeg_mne_arr
 
 

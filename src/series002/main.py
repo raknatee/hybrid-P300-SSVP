@@ -12,7 +12,7 @@ from module.dataset_helper import P300DataFilter, train_test_splitter
 from module.eval_helper import acc, to_one_hot 
 from module import object_saver
 
-from module.experiment_info import ATTEMPT2
+from module.experiment_info import ATTEMPT2, ATTEMPT3, ATTEMPT4, ExperimentInfo
 from module.gpu_helper import to_gpu
 from module.ssvp_module import ssvp_freq_info
 from module.ssvp_module.fbcca import predict
@@ -117,7 +117,14 @@ def ssvp(p_id:str):
     
         eeg_docs = get_eeg_docs(p_id)
         experiment_docs = get_experiment_docs_with_target_grid(p_id)
-        return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT2,[*[0,1,2]])
+        attempt_config:ExperimentInfo
+        if("A02" in p_id):
+            attempt_config=ATTEMPT2
+        if("A03" in p_id):
+            attempt_config=ATTEMPT3
+        if("A04" in p_id):
+            attempt_config=ATTEMPT4
+        return compose_ssvp_dataset(eeg_docs,experiment_docs,attempt_config,[*[0,1,2]])
         # return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT2,[*[0,1,2],*[3,4,5,6]])
 
     list_ssvp = object_saver.disk_cache(load,f"{p_id}-ssvp.pkl")
