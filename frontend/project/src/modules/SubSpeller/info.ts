@@ -36,6 +36,19 @@ const wavesData = [
     new fp(14, .8),
     new fp(14.2, 1.15),
 ]
+// const wavesData = [
+//     new fp(8, 0),
+//     new fp(8, 0),
+//     new fp(8, 0),
+//     new fp(8, 0),
+//     new fp(8, 0),
+//     new fp(8, 0),
+//     new fp(8, 0),
+//     new fp(8, 0),
+//     null, null,
+//     new fp(8, 0),
+//     new fp(8, 0),
+// ]
 export {
     subSpellerData,
     wavesData
