@@ -201,30 +201,48 @@ export default defineComponent({
         this.setUpWSOffline(P300ConfigObject.time_per_round);
       }
 
-      this.canvas!.width = getSizeW(1) as number;
-      this.canvas!.height = getSizeH(1) as number;
+      this.canvas!.width = getSizeW(1) ;
+      this.canvas!.height = getSizeH(1) ;
 
       this.appState = new AppState(
+<<<<<<< HEAD
         this,
         P300ConfigObject["spawn"],
         P300ConfigObject["ttl"]
+=======
+        this.canvas!,
+        this.ctx!,
+        P300Config["spawn"],
+        P300Config["ttl"]
+>>>>>>> b8f342d74ef8dd6bf5c312ff5ba311d56ccfe62a
       );
 
       // const nextBtn = new NextSSVP(getSizeW(.55),getSizeH(.9),this.appState)
 
       const tick = () => {
         setBG(this);
+<<<<<<< HEAD
         UserText.render(this, this.userText.join(","));
         SysText.render(this, this.sysText);
+=======
+        UserText.render(this.ctx!, this.userText.join(","));
+        SysText.render(this.ctx!,this.sysText)
+>>>>>>> b8f342d74ef8dd6bf5c312ff5ba311d56ccfe62a
         // nextBtn.render(this)
         this.appState!.subSpellers.forEach((subSpeller) => {
-          subSpeller.render(this);
+          subSpeller.render(this.ctx!);
         });
+<<<<<<< HEAD
         // if(window.innerHeight == screen.height){
         window.requestAnimationFrame(tick);
         // }else{
         // console.log("done experiment")
         // }
+=======
+     
+          window.requestAnimationFrame(tick);
+     
+>>>>>>> b8f342d74ef8dd6bf5c312ff5ba311d56ccfe62a
       };
       tick();
     },

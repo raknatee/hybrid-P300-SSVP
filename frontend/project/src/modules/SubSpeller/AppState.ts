@@ -19,14 +19,16 @@ class TargetIndex{
 }
 class AppState {
     appState:State
-    vueThis:any
+    canvas:HTMLCanvasElement
+    ctx:CanvasRenderingContext2D
     subSpellers:SubSpeller[]
     msgExperiment:any
     targetIndex:TargetIndex|undefined
-    constructor(vueThis:any, spawn:number, ttl:number) {
+    constructor(canvas:HTMLCanvasElement,ctx:CanvasRenderingContext2D, spawn:number, ttl:number) {
       
         this.appState = State.ZERO
-        this.vueThis = vueThis
+        this.canvas=canvas
+        this.ctx=ctx
         this.subSpellers = this.setUpSubSpellers(spawn, ttl)
         this.subSpellers.forEach((e) => {
             e.setState(this)
@@ -36,9 +38,9 @@ class AppState {
 
     }
     setUpSubSpellers(spawn:number, ttl:number):SubSpeller[] {
-        this.vueThis.ctx.font = `${style.fontSize}px Arial`;
+        this.ctx.font = `${style.fontSize}px Arial`;
 
-        this.vueThis.ctx.fillStyle = "black";
+        this.ctx.fillStyle = "black";
 
         const gridHelper = new GridHelper(
             getSizeW(0.05),
