@@ -96,9 +96,34 @@
 
     <div class="daily">
         <h1>My Daily</h1>
+        <h2>2021-10-26</h2>
+        <ul>
+            <li>
+                <p>Today, I fixed the SSVEP blinking</p>
+                <ul>
+                    <li>Change API from Date.now() to performance.now() <a href="https://stackoverflow.com/questions/30795525/performance-now-vs-date-now">click here for stackoverflow</a> </li>
+                    <li>Timing for SSVP must be blinking at the started time of each round (not the REAL time).</li>
+                    <li>There was a problem about blinking because SinWave can be [-1, 1] so the -255 color can be White so USER can see double of real frequency.</li>
+                    <ul>
+                        <li>Ex: 1Hz but User saw 2Hz (Black 2 times)</li>
+                        <li>Fixed by reduce it to one half.</li>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <p>Data collection (did it again because I changed Frontend)</p>
+            </li>
+            <ul>
+                <li><a href="./modeling/#participant-A06S01">A06S01</a></li>
+                <li><a href="./modeling/#participant-A07S01">A07S01</a></li>
+
+            </ul>
+        </ul>
         <h2>2021-10-25</h2>
         <ul>
-            <li> <p>Data collection</p> </li>
+            <li>
+                <p>Data collection</p>
+            </li>
             <ul>
                 <li><a href="./modeling/#participant-A03S01">A03S01</a></li>
                 <li><a href="./modeling/#participant-A04S01">A04S01</a></li>
