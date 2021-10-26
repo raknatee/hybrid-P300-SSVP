@@ -23,6 +23,8 @@ class SubSpeller {
     state:AppState|undefined
 
     startTime:number|undefined
+    startTimeForSSVP:number|undefined
+    _countFrame:number|undefined
     spawnTime:number
     ttl:number
 
@@ -91,6 +93,8 @@ class SubSpeller {
         this.randomIndex = checkerboard(this.alphabets.length)
 
         this.startTime = getNow()
+        this.startTimeForSSVP = performance.now()/1000
+        this._countFrame = 0
         for (let i = 0; i < this.randomIndex.length; i++) {
 
             setTimeout(() => {
@@ -148,10 +152,22 @@ class SubSpeller {
 
 
 
-        const max = 255
-        const min = 0
-        const color = this.sinWave.getYNow() * (max - min) + min
+        const time = performance.now()/1000-this.startTimeForSSVP!
+        const color = 255 - (Math.abs(this.sinWave._get_y_t(time))  * 255)
+
         ctx.fillStyle = `rgb(${color},${color},${color})`;
+        // this._countFrame! += 1
+        // if(this.gridIndex==0){
+        //     if(color<50){
+        //         console.log("w")    
+        //     }
+        //     if(color>200){
+        //         console.log("b")
+        //     }
+        //     if(this._countFrame! >= 60){
+        //         console.log(this._countFrame)
+        //     }
+        // }
 
         this.currentIndexes.forEach((e) => {
             const coor = this.gridHelper.getCoordinate(e.index)
@@ -164,7 +180,7 @@ class SubSpeller {
 
 
 
-    }
+}
     renderTarget(ctx:CanvasRenderingContext2D):void {
        
         if (this.state!.getCurrentState() != State.Targeting) {

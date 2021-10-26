@@ -2,7 +2,7 @@ class SinWave {
     freq:number
     phare:number
     constructor(freq:number, phare:number) {
-        this.freq = freq
+        this.freq = freq / 2 
         this.phare = phare
     }
     _get_y_t(time:number):number {
@@ -21,5 +21,6 @@ class SinWave {
 }
 const getNow = ():number => {
     return Date.now() / 1000
+    // return performance.now() / 1000
 }
 export { SinWave, getNow }

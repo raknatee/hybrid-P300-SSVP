@@ -23,46 +23,34 @@ class fp{
    
 }
 
-// const wavesData = [
-//     new fp(12.4, 0),
-//     new fp(12.6, .35),
-//     new fp(12.8, .7),
-//     new fp(13, 1.05),
-//     new fp(13.2, 1.4),
-//     new fp(13.4, 1.75),
-//     new fp(13.6, .1),
-//     new fp(13.8, .45),
-//     null, null,
-//     new fp(14, .8),
-//     new fp(14.2, 1.15),
-// ]
-// const wavesData = [
-//     new fp(8, 0),
-//     new fp(8, 0),
-//     new fp(8, 0),
-//     new fp(8, 0),
-//     new fp(8, 0),
-//     new fp(8, 0),
-//     new fp(8, 0),
-//     new fp(8, 0),
-//     null, null,
-//     new fp(8, 0),
-//     new fp(8, 0),
-// ]
-const freq = 1
 const wavesData = [
-    new fp(freq, 0),
-    new fp(freq, 0),
-    new fp(freq, 0),
-    new fp(freq, 0),
-    new fp(freq, 0),
-    new fp(freq, 0),
-    new fp(freq, 0),
-    new fp(freq, 0),
+    new fp(12.4, 0),
+    new fp(12.6, .35),
+    new fp(12.8, .7),
+    new fp(13, 1.05),
+    new fp(13.2, 1.4),
+    new fp(13.4, 1.75),
+    new fp(13.6, .1),
+    new fp(13.8, .45),
     null, null,
-    new fp(freq, 0),
-    new fp(freq, 0),
+    new fp(14, .8),
+    new fp(14.2, 1.15),
 ]
+
+// const freq = 8
+// const wavesData = [
+//     new fp(freq, 0),
+//     new fp(freq, 0),
+//     new fp(freq, 0),
+//     new fp(freq, 0),
+//     new fp(freq, 0),
+//     new fp(freq, 0),
+//     new fp(freq, 0),
+//     new fp(freq, 0),
+//     null, null,
+//     new fp(freq, 0),
+//     new fp(freq, 0),
+// ]
 export {
     subSpellerData,
     wavesData
