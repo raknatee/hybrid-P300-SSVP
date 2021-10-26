@@ -25,4 +25,10 @@ type TargetDetails = {
 type DBConfig = {
     "current_participant_id":string
 }
-export {HYPSCommands,DBConfig,SleepDetails,TargetDetails,CommandType}
+
+type P300Config = {
+    "spawn":number
+    "ttl":number
+    "time_per_round":number
+}
+export {HYPSCommands,DBConfig,SleepDetails,TargetDetails,CommandType,P300Config}

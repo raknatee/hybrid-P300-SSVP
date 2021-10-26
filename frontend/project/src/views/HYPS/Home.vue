@@ -13,13 +13,14 @@
         <p>Config the Experiment. PS. I provided the template please click below</p>
 
         <div v-if="mode=='offline'">
-            <button @click="applyFullHYPS" >Full Offline HYPS</button>
+            <button @click="applyFullHYPS200200" >Full Offline HYPS 200,200</button>
+            <button @click="applyFullHYPS100200" >Full Offline HYPS 100,200</button>
         <button @click="applyOnlySSVP" >Only SSVP</button>
         </div>
 
       
         <h1>P300 Config</h1>
-        <textarea v-model="P300Config" rows="7" cols="50"></textarea>
+        <textarea v-model="P300ConfigString" rows="7" cols="50"></textarea>
         <br>
 
         <div v-if="mode=='offline'">
@@ -47,38 +48,88 @@ import { AppState } from "@/modules/SubSpeller/AppState";
 import { sleep } from "@/modules/Time";
 // import { NextSSVP } from "@/modules/SubSpeller/NextSSVP";
 import { UserText } from "@/modules/SubSpeller/UserText";
-import { SysText } from "@/modules/SubSpeller/SysText"
+import { SysText } from "@/modules/SubSpeller/SysText";
 // import {choise} from "@/modules/Random.js"
 
 import { restAPIPost } from "@/modules/RestAPIHelper/RestAPIHelper";
-import {HOST_CONFIG,getSecureProtocol} from "@/modules/HOST"
-import { defineComponent,ref } from "vue"
-import {experimentConfigDefault,RuntimeCommand} from "./experimentConfig/configs"
-import {HYPSCommands,DBConfig, CommandType, SleepDetails, TargetDetails} from "./experimentConfig/ConfigType"
-import {ssvpConfig} from "./experimentConfig/SSVPConfig/experimentDefault"
+import { HOST_CONFIG, getSecureProtocol } from "@/modules/HOST";
+import { defineComponent, ref } from "vue";
+import {
+  experimentConfigDefault,
+  RuntimeCommand,
+} from "./experimentConfig/configs";
+import {
+  HYPSCommands,
+  DBConfig,
+  CommandType,
+  SleepDetails,
+  TargetDetails,
+  P300Config,
+} from "./experimentConfig/ConfigType";
+import { ssvpConfig } from "./experimentConfig/SSVPConfig/experimentDefault";
 export default defineComponent({
   setup() {
-    let canvas:HTMLCanvasElement|undefined
-    let ctx:CanvasRenderingContext2D|undefined
-    let appState:AppState|undefined
-    const userText:string[] = []
-    let sysText = ""
-  
-    let ws:WebSocket|undefined
-    let begin_time = 0
-    let p_id = ""
-    let DBConfigStatus = ref("")
-    let DBConfig = JSON.stringify({"current_participant_id" : "AXXSXX"},null,4)
-    let P300Config = ref("")
-    let ExperimentConfigOffline = ref("")
-    const applyFullHYPS = () =>{
-      ExperimentConfigOffline.value = JSON.stringify(experimentConfigDefault,null, 4)
-      P300Config.value = JSON.stringify({"spawn":200,"ttl":200},null,4)
-    }
-    const applyOnlySSVP = () =>{
-      ExperimentConfigOffline.value = JSON.stringify(ssvpConfig,null, 4)
-      P300Config.value = JSON.stringify({"spawn":0,"ttl":800},null,4)
-    }
+    let canvas: HTMLCanvasElement | undefined;
+    let ctx: CanvasRenderingContext2D | undefined;
+    let appState: AppState | undefined;
+    const userText: string[] = [];
+    let sysText = "";
+
+    let ws: WebSocket | undefined;
+    let begin_time = 0;
+    let p_id = "";
+    let DBConfigStatus = ref("");
+    let DBConfig = JSON.stringify(
+      { current_participant_id: "AXXSXX" },
+      null,
+      4
+    );
+    let P300ConfigString = ref("");
+    let ExperimentConfigOffline = ref("");
+    const applyFullHYPS200200 = () => {
+      ExperimentConfigOffline.value = JSON.stringify(
+        experimentConfigDefault,
+        null,
+        4
+      );
+      const p300:P300Config = { spawn: 200, ttl: 200, time_per_round: 2000 }
+      P300ConfigString.value = JSON.stringify(
+        p300,
+        null,
+        4
+      );
+    };
+      const applyFullHYPS100200 = () => {
+      ExperimentConfigOffline.value = JSON.stringify(
+        experimentConfigDefault,
+        null,
+        4
+      );
+      const p300:P300Config = { spawn: 100, ttl: 200, time_per_round: 1000 }
+      P300ConfigString.value = JSON.stringify(
+        p300,
+        null,
+        4
+      );
+    };
+    const applyOnlySSVP = () => {
+      const p300:P300Config ={ spawn: 0, ttl: 1000, time_per_round: 1000 }
+      ExperimentConfigOffline.value = JSON.stringify(ssvpConfig, null, 4);
+      P300ConfigString.value = JSON.stringify(
+        p300,
+        null,
+        4
+      );
+    };
+
+    const applyOnline = () => {
+      const config: P300Config = {
+        spawn: 100,
+        ttl: 200,
+        time_per_round: 1000,
+      };
+      P300ConfigString.value = JSON.stringify(config, null, 4);
+    };
     return {
       canvas,
       ctx,
@@ -91,10 +142,12 @@ export default defineComponent({
       DBConfigStatus,
       DBConfig,
 
-      P300Config,
+      P300ConfigString,
       ExperimentConfigOffline,
-      applyFullHYPS,
-      applyOnlySSVP
+      applyFullHYPS200200,
+      applyFullHYPS100200,
+      applyOnlySSVP,
+      applyOnline
     };
   },
 
@@ -102,8 +155,8 @@ export default defineComponent({
     this.canvas = document.getElementById("canvas")! as HTMLCanvasElement;
     this.ctx = this.canvas.getContext("2d")!;
 
-    if(this.mode=="online"){
-      this.P300Config = JSON.stringify({"spawn":200,"ttl":200},null,4)
+    if (this.mode == "online") {
+      this.applyOnline()
     }
   },
   computed: {
@@ -117,20 +170,20 @@ export default defineComponent({
       setTimeout(() => {
         this.run();
       }, 500);
-},
+    },
     async submitDBConfig() {
-      
       let config = JSON.parse(this.DBConfig) as DBConfig;
-      this.p_id  = config["current_participant_id"]
-    
+      this.p_id = config["current_participant_id"];
+
       await restAPIPost(
-        `http${getSecureProtocol()}://${HOST_CONFIG.ML_SERVER_HOSTNAME}:${HOST_CONFIG.ML_SERVER_PORT}/db`,
+        `http${getSecureProtocol()}://${HOST_CONFIG.ML_SERVER_HOSTNAME}:${
+          HOST_CONFIG.ML_SERVER_PORT
+        }/db`,
         {
           current_mode: this.mode,
           current_participant_id: this.p_id,
         },
         () => {
-        
           this.DBConfigStatus = "okay";
         },
         () => {
@@ -139,22 +192,22 @@ export default defineComponent({
       );
     },
     run() {
+      let P300ConfigObject: P300Config = JSON.parse(this.P300ConfigString);
+
       if (this.mode === "online") {
-        this.setUpWSOnline();
+        this.setUpWSOnline(P300ConfigObject.time_per_round);
       }
       if (this.mode === "offline") {
-        this.setUpWSOffline();
+        this.setUpWSOffline(P300ConfigObject.time_per_round);
       }
 
       this.canvas!.width = getSizeW(1) as number;
       this.canvas!.height = getSizeH(1) as number;
 
-      let P300Config = JSON.parse(this.P300Config);
-
       this.appState = new AppState(
         this,
-        P300Config["spawn"],
-        P300Config["ttl"]
+        P300ConfigObject["spawn"],
+        P300ConfigObject["ttl"]
       );
 
       // const nextBtn = new NextSSVP(getSizeW(.55),getSizeH(.9),this.appState)
@@ -162,29 +215,32 @@ export default defineComponent({
       const tick = () => {
         setBG(this);
         UserText.render(this, this.userText.join(","));
-        SysText.render(this,this.sysText)
+        SysText.render(this, this.sysText);
         // nextBtn.render(this)
         this.appState!.subSpellers.forEach((subSpeller) => {
           subSpeller.render(this);
         });
         // if(window.innerHeight == screen.height){
-          window.requestAnimationFrame(tick);
+        window.requestAnimationFrame(tick);
         // }else{
-          // console.log("done experiment")
+        // console.log("done experiment")
         // }
       };
       tick();
     },
-    setUpWSOnline() {
-
-      this.ws = new WebSocket(`ws${getSecureProtocol()}://${HOST_CONFIG.ML_SERVER_HOSTNAME}:${HOST_CONFIG.ML_SERVER_PORT}/begin_online_mode/${this.p_id}`);
+    setUpWSOnline(timePerRound: number) {
+      this.ws = new WebSocket(
+        `ws${getSecureProtocol()}://${HOST_CONFIG.ML_SERVER_HOSTNAME}:${
+          HOST_CONFIG.ML_SERVER_PORT
+        }/begin_online_mode/${this.p_id}`
+      );
       this.ws.onmessage = async (incomingMSG) => {
         let msg = getJsonFromWSMessage(incomingMSG);
         if (msg["cmd"] == "next") {
           await sleep(1000);
           this.begin_time = getNow();
           this.appState!.toFlashingP300();
-          await sleep(3000);
+          await sleep(timePerRound);
           this.appState!.toZERO();
           this.ws!.send(
             JSON.stringify({
@@ -201,89 +257,75 @@ export default defineComponent({
         }
       };
     },
-    setUpWSOffline() {
-      let experimentConfig = JSON.parse(this.ExperimentConfigOffline) as HYPSCommands;
+    setUpWSOffline(timePerRound: number) {
+      let experimentConfig = JSON.parse(
+        this.ExperimentConfigOffline
+      ) as HYPSCommands;
 
-      let cmds:RuntimeCommand[] = []
-      for(let round=0;round<experimentConfig['repeat'];round++){
-        for(let i=0;i<experimentConfig['cmds'].length;i++){
-          for(let j=0;j<experimentConfig['cmds'][i]['repeat'];j++){
-
-          let {cmd,details} = experimentConfig['cmds'][i]
-          cmds = [...cmds,new RuntimeCommand(cmd,details)]
+      let cmds: RuntimeCommand[] = [];
+      for (let round = 0; round < experimentConfig["repeat"]; round++) {
+        for (let i = 0; i < experimentConfig["cmds"].length; i++) {
+          for (let j = 0; j < experimentConfig["cmds"][i]["repeat"]; j++) {
+            let { cmd, details } = experimentConfig["cmds"][i];
+            cmds = [...cmds, new RuntimeCommand(cmd, details)];
           }
         }
-
       }
-      
-      this.ws = new WebSocket(`ws${getSecureProtocol()}://${HOST_CONFIG.ML_SERVER_HOSTNAME}:${HOST_CONFIG.ML_SERVER_PORT}/begin_offline_mode/${this.p_id}`);
+
+      this.ws = new WebSocket(
+        `ws${getSecureProtocol()}://${HOST_CONFIG.ML_SERVER_HOSTNAME}:${
+          HOST_CONFIG.ML_SERVER_PORT
+        }/begin_offline_mode/${this.p_id}`
+      );
 
       this.ws.onmessage = async (incomingMSG) => {
         let msg = getJsonFromWSMessage(incomingMSG);
 
         if (msg["cmd"] == "next") {
-                this.userText= []
-                this.userText.push(cmds.length.toString())
-                let currentCMD = cmds.shift()!
+          this.userText = [];
+          this.userText.push(cmds.length.toString());
+          let currentCMD = cmds.shift()!;
 
-                if(currentCMD['cmd'] === CommandType.sleep){
+          if (currentCMD["cmd"] === CommandType.sleep) {
+            let details = currentCMD["details"] as SleepDetails;
+            let time = details["time"];
+            console.log(`sleep for ${time}`);
+            while (time > 0) {
+              this.sysText = (time / 1000).toString();
+              time = time - 1000;
 
-                      let details = currentCMD["details"] as SleepDetails
-                      let time= details["time"]
-                      console.log(`sleep for ${time}`)
-                      while(time>0){
-                        this.sysText = (time/1000).toString()
-                        time = time -1000
-                     
-                        await sleep(1000)
-                   
-                      }
-                      this.sysText = ""
-                      this.userText= []
-                      this.userText.push(cmds.length.toString())
-                      currentCMD = cmds.shift()!
-
-                }
-           
-
-                    if(currentCMD['cmd'] === CommandType.target){
-
-                      let target = currentCMD['details'] as TargetDetails
-
-                      let msgExperiment = {
-                      target_grid: target['gridIndex'],
-                      terget_index: target['alpIndex'],
-                      data: [],
-                      };
-                      await sleep(1000);
-                      this.appState!.toTarget(target, msgExperiment);
-                      await sleep(1000);
-                      this.appState!.toZERO();
-                      await sleep(1000);
-                      this.appState!.toFlashingP300();
-                      await sleep(2000);
-                      this.appState!.toZERO();
-                      this.appState!.doneRound();
-                      console.log(msgExperiment);
-                      this.ws!.send(JSON.stringify(msgExperiment));
-                    }
-                   
-
-                }
-                
-
+              await sleep(1000);
             }
+            this.sysText = "";
+            this.userText = [];
+            this.userText.push(cmds.length.toString());
+            currentCMD = cmds.shift()!;
+          }
 
+          if (currentCMD["cmd"] === CommandType.target) {
+            let target = currentCMD["details"] as TargetDetails;
 
-              
-          }   
-         
-         
-          
-          
+            let msgExperiment = {
+              target_grid: target["gridIndex"],
+              terget_index: target["alpIndex"],
+              data: [],
+            };
+            await sleep(1000);
+            this.appState!.toTarget(target, msgExperiment);
+            await sleep(1000);
+            this.appState!.toZERO();
+            await sleep(1000);
+            this.appState!.toFlashingP300();
+            await sleep(timePerRound);
+            this.appState!.toZERO();
+            this.appState!.doneRound();
+            console.log(msgExperiment);
+            this.ws!.send(JSON.stringify(msgExperiment));
+          }
         }
-    
-
+      };
+    },
+  },
 });
 </script>
 <style lang="scss" scoped>
