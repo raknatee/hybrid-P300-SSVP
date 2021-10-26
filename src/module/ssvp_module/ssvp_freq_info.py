@@ -8,7 +8,7 @@ class FP:
     phare:float
 
     def __init__(self,freq:float,phare:float) -> None:
-        self.freq = freq
+        self.freq = freq 
         self.phare = phare
 
 wave_data:list[Union[FP,None]] = [

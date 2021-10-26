@@ -159,7 +159,7 @@ class SSVPDataWithLabel:
     eeg: ndarray
     target_grid:int
 
-def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:Sequence[Union[ExperimentDoc,ExperimentDocWithTargetGrid]],experiment_info:ExperimentInfo,selected_eeg_channels:list[int]=None,debug=False)->list[Union[SSVPData,SSVPDataWithLabel]]:
+def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:Sequence[Union[ExperimentDoc,ExperimentDocWithTargetGrid]],experiment_info:ExperimentInfo,bandpass_filter:Optional[tuple[float,float]],selected_eeg_channels:list[int]=None,debug=False)->list[Union[SSVPData,SSVPDataWithLabel]]:
 
     returned:list[Union[SSVPData,SSVPDataWithLabel]] = []
  
@@ -175,12 +175,12 @@ def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:Sequence[Union[Ex
         eeg_temp = [ eeg_doc.data[:len(experiment_info.headset_info.channel_names)] for eeg_doc in eeg_docs if (experiment_doc.min <= eeg_doc.timestamp <= experiment_doc.max +experiment_info.p300_experiment_config.ttl )]
         if(debug):
             eeg_temp_but_non_target:list[list[float]] = [ eeg_doc.data[:len(experiment_info.headset_info.channel_names)] for eeg_doc in eeg_docs if (experiment_doc.max <= eeg_doc.timestamp <= experiment_doc.max + 1 )]
-            eeg_temp2_but_non_target:RawArray = notch_and_bandpass_filter(eeg_temp_but_non_target,experiment_info,bandpass_filter=(6,10))
+            eeg_temp2_but_non_target:RawArray = notch_and_bandpass_filter(eeg_temp_but_non_target,experiment_info,bandpass_filter=bandpass_filter)
             eeg_temp2_but_non_target.plot_psd()
             
             plt.savefig(f"./logs/plot-non-target-{experiment_doc.max}-gitignore.png")
 
-        eeg_temp2:RawArray =  notch_and_bandpass_filter(eeg_temp,experiment_info,bandpass_filter=(6,10))
+        eeg_temp2:RawArray =  notch_and_bandpass_filter(eeg_temp,experiment_info,bandpass_filter=bandpass_filter)
         if(debug):
             eeg_temp2.plot_psd()
             plt.savefig(f"./logs/plot-target-{experiment_doc.min}-gitignore.png")
@@ -204,13 +204,14 @@ def get_eeg_in_round(time_start:float,time_end:float,all_eeg:list[EEGDoc],n_eeg_
     return returned
 
 
-def notch_and_bandpass_filter(eeg_round:list[list[float]],experiment_info:ExperimentInfo,bandpass_filter:tuple[float,float]=(1,20))->RawArray:
+def notch_and_bandpass_filter(eeg_round:list[list[float]],experiment_info:ExperimentInfo,bandpass_filter:Optional[tuple[float,float]]=(1,20))->RawArray:
     ch_types = ['eeg'] * (len(experiment_info.headset_info.channel_names) - 1) + ['stim']
 
     eeg_mne_arr:RawArray =  mne.io.RawArray(to_mne_format(eeg_round),mne.create_info(experiment_info.headset_info.channel_names,experiment_info.headset_info.sample_rate,ch_types))
         
     # eeg_mne_arr.notch_filter(get_thailand_power_line_noise(experiment_info),filter_length='auto', phase='zero')
-    eeg_mne_arr.filter(bandpass_filter[0],bandpass_filter[1], method='iir')
+    if bandpass_filter is not None:
+        eeg_mne_arr.filter(bandpass_filter[0],bandpass_filter[1], method='iir')
     return eeg_mne_arr
 
 

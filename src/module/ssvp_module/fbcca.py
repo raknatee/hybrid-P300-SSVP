@@ -1,6 +1,6 @@
 
 
-from typing import Union
+from typing import Optional, Union
 from sklearn.cross_decomposition import CCA #type:ignore
 
 from module.ssvp_module.ssvp_freq_info import FP,wave_data
@@ -9,14 +9,19 @@ from .filterbank import filterbank #type:ignore
 from scipy.stats import pearsonr, mode #type:ignore
 import numpy as np
 
+class Missing:
+    pass
 
-
-def predict(eeg:np.ndarray,experiment:ExperimentInfo):
+def predict(eeg:np.ndarray,experiment:ExperimentInfo,freqs:Optional[list[FP]]=None):
+   
     eeg_length,channel = eeg.shape
     eeg = eeg.reshape(1,channel,eeg_length)
-
-    freqs:list[FP] = [wave for wave in wave_data if wave is not None]
+    if(freqs is None):
+        freqs_default:list[FP] = [wave for wave in wave_data if wave is not None]
+        return fbcca(eeg,freqs_default,experiment.headset_info.sample_rate)
+  
     return fbcca(eeg,freqs,experiment.headset_info.sample_rate)
+
 
 """
 Created on Wed Oct 30 10:17:50 2019
@@ -48,7 +53,7 @@ Reference:
 """
 # Adapted for working with python mne
 
-def fbcca(eeg:np.ndarray, freqs:list[FP], sampling_frequency:Union[float,int], num_harms=3, num_fbs=5):
+def fbcca(eeg:np.ndarray, freqs:list[FP], sampling_frequency:Union[float,int], num_harms=5, num_fbs=5):
     fb_coefs = np.power(np.arange(1, num_fbs + 1), (-1.25)) + 0.25
 
     num_targs = len(freqs)
@@ -120,8 +125,8 @@ def cca_reference(freqs:list[FP], fs, num_smpls, num_harms=3):
     num_freqs = len(freqs)
     tidx = np.arange(1, num_smpls + 1) / fs  # time index
 
-    # y_ref = np.zeros((num_freqs, 2 * num_harms, num_smpls)) 
-    y_ref = np.zeros((num_freqs, num_harms, num_smpls))
+    y_ref = np.zeros((num_freqs, 2 * num_harms, num_smpls)) 
+    # y_ref = np.zeros((num_freqs, num_harms, num_smpls))
     for freq_i in range(num_freqs):
         tmp = []
         for harm_i in range(1, num_harms + 1):
@@ -129,7 +134,7 @@ def cca_reference(freqs:list[FP], fs, num_smpls, num_harms=3):
             phase = freqs[freq_i].phare
             # Sin and Cos
             tmp.extend([np.sin(2 * np.pi * tidx * harm_i * stim_freq + np.pi *phase),
-                        # np.cos(2 * np.pi * tidx * harm_i * stim_freq + np.pi *phase)
+                        np.cos(2 * np.pi * tidx * harm_i * stim_freq + np.pi *phase)
                         ])
 
             # tmp.extend([np.sin(2 * np.pi * tidx * harm_i * stim_freq ),

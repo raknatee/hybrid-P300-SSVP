@@ -1,0 +1,1 @@
+https://raw.githubusercontent.com/chaklam-silpasuwanchai/BCI/master/SSVEP/3-analysis/data/ssvep-10trials-3s-chaky-bigsquare.csv
