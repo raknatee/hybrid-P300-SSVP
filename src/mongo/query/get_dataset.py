@@ -216,6 +216,6 @@ def notch_and_bandpass_filter(eeg_round:list[list[float]],experiment_info:Experi
 
 
 
-def to_mne_format(eeg:list[list[float]])->ndarray:
+def to_mne_format(eeg:Union[list[list[float]],np.ndarray])->ndarray:
     return np.array(eeg).T * 1e-6
 

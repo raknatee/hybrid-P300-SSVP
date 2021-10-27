@@ -1,26 +1,45 @@
 
 
+import sys
 from typing import Optional, Union
+from mne.io.array.array import RawArray #type:ignore
+from numpy.ma.core import count
 from sklearn.cross_decomposition import CCA #type:ignore
 
 from module.ssvp_module.ssvp_freq_info import FP,wave_data
 from module.experiment_info import ExperimentInfo
+from mongo.query.get_dataset import to_mne_format
 from .filterbank import filterbank #type:ignore
 from scipy.stats import pearsonr, mode #type:ignore
+from matplotlib import pyplot as plt #type:ignore
 import numpy as np
+import mne #type:ignore
 
-class Missing:
-    pass
 
-def predict(eeg:np.ndarray,experiment:ExperimentInfo,freqs:Optional[list[FP]]=None):
-   
-    eeg_length,channel = eeg.shape
-    eeg = eeg.reshape(1,channel,eeg_length)
+def predict(eeg:Union[list[list[float]],np.ndarray],experiment_info:ExperimentInfo,freqs:Optional[list[FP]]=None,remove_Thailand_power_line:bool=False)->tuple[FP,list[float]]:
+
+    channel = len(eeg[0])
+
+    ch_types = ['eeg'] * (channel)
+
+  
+    eeg_mne_arr:RawArray =  mne.io.RawArray(to_mne_format(eeg),mne.create_info([str(i) for i in range(channel)],experiment_info.headset_info.sample_rate,ch_types))    
+    
+    if(remove_Thailand_power_line):
+        eeg_mne_arr.notch_filter(np.arange(50, 125, 50), filter_length='auto', phase='zero')
+    # eeg_mne_arr.filter(4, 77, method='iir')
+
+
+    eeg_numpy:np.ndarray = np.expand_dims(eeg_mne_arr.get_data(), axis=0)
+    
+
+
     if(freqs is None):
         freqs_default:list[FP] = [wave for wave in wave_data if wave is not None]
-        return fbcca(eeg,freqs_default,experiment.headset_info.sample_rate)
-  
-    return fbcca(eeg,freqs,experiment.headset_info.sample_rate)
+        return fbcca(eeg_numpy,freqs_default,experiment_info.headset_info.sample_rate)
+
+
+    return fbcca(eeg_numpy,freqs,experiment_info.headset_info.sample_rate)
 
 
 """
@@ -53,7 +72,9 @@ Reference:
 """
 # Adapted for working with python mne
 
-def fbcca(eeg:np.ndarray, freqs:list[FP], sampling_frequency:Union[float,int], num_harms=5, num_fbs=5):
+def fbcca(eeg:np.ndarray, freqs:list[FP], sampling_frequency:Union[float,int], num_harms=5, num_fbs=5)->tuple[FP,list[float]]:
+
+   
     fb_coefs = np.power(np.arange(1, num_fbs + 1), (-1.25)) + 0.25
 
     num_targs = len(freqs)
@@ -62,13 +83,20 @@ def fbcca(eeg:np.ndarray, freqs:list[FP], sampling_frequency:Union[float,int], n
     cca = CCA(n_components=1)  # initilize CCA
 
     # result matrix
+    rho:np.ndarray
     r = np.zeros((num_fbs, num_targs))
     results = np.zeros(num_targs)
     r_mode = []
     r_corr_avg = []
 
     for event in range(eeg.shape[0]):
+        
         test_tmp = np.squeeze(eeg[event, :, :])  # deal with one event a time
+
+
+
+
+
         for fb_i in range(num_fbs):  # filter bank number, deal with different filter bank
             for class_i in range(num_targs):
                 testdata = filterbank(test_tmp, sampling_frequency, fb_i)  # data after filtering
@@ -91,7 +119,7 @@ def fbcca(eeg:np.ndarray, freqs:list[FP], sampling_frequency:Union[float,int], n
         r_corr_avg.append(abs(rho[result]))
     # print("====Most recurrent class: ====", mode(r_mode)[0][0])
     # print("====Average correlation: =====", np.mean(r_corr_avg))
-    return freqs[mode(r_mode)[0][0]]
+    return freqs[mode(r_mode)[0][0]],rho.tolist()
 
 
 '''
@@ -126,7 +154,6 @@ def cca_reference(freqs:list[FP], fs, num_smpls, num_harms=3):
     tidx = np.arange(1, num_smpls + 1) / fs  # time index
 
     y_ref = np.zeros((num_freqs, 2 * num_harms, num_smpls)) 
-    # y_ref = np.zeros((num_freqs, num_harms, num_smpls))
     for freq_i in range(num_freqs):
         tmp = []
         for harm_i in range(1, num_harms + 1):
@@ -136,9 +163,6 @@ def cca_reference(freqs:list[FP], fs, num_smpls, num_harms=3):
             tmp.extend([np.sin(2 * np.pi * tidx * harm_i * stim_freq + np.pi *phase),
                         np.cos(2 * np.pi * tidx * harm_i * stim_freq + np.pi *phase)
                         ])
-
-            # tmp.extend([np.sin(2 * np.pi * tidx * harm_i * stim_freq ),
-            #             np.cos(2 * np.pi * tidx * harm_i * stim_freq)])
 
         y_ref[freq_i] = tmp  # 2*num_harms because include both sin and cos
 

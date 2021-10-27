@@ -117,29 +117,41 @@ def ssvp(p_id:str):
     
         eeg_docs = get_eeg_docs(p_id)
         experiment_docs = get_experiment_docs_with_target_grid(p_id)
-        attempt_config:ExperimentInfo
-        if("A02" in p_id):
-            attempt_config=ATTEMPT2
-        if("A03" in p_id):
-            attempt_config=ATTEMPT3
-        if("A04" in p_id):
-            attempt_config=ATTEMPT4
-        if("A06" in p_id):
-            attempt_config=ATTEMPT6
-        if("A07" in p_id):
-            attempt_config=ATTEMPT7
+
 
         return compose_ssvp_dataset(eeg_docs,experiment_docs,attempt_config,(10,20),[*[0,1,2]])
         # return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT2,[*[0,1,2],*[3,4,5,6]])
 
+
+    attempt_config:ExperimentInfo
+    if("A02" in p_id):
+        attempt_config=ATTEMPT2
+    if("A03" in p_id):
+        attempt_config=ATTEMPT3
+    if("A04" in p_id):
+        attempt_config=ATTEMPT4
+    if("A05" in p_id):
+        attempt_config=ATTEMPT5
+    if("A06" in p_id):
+        attempt_config=ATTEMPT6
+    if("A07" in p_id):
+        attempt_config=ATTEMPT7
     list_ssvp = object_saver.disk_cache(load,f"{p_id}-ssvp.pkl")
 
-    count_correct = 0
+    count_correct = 0 
+    
     for ssvp in list_ssvp:
         if( isinstance(ssvp,SSVPDataWithLabel) ): # For mypy
-            result = predict(ssvp.eeg,ATTEMPT2)
-            y_true = ssvp_freq_info.wave_data[ssvp.target_grid] 
-            y_hat = result
+            result = predict(ssvp.eeg,attempt_config)
+        
+
+            y_true = ssvp_freq_info.wave_data[ssvp.target_grid]
+            y_hat:ssvp_freq_info.FP
+            rho:list[float]
+            y_hat,rho = result
+
+            print("-"*20)
+            print(f"{rho=}")
             print(f"{y_true=},{y_hat=}")
             if(y_true ==  y_hat ):
                 count_correct+=1

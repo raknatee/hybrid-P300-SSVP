@@ -1,15 +1,19 @@
 from __future__ import annotations
 import os
 from typing import Generator
-from matplotlib import pyplot as plt
-import mne
+from matplotlib import pyplot as plt #type:ignore
+import mne #type:ignore
 import numpy as np
 from numpy import ndarray
-from mne.io.array.array import RawArray
+from mne.io.array.array import RawArray #type:ignore
+from mne import Epochs, find_events
+
 
 from module.experiment_info import ExperimentInfo, HeadsetInfo, P300ExperimentConfig
 from module.ssvp_module.fbcca import predict
-from module.ssvp_module.ssvp_freq_info import FP #type: ignore
+from module.ssvp_module.ssvp_freq_info import FP 
+
+mne.set_log_file("./logs/mne.log",overwrite=True)
 
 
 data_file_name:str = "ssvep-10trials-3s-chaky-bigsquare-gitignore.csv"
@@ -48,13 +52,12 @@ def main():
     ch_types = ['eeg'] * (len(channel_names)-1) + ['stim']
 
   
-    ssvp_each_hz:list[SSVPData]
-    for index,ssvp_each_hz in enumerate([ssvp_data_list]):
-        eeg_round = [data.eeg for data in ssvp_each_hz]
-        eeg_mne_arr:RawArray =  mne.io.RawArray(to_mne_format(eeg_round),mne.create_info(channel_names,250,ch_types))
-        eeg_mne_arr.set_montage(mne.channels.make_standard_montage('standard_1020'))
-        eeg_mne_arr.plot_psd()
-        plt.savefig(f"./logs/plot-ssvp-chaky-all-gitignore.png")
+
+    eeg_round = [data.eeg for data in ssvp_data_list]
+    eeg_mne_arr:RawArray =  mne.io.RawArray(to_mne_format(eeg_round),mne.create_info(channel_names,250,ch_types))
+    eeg_mne_arr.set_montage(mne.channels.make_standard_montage('standard_1020'))
+    eeg_mne_arr.plot_psd()
+    plt.savefig(f"./logs/plot-ssvp-chaky-all-gitignore.png")
 
     I_dont_know_real_but_just_dummy = ExperimentInfo(headset_info=HeadsetInfo(250,['O2','OZ','O1','P8','P4','P3','P7','FpZ']),
                             p300_experiment_config=P300ExperimentConfig(0,1)
@@ -67,13 +70,18 @@ def main():
         for target in ssvp_each_hz:
             eeg_round = [ data.eeg for data in pad_non_target(target.timestamp,ssvp_data_list)]
        
-            eeg_mne_arr:RawArray =  mne.io.RawArray(to_mne_format(eeg_round),mne.create_info(channel_names,250,ch_types))
+
+            eeg_mne_arr:RawArray =  mne.io.RawArray(to_mne_format(eeg_round),mne.create_info(channel_names,230,ch_types))
             eeg_mne_arr.set_montage(mne.channels.make_standard_montage('standard_1020'))
             eeg_mne_arr.plot_psd()
-            plt.savefig(f"./logs/plot-ssvp-chaky-{index}-gitignore.png")
+            plt.savefig(f"./logs/plot-ssvp-chaky-{index}-{count['all']}-gitignore.png")
 
             y_true = expected_fp[index]
-            y_hat = predict(np.array(eeg_round),I_dont_know_real_but_just_dummy,expected_fp)
+
+            y_hat:FP
+            rho:list[float]
+            y_hat,rho = predict(np.array(eeg_round),I_dont_know_real_but_just_dummy,expected_fp,remove_Thailand_power_line=True)
+            print(f"{rho=}")
             print(f"{y_true=}")
             print(f"{y_hat=}")
             print("-"*20)
@@ -95,8 +103,10 @@ def to_mne_format(eeg:list[list[float]])->ndarray:
 
 def pad_non_target(time:float,all_eeg:list[SSVPData])->list[SSVPData]:
   
-    time_start = time - 0.5
+    time_start = time - .5
     time_end = time + 3
+
+
    
     return [data for data in all_eeg if time_start<= data.timestamp<=time_end]
 
