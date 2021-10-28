@@ -42,7 +42,7 @@ import { setBG } from "@/modules/renderer/BasicSetup";
 import { getSizeW, getSizeH } from "@/modules/renderer/Sizing";
 
 import { getJsonFromWSMessage } from "@/modules/RestAPIHelper/WSHelper";
-import { getNow } from "@/modules/SinWave";
+import { getNow } from "@/modules/Time";
 
 import { AppState } from "@/modules/SubSpeller/AppState";
 import { sleep } from "@/modules/Time";

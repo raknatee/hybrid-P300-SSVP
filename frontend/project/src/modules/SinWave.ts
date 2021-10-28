@@ -1,3 +1,4 @@
+import {getNow} from "./Time"
 class SinWave {
     freq:number
     phare:number
@@ -19,8 +20,6 @@ class SinWave {
         return Math.abs(this._get_y_t(timenow) - 1) < 1e-1
     }
 }
-const getNow = ():number => {
-    return Date.now() / 1000
-    // return performance.now() / 1000
-}
-export { SinWave, getNow }
+
+
+export { SinWave }

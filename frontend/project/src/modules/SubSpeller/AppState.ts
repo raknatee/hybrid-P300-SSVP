@@ -2,7 +2,7 @@ import { GridHelper } from "@/modules/renderer/GridHelper";
 import { SubSpeller } from "@/modules/SubSpeller/SubSpeller";
 import { style } from "@/modules/renderer/Style";
 import { getSizeW, getSizeH } from "@/modules/renderer/Sizing";
-
+import {subSpellerData} from "@/modules/SubSpeller/info"
 enum State{
     ZERO,
     FlashingP300,
@@ -51,7 +51,7 @@ class AppState {
         );
         const subSpellers = [];
         for (let i = 0; i < 12; i++) {
-            if (i == 8 || i == 9) {
+            if (subSpellerData[i] === null) {
                 continue;
             }
             const coor = gridHelper.getCoordinate(i);

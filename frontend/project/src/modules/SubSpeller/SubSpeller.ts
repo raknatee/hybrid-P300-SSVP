@@ -1,7 +1,8 @@
 import { subSpellerData, wavesData } from "./info"
 import { getSizeW, getSizeH } from "@/modules/renderer/Sizing"
 import { GridHelper } from "@/modules/renderer/GridHelper"
-import { SinWave, getNow } from "@/modules/SinWave"
+import { SinWave } from "@/modules/SinWave"
+import { getNow,getPerformanceNow } from "../Time"
 import {  checkerboard } from "@/modules/Random"
 import { style } from "@/modules/renderer/Style"
 import { AppState,State } from "./AppState"
@@ -22,6 +23,7 @@ class SubSpeller {
     gridHelper:GridHelper
     state:AppState|undefined
 
+    ssvpMode:SSVPMode
     startTime:number|undefined
     startTimeForSSVP:number|undefined
     _countFrame:number|undefined
@@ -33,7 +35,7 @@ class SubSpeller {
 
     do_need_to_watch_the_target:boolean
     msgExperiment:any
-    constructor(index:number, x:number, y:number, spawnTime:number, ttl:number) {
+    constructor(index:number, x:number, y:number, spawnTime:number, ttl:number,ssvpMode:SSVPMode=SSVPMode.SinWaveMode) {
         this.gridIndex = index
         this.alphabets = subSpellerData[this.gridIndex]!
 
@@ -59,6 +61,9 @@ class SubSpeller {
 
         // P300
         this.randomIndex = []
+
+        // SSVP
+        this.ssvpMode = ssvpMode
 
         // For Offline mode creates a message
         this.do_need_to_watch_the_target = false
@@ -87,14 +92,16 @@ class SubSpeller {
         })
     }
     setStartForP300():void {
-        // TODO : if we want to have a overlap array, I need to make sure that. 
-        // Do not have two alphabets which are close togerther SHOW at the same time
+
 
         this.randomIndex = checkerboard(this.alphabets.length)
 
         this.startTime = getNow()
-        this.startTimeForSSVP = performance.now()/1000
+        this.startTimeForSSVP = getPerformanceNow()
+
+        console.log(`previous FPS ${this._countFrame}`)
         this._countFrame = 0
+        
         for (let i = 0; i < this.randomIndex.length; i++) {
 
             setTimeout(() => {
@@ -111,7 +118,7 @@ class SubSpeller {
     _pushToCurrentIndex(i:number):void {
 
         this.currentIndexes.push(
-            new CurrentIndex(this.randomIndex[i],getNow())
+            new CurrentIndex(this.randomIndex[i],getPerformanceNow())
         )
 
         if (this.do_need_to_watch_the_target) {
@@ -141,44 +148,45 @@ class SubSpeller {
             return
         }
 
-        const now = getNow()
+        this._countFrame!+=1
+        const now = getPerformanceNow()
 
-
-        if (now - this.currentIndexes[0].time >= this.ttl / 1000) {
+        // Warning: It would remove only first currentIndex per frame of FPS
+        if (now - this.currentIndexes[0].time_started >= this.ttl / 1000) {
             this.currentIndexes.shift()
         }
 
 
 
 
-
-        const time = performance.now()/1000-this.startTimeForSSVP!
-        const color = 255 - (Math.abs(this.sinWave._get_y_t(time))  * 255)
-
-        ctx.fillStyle = `rgb(${color},${color},${color})`;
-        // this._countFrame! += 1
-        // if(this.gridIndex==0){
-        //     if(color<50){
-        //         console.log("w")    
-        //     }
-        //     if(color>200){
-        //         console.log("b")
-        //     }
-        //     if(this._countFrame! >= 60){
-        //         console.log(this._countFrame)
-        //     }
+        // if(this.ssvpMode == SSVPMode.SinWaveMode){
+        //     const time = getPerformanceNow()-this.startTimeForSSVP!
+        //     const color = 255 - (Math.abs(this.sinWave._get_y_t(time))  * 255)
+    
+        //     ctx.fillStyle = `rgb(${color},${color},${color})`;
+    
+        //     this.currentIndexes.forEach((e) => {
+        //         const coor = this.gridHelper.getCoordinate(e.index)
+        //         ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * style.boxHighlightWScale, style.fontSize * style.boxHighlightHScale)
+        //     })
         // }
 
-        this.currentIndexes.forEach((e) => {
-            const coor = this.gridHelper.getCoordinate(e.index)
-            ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * 1.2, style.fontSize * 1.3)
-        })
+        if(this.ssvpMode == SSVPMode.SinWaveMode){
+            const now = getPerformanceNow()
+            
+    
+            this.currentIndexes.forEach((e) => {
 
 
+                const color = 255 - (Math.abs(this.sinWave._get_y_t(now-e.time_started))  * 255)
+    
+                ctx.fillStyle = `rgb(${color},${color},${color})`;
 
-
-
-
+                const coor = this.gridHelper.getCoordinate(e.index)
+                ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * style.boxHighlightWScale, style.fontSize * style.boxHighlightHScale)
+            })
+        }
+     
 
 }
     renderTarget(ctx:CanvasRenderingContext2D):void {
@@ -193,7 +201,7 @@ class SubSpeller {
 
       ctx.fillStyle = "red"
         const coor = this.gridHelper.getCoordinate(targetIndexs!.alpIndex)
-      ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * 1.2, style.fontSize * 1.3)
+      ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * style.boxHighlightWScale, style.fontSize * style.boxHighlightHScale)
 
     }
     setOfflineWatcher(msgExperiment:any):void {
@@ -206,12 +214,16 @@ class SubSpeller {
 }
 class CurrentIndex{
     index:number
-    time:number
-    constructor(index:number,time:number){
+    time_started:number
+    constructor(index:number,time_started:number){
         this.index=index
-        this.time=time
+        this.time_started=time_started
     }
 }
 
+enum SSVPMode{
+    SinWaveMode,
+    // PeriodTimeMode
+}
 
 export { SubSpeller, State }
