@@ -16,6 +16,7 @@ import numpy as np
 import mne #type:ignore
 
 
+
 def predict(eeg:Union[list[list[float]],np.ndarray],experiment_info:ExperimentInfo,freqs:Optional[list[FP]]=None,remove_Thailand_power_line:bool=False)->tuple[FP,list[float]]:
 
     channel = len(eeg[0])
@@ -27,7 +28,7 @@ def predict(eeg:Union[list[list[float]],np.ndarray],experiment_info:ExperimentIn
     
     if(remove_Thailand_power_line):
         eeg_mne_arr.notch_filter(np.arange(50, 125, 50), filter_length='auto', phase='zero')
-    # eeg_mne_arr.filter(4, 77, method='iir')
+ 
 
 
     eeg_numpy:np.ndarray = np.expand_dims(eeg_mne_arr.get_data(), axis=0)

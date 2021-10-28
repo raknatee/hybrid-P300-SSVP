@@ -12,7 +12,7 @@ from module.dataset_helper import P300DataFilter, train_test_splitter
 from module.eval_helper import acc, to_one_hot 
 from module import object_saver
 
-from module.experiment_info import ATTEMPT2, ATTEMPT3, ATTEMPT4, ATTEMPT5, ATTEMPT6, ATTEMPT7, ExperimentInfo
+from module.experiment_info import ATTEMPT2, ATTEMPT3, ATTEMPT4, ATTEMPT5, ATTEMPT6, ATTEMPT7, ATTEMPT8, ExperimentInfo
 from module.gpu_helper import to_gpu
 from module.ssvp_module import ssvp_freq_info
 from module.ssvp_module.fbcca import predict
@@ -136,16 +136,18 @@ def ssvp(p_id:str):
         attempt_config=ATTEMPT6
     if("A07" in p_id):
         attempt_config=ATTEMPT7
+
     list_ssvp = object_saver.disk_cache(load,f"{p_id}-ssvp.pkl")
 
     count_correct = 0 
     
     for ssvp in list_ssvp:
         if( isinstance(ssvp,SSVPDataWithLabel) ): # For mypy
+         
             result = predict(ssvp.eeg,attempt_config)
         
-
             y_true = ssvp_freq_info.wave_data[ssvp.target_grid]
+            
             y_hat:ssvp_freq_info.FP
             rho:list[float]
             y_hat,rho = result
@@ -157,3 +159,6 @@ def ssvp(p_id:str):
                 count_correct+=1
 
     print(f"acc: {count_correct/len(list_ssvp)}")
+
+def analyze_ssvp():
+    pass

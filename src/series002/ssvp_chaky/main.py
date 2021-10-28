@@ -76,6 +76,8 @@ def main():
             eeg_mne_arr.plot_psd()
             plt.savefig(f"./logs/plot-ssvp-chaky-{index}-{count['all']}-gitignore.png")
 
+            
+
             y_true = expected_fp[index]
 
             y_hat:FP
