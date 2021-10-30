@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../global-style.css">
+    <link rel="stylesheet" href="../code-highlight.css">
 
 </head>
 
@@ -57,34 +58,39 @@ client (EEG client) -> api
         <p>GUI needs to set those information to
             <a href="../data-model/index.html#general-collection-model">Generial Collection</a> for eeg-client and ML-server because they need to use it for collection naming.</p>
         <h2>Request body</h2>
-        <code>{
-    current_mode: "offline" | "online"
-    current_participant_id: &lt;string&gt; # Ex: S01, S02
-}
-</code>
+        <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="n">current_mode</span><span class="p">:</span> <span class="s2">&quot;offline&quot;</span> <span class="o">|</span> <span class="s2">&quot;online&quot;</span>
+    <span class="n">current_participant_id</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">str</span><span class="o">&gt;</span>
+<span class="p">}</span>
+</pre></div>
+
+
 
     </div>
     <div>
         <h1>/db <span class="protocol">HTTP GET</span></h1>
 
         <h2>Response body </h2>
-        <code>{
-    current_mode: "offline" | "online"
-    current_participant_id: &lt;string&gt; # Ex: S01, S02
-}
-</code>
+        <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="n">current_mode</span><span class="p">:</span> <span class="s2">&quot;offline&quot;</span> <span class="o">|</span> <span class="s2">&quot;online&quot;</span>
+    <span class="n">current_participant_id</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">str</span><span class="o">&gt;</span>
+<span class="p">}</span>
+</pre></div>
+
+
         <hr>
     </div>
     <div id="database_viewer">
         <h1>/db/&lt;DATABASE-NAME&gt; <span class="protocol">HTTP GET</span></h1>
         <p>Return number of documents in each collection in particular Mongo database</p>
         <h2>Response body </h2>
-        <code>{
-    &lt;Collection name&gt;: &lt;int&gt;
-    ...
-    &lt;Collection name&gt;: &lt;int&gt;
-}
-</code>
+        <div class="highlight"><pre><span></span><span class="p">{</span> 
+    <span class="o">&lt;</span><span class="n">Collection</span><span class="n">name</span><span class="o">&gt;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">int</span><span class="o">&gt;</span>
+    <span class="o">...</span> 
+    <span class="o">&lt;</span><span class="n">Collection</span><span class="n">name</span><span class="o">&gt;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">int</span><span class="o">&gt;</span>
+<span class="p">}</span>
+</pre></div>
+
         <hr>
     </div>
     <div>
@@ -104,30 +110,38 @@ client (EEG client) -> api
 
             </li>
             <li>Client submits information.</li>
-            <code>client -> api
-{
-    "data":[
+            <div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">-</span><span class="o">&gt;</span> <span class="n">api</span> 
+<span class="p">{</span>
+    <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
 
-        {"timestamp": &lt;timestamp(float of s)&gt;,
-        "data":[&lt;float&gt;,&lt;float&gt;,...,&lt;float&gt;]},
+        <span class="p">{</span>
+            <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">timestamp</span><span class="p">(</span><span class="nb">float</span> <span class="n">of</span> <span class="n">s</span><span class="p">)</span><span class="o">&gt;</span> <span class="p">,</span>
+            <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="o">&lt;</span><span class="nb">float</span><span class="o">&gt;</span> <span class="p">,</span> <span class="o">&lt;</span><span class="nb">float</span><span class="o">&gt;</span> <span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="o">&lt;</span><span class="nb">float</span><span class="o">&gt;</span> <span class="p">]</span>
+        <span class="p">},</span>
 
-        {"timestamp": &lt;timestamp(float of s)&gt;,
-        "data":[&lt;float&gt;,&lt;float&gt;,...,&lt;float&gt;]},
+        <span class="p">{</span>
+            <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">timestamp</span><span class="p">(</span><span class="nb">float</span> <span class="n">of</span> <span class="n">s</span><span class="p">)</span><span class="o">&gt;</span> <span class="p">,</span>
+            <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="o">&lt;</span><span class="nb">float</span><span class="o">&gt;</span> <span class="p">,</span> <span class="o">&lt;</span><span class="nb">float</span><span class="o">&gt;</span> <span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="o">&lt;</span><span class="nb">float</span><span class="o">&gt;</span> <span class="p">]</span>
+        <span class="p">},</span>
 
-        ...
+        <span class="o">...</span>
 
-        {"timestamp": &lt;timestamp(float of s)&gt;,
-        "data":[&lt;float&gt;,&lt;float&gt;,...,&lt;float&gt;]},
-    
-    ]
-    
-}
-                        </code>
+        <span class="p">{</span>
+            <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">timestamp</span><span class="p">(</span><span class="nb">float</span> <span class="n">of</span> <span class="n">s</span><span class="p">)</span><span class="o">&gt;</span> <span class="p">,</span>
+            <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="o">&lt;</span><span class="nb">float</span><span class="o">&gt;</span> <span class="p">,</span> <span class="o">&lt;</span><span class="nb">float</span><span class="o">&gt;</span> <span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="o">&lt;</span><span class="nb">float</span><span class="o">&gt;</span> <span class="p">]</span>
+        <span class="p">},</span>
+
+    <span class="p">]</span>
+
+<span class="p">}</span>
+</pre></div>
+
             <li>
                 <p>Server acks back</p>
-                <code>client <- api
-1
-</code>
+                <div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">&lt;-</span> <span class="n">api</span>
+<span class="mi">1</span>
+</pre></div>
+
             </li>
             <li>
                 <p>repeat step 2</p>
@@ -199,11 +213,11 @@ client (EEG client) -> api
                     before client run the experiment, this API must send something to tell Im ready (because in the future we can add something like Next button)
                 </p>
 
-                <code>
-client <- api
+                <div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">&lt;-</span> <span class="n">api</span>
 
-{"cmd":"next"}
-                </code>
+<span class="p">{</span> <span class="s2">&quot;cmd&quot;</span><span class="p">:</span> <span class="s2">&quot;next&quot;</span> <span class="p">}</span>
+</pre></div>
+
 
             </li>
 
@@ -229,27 +243,27 @@ client <- api
             <li>
                 <p>Server/This API saves those data (those data mean timestamp of each alphabet) then finishs this round then repeat next round (repeat step 2)</p>
 
-                <code>
-client -> api
+                <div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">-&gt;</span> <span class="n">api</span>
 
-{
-    "target_grid": &lt;int&gt;
-    "target_index": &lt;int&gt;
-    "data":[
-                {
-                    "timestamp": &lt;timestamp(float of s)&gt;,
-                    "is_target_activated": &lt;bool&gt;
-                },
-                {
-                    "timestamp": &lt;timestamp(float of s)&gt;,
-                    "is_target_activated": &lt;bool&gt;
-                }
-                ...  # noted: number == size of that grid
-            ]
+<span class="p">{</span>
+    <span class="s2">&quot;target_grid&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">int</span><span class="o">&gt;</span>
+    <span class="s2">&quot;target_index&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">int</span><span class="o">&gt;</span>
+    <span class="s2">&quot;data&quot;</span><span class="p">:[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">timestamp</span><span class="p">(</span><span class="nb">float</span> <span class="n">of</span> <span class="n">s</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
+                    <span class="s2">&quot;is_target_activated&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">bool</span><span class="o">&gt;</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">timestamp</span><span class="p">(</span><span class="nb">float</span> <span class="n">of</span> <span class="n">s</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
+                    <span class="s2">&quot;is_target_activated&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">bool</span><span class="o">&gt;</span>
+                <span class="p">}</span>
+                <span class="o">...</span>  <span class="c1"># noted: number == size of that grid</span>
+            <span class="p">]</span>
             
 
-}
-                </code>
+<span class="p">}</span>
+</pre></div>
+
             </li>
         </ol>
         <hr>
@@ -284,11 +298,11 @@ client -> api
             </li>
             <li>
                 <p>Server/API tells that we are going to begin the experiment</p>
-                <code>
-client <- api
+                <div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">&lt;-</span> <span class="n">api</span>
 
-{"cmd":"next"}
-            </code>
+<span class="p">{</span> <span class="s2">&quot;cmd&quot;</span><span class="p">:</span> <span class="s2">&quot;next&quot;</span> <span class="p">}</span>
+</pre></div>
+
             </li>
             <li>
                 <p>client run the experiment</p>
@@ -304,13 +318,13 @@ client <- api
             </li>
             <li>
                 <p>Client says ok Im done</p>
-                <code>
-client -> api
+                <div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">-&gt;</span> <span class="n">api</span>
 
-{
-    "begin_time":&lt;timestamp(float of s)&gt;,
-}
-            </code>
+<span class="p">{</span>
+    <span class="s2">&quot;begin_time&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">timestamp</span><span class="p">(</span><span class="nb">float</span> <span class="n">of</span> <span class="n">s</span><span class="p">)</span><span class="o">&gt;</span> <span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+
             </li>
 
             <li>
@@ -325,15 +339,15 @@ client -> api
 
 
                 </ul>
-                <code>
-client <- api
-{
-    "cmd": "output_model"
-    "guessed_grid": &lt;int&gt;,
-    "guessed_index_order": &lt;int&gt;
-    
-}
-            </code>
+                <div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">&lt;-</span> <span class="n">api</span> 
+
+<span class="p">{</span>
+    <span class="s2">&quot;cmd&quot;</span><span class="p">:</span> <span class="s2">&quot;output_model&quot;</span>
+    <span class="s2">&quot;guessed_grid&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">int</span><span class="o">&gt;</span> <span class="p">,</span>
+    <span class="s2">&quot;guessed_index_order&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">int</span><span class="o">&gt;</span>
+<span class="p">}</span>
+</pre></div>
+
             </li>
         </ol>
     </div>
