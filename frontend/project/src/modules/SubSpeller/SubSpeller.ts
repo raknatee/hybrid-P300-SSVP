@@ -183,7 +183,8 @@ class SubSpeller {
                 ctx.fillStyle = `rgb(${color},${color},${color})`;
 
                 const coor = this.gridHelper.getCoordinate(e.index)
-                ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * style.boxHighlightWScale, style.fontSize * style.boxHighlightHScale)
+                ctx.fillRect( Math.floor(coor.x - style.fontSize / 4),Math.floor( coor.y - style.fontSize),Math.floor( style.fontSize * style.boxHighlightWScale),  Math.floor( style.fontSize * style.boxHighlightHScale) )
+                // ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * style.boxHighlightWScale, style.fontSize * style.boxHighlightHScale)
             })
         }
         if(this.ssvpMode==SSVPMode.PulseWaveMode){
@@ -191,11 +192,15 @@ class SubSpeller {
             this.currentIndexes.forEach((currentIndex)=>{
 
                 const y = Math.abs(this.sinWave._get_y_t(now-currentIndex.time_started))
-                const color  = (y>0.5?1:0)*255
-                ctx.fillStyle = `rgb(${color},${color},${color})`;
+
+                const color  = y>0.5?"black":"white"
+                ctx.fillStyle = color;
+
+                // const color  = (y>0.5?1:0)*255
+                // ctx.fillStyle = `rgb(${color},${color},${color})`;
 
                 const coor = this.gridHelper.getCoordinate(currentIndex.index)
-                ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * style.boxHighlightWScale, style.fontSize * style.boxHighlightHScale)
+                ctx.fillRect( Math.floor(coor.x - style.fontSize / 4),Math.floor( coor.y - style.fontSize),Math.floor( style.fontSize * style.boxHighlightWScale),  Math.floor( style.fontSize * style.boxHighlightHScale) )
           
             })
         }
