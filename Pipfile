@@ -1,0 +1,27 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pylsl = "*"
+numpy = "*"
+pandas = "*"
+preferences = "*"
+configobj = "*"
+future = "*"
+packaging = "*"
+pyglet = "*"
+pyyaml = "*"
+wxpython = "*"
+scipy = "*"
+json-tricks = "*"
+python-bidi = "*"
+freetype-py = "*"
+requests = "*"
+matplotlib = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
