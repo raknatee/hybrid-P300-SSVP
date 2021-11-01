@@ -3,6 +3,7 @@ import { SubSpeller } from "@/modules/SubSpeller/SubSpeller";
 import { style } from "@/modules/renderer/Style";
 import { getSizeW, getSizeH } from "@/modules/renderer/Sizing";
 import {subSpellerData} from "@/modules/SubSpeller/info"
+import {SSVPMode} from "@/modules/SubSpeller/SubSpeller"
 enum State{
     ZERO,
     FlashingP300,
@@ -55,7 +56,7 @@ class AppState {
                 continue;
             }
             const coor = gridHelper.getCoordinate(i);
-            const thisSubSpller = new SubSpeller(i, coor.x, coor.y, spawn, ttl)
+            const thisSubSpller = new SubSpeller(i, coor.x, coor.y, spawn, ttl,SSVPMode.PulseWaveMode)
             subSpellers.push(thisSubSpller);
         }
         return subSpellers

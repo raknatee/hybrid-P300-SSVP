@@ -73,11 +73,11 @@ const wavesData = [
     null,
     new fp(6, 0),
     null,
-    new fp(11,0),
+    new fp(10,0),
     null,
    null,
     
-    new fp(15,0),
+    new fp(16,0),
     null, null,
    null,null
 ]

@@ -35,7 +35,7 @@ class SubSpeller {
 
     do_need_to_watch_the_target:boolean
     msgExperiment:any
-    constructor(index:number, x:number, y:number, spawnTime:number, ttl:number,ssvpMode:SSVPMode=SSVPMode.SinWaveMode) {
+    constructor(index:number, x:number, y:number, spawnTime:number, ttl:number,ssvpMode:SSVPMode) {
         this.gridIndex = index
         this.alphabets = subSpellerData[this.gridIndex]!
 
@@ -186,6 +186,19 @@ class SubSpeller {
                 ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * style.boxHighlightWScale, style.fontSize * style.boxHighlightHScale)
             })
         }
+        if(this.ssvpMode==SSVPMode.PulseWaveMode){
+            const now = getPerformanceNow()
+            this.currentIndexes.forEach((currentIndex)=>{
+
+                const y = Math.abs(this.sinWave._get_y_t(now-currentIndex.time_started))
+                const color  = (y>0.5?1:0)*255
+                ctx.fillStyle = `rgb(${color},${color},${color})`;
+
+                const coor = this.gridHelper.getCoordinate(currentIndex.index)
+                ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * style.boxHighlightWScale, style.fontSize * style.boxHighlightHScale)
+          
+            })
+        }
      
 
 }
@@ -224,6 +237,7 @@ class CurrentIndex{
 enum SSVPMode{
     SinWaveMode,
     // PeriodTimeMode
+    PulseWaveMode
 }
 
-export { SubSpeller, State }
+export { SubSpeller, State ,SSVPMode}
