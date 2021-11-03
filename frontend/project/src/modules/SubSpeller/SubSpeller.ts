@@ -8,6 +8,8 @@ import { style } from "@/modules/renderer/Style"
 import { AppState,State } from "./AppState"
 
 
+
+
 class SubSpeller {
     gridIndex:number
     alphabets:string[]
@@ -65,6 +67,8 @@ class SubSpeller {
         // SSVP
         this.ssvpMode = ssvpMode
 
+
+
         // For Offline mode creates a message
         this.do_need_to_watch_the_target = false
 
@@ -98,6 +102,8 @@ class SubSpeller {
 
         this.startTime = getNow()
         this.startTimeForSSVP = getPerformanceNow()
+
+
 
         console.log(`previous FPS ${this._countFrame}`)
         this._countFrame = 0
@@ -194,21 +200,25 @@ class SubSpeller {
             this.currentIndexes.forEach((currentIndex)=>{
 
 
-                const y = Math.abs(this.sinWave._get_y_t(this_now-currentIndex.time_started))
-                const color  = y>0.5?"black":"white"
+                // const y = Math.abs(this.sinWave._get_y_t(this_now-currentIndex.time_started))
+                // const color  = y>0.5?"black":"white"
 
-                // const y = this.sinWave._get_y_t(this_now-currentIndex.time_started)
-                // const color  = y>0?"black":"white"
-
-                ctx.fillStyle = color;
-          
-
-                // const color  = (y>0?1:0)*255
-                // ctx.fillStyle = `rgb(${color},${color},${color})`;
+                const y = this.sinWave._get_y_t(this_now-currentIndex.time_started)
+                const color  = y>0?"black":"white"
 
                 const coor = this.gridHelper.getCoordinate(currentIndex.index)
-                ctx.fillRect( Math.floor(coor.x - style.fontSize / 4),Math.floor( coor.y - style.fontSize),Math.floor( style.fontSize * style.boxHighlightWScale),  Math.floor( style.fontSize * style.boxHighlightHScale) )
-          
+                const xBox = Math.floor(coor.x - style.fontSize / 4)
+                const yBox = Math.floor( coor.y - style.fontSize)
+                if(color=="black"){
+                    this.state!.blackBoxPreDefine.fill(xBox,yBox)
+                }
+                if(color=="white"){
+                    this.state!.whiteBoxPreDefine.fill(xBox,yBox)
+                }
+                
+                // ctx.fillStyle = color;
+                // ctx.fillRect( Math.floor(coor.x - style.fontSize / 4),Math.floor( coor.y - style.fontSize),Math.floor( style.fontSize * style.boxHighlightWScale),  Math.floor( style.fontSize * style.boxHighlightHScale) )
+              
             })
         }
      

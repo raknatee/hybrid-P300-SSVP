@@ -4,6 +4,7 @@ import { style } from "@/modules/renderer/Style";
 import { getSizeW, getSizeH } from "@/modules/renderer/Sizing";
 import {subSpellerData} from "@/modules/SubSpeller/info"
 import {SSVPMode} from "@/modules/SubSpeller/SubSpeller"
+import {Box,BoxColor} from "@/modules/SubSpeller/BlackWhiteBox"
 enum State{
     ZERO,
     FlashingP300,
@@ -25,6 +26,9 @@ class AppState {
     subSpellers:SubSpeller[]
     msgExperiment:any
     targetIndex:TargetIndex|undefined
+
+    blackBoxPreDefine:Box
+    whiteBoxPreDefine:Box
     constructor(canvas:HTMLCanvasElement,ctx:CanvasRenderingContext2D, spawn:number, ttl:number) {
       
         this.appState = State.ZERO
@@ -36,6 +40,11 @@ class AppState {
         })
 
         this.msgExperiment = null
+
+        const wBox = Math.floor( style.fontSize * style.boxHighlightWScale)
+        const hBox = Math.floor( style.fontSize * style.boxHighlightHScale)
+        this.blackBoxPreDefine = new Box(ctx,wBox,hBox,BoxColor.BLACK)
+        this.whiteBoxPreDefine = new Box(ctx,wBox,hBox,BoxColor.WHITE)
 
     }
     setUpSubSpellers(spawn:number, ttl:number):SubSpeller[] {
