@@ -19,7 +19,7 @@ from mongo.query.get_dataset import  P300Data, SSVPData, SSVPDataWithLabel, comp
 
 mne.set_log_file("./logs/mne.log",overwrite=True)
 
-P_ID = "A08S01"
+P_ID = "A09S01"
 def main():
     def load()->list[Union[SSVPData,SSVPDataWithLabel]]:
     
@@ -36,7 +36,8 @@ def main():
 
     count_correct = 0 
     analysis = Analysis()
-    wavesData = [None,None,ssvp_freq_info.FP(6, 0),None,ssvp_freq_info.FP(11,0),None,None,ssvp_freq_info.FP(15,0),None, None,None,None]
+    # wavesData = [None,None,ssvp_freq_info.FP(6, 0),None,ssvp_freq_info.FP(11,0),None,None,ssvp_freq_info.FP(15,0),None, None,None,None]
+    wavesData = [None,None,ssvp_freq_info.FP(6, 0),None,ssvp_freq_info.FP(10,0),None,None,ssvp_freq_info.FP(16,0),None, None,None,None]
     for ssvp in list_ssvp:
         if( isinstance(ssvp,SSVPDataWithLabel) ): # For mypy
             
@@ -62,15 +63,19 @@ def main():
     print(f"acc: {count_correct/len(list_ssvp)}")
 
 class Analysis:
+    # data_6_hz:list[np.ndarray]
+    # data_11_hz:list[np.ndarray]
+    # data_15_hz:list[np.ndarray]
     data_6_hz:list[np.ndarray]
-    data_11_hz:list[np.ndarray]
-    data_15_hz:list[np.ndarray]
- 
+    data_10_hz:list[np.ndarray]
+    data_16_hz:list[np.ndarray]
     def __init__(self) -> None:
+        # self.data_6_hz = []
+        # self.data_11_hz = []
+        # self.data_15_hz = []
         self.data_6_hz = []
-        self.data_11_hz = []
-        self.data_15_hz = []
-
+        self.data_10_hz = []
+        self.data_16_hz = []
         self.channel = 3
         self.ch_types = ['eeg'] * (self.channel)
 
@@ -78,14 +83,14 @@ class Analysis:
 
         filtered_data:RawArray = mne.io.RawArray(to_mne_format(data),mne.create_info([str(i) for i in range(self.channel)],230,self.ch_types))    
         filtered_data.notch_filter(np.arange(50, 125, 50), filter_length='auto', phase='zero')
-        filtered_data = np.abs(filtered_data.get_data()[:,:480])
+        filtered_data = np.abs(filtered_data.get_data()[:,:440])
 
         if(freq==6):
             self.data_6_hz.append(filtered_data)
-        if(freq==11):
-            self.data_11_hz.append(filtered_data)
-        if(freq==15):
-            self.data_15_hz.append(filtered_data)
+        if(freq==10):
+            self.data_10_hz.append(filtered_data)
+        if(freq==16):
+            self.data_16_hz.append(filtered_data)
     
     def analyze_ssvp(self)->None:
 
@@ -97,15 +102,15 @@ class Analysis:
 
         plt.cla()
 
-       
-        for index,data_each_hz in enumerate([self.data_6_hz,self.data_11_hz,self.data_15_hz]):
+        for index,data_each_hz in enumerate([self.data_6_hz,self.data_10_hz,self.data_16_hz]):
+        # for index,data_each_hz in enumerate([self.data_6_hz,self.data_11_hz,self.data_15_hz]):
             temp = data_each_hz[0]
             for i,each_data in enumerate(data_each_hz): 
                 if(i==0):continue
                 temp = np.concatenate((temp,each_data),axis=0)
 
 
-      
+       
             temp = temp.mean(axis=0)
           
 
@@ -116,4 +121,4 @@ class Analysis:
             
 
         plt.legend()
-        plt.savefig(f"./logs/A08-all-mean.png")
+        plt.savefig(f"./logs/A09-all-mean.png")
