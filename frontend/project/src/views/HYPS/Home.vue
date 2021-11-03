@@ -153,10 +153,8 @@ export default defineComponent({
 
   mounted() {
     this.canvas = document.getElementById("canvas")! as HTMLCanvasElement;
-    this.ctx = this.canvas.getContext("2d",{
-      alpha:false
-    })!;
-
+    this.ctx = this.canvas.getContext("2d",{alpha:false})!;
+ 
     if (this.mode == "online") {
       this.applyOnline()
     }

@@ -171,32 +171,39 @@ class SubSpeller {
         //     })
         // }
 
-        if(this.ssvpMode == SSVPMode.SinWaveMode){
-            const now = getPerformanceNow()
+        // if(this.ssvpMode == SSVPMode.SinWaveMode){
+        //     const now = getPerformanceNow()
             
     
-            this.currentIndexes.forEach((e) => {
+        //     this.currentIndexes.forEach((e) => {
 
 
-                const color = 255 - (Math.abs(this.sinWave._get_y_t(now-e.time_started))  * 255)
+        //         const color = 255 - (Math.abs(this.sinWave._get_y_t(now-e.time_started))  * 255)
     
-                ctx.fillStyle = `rgb(${color},${color},${color})`;
+        //         ctx.fillStyle = `rgb(${color},${color},${color})`;
 
-                const coor = this.gridHelper.getCoordinate(e.index)
-                ctx.fillRect( Math.floor(coor.x - style.fontSize / 4),Math.floor( coor.y - style.fontSize),Math.floor( style.fontSize * style.boxHighlightWScale),  Math.floor( style.fontSize * style.boxHighlightHScale) )
-                // ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * style.boxHighlightWScale, style.fontSize * style.boxHighlightHScale)
-            })
-        }
-        if(this.ssvpMode==SSVPMode.PulseWaveMode){
-            const now = getPerformanceNow()
+        //         const coor = this.gridHelper.getCoordinate(e.index)
+        //         ctx.fillRect( Math.floor(coor.x - style.fontSize / 4),Math.floor( coor.y - style.fontSize),Math.floor( style.fontSize * style.boxHighlightWScale),  Math.floor( style.fontSize * style.boxHighlightHScale) )
+        //         // ctx.fillRect(coor.x - style.fontSize / 4, coor.y - style.fontSize, style.fontSize * style.boxHighlightWScale, style.fontSize * style.boxHighlightHScale)
+        //     })
+        // }
+
+
+        // if(this.ssvpMode==SSVPMode.PulseWaveMode){
+            const this_now = getPerformanceNow()
             this.currentIndexes.forEach((currentIndex)=>{
 
-                const y = Math.abs(this.sinWave._get_y_t(now-currentIndex.time_started))
 
-                const color  = y>0.5?"black":"white"
+                // const y = Math.abs(this.sinWave._get_y_t(this_now-currentIndex.time_started))
+                // const color  = y>0.5?"black":"white"
+
+                const y = this.sinWave._get_y_t(this_now-currentIndex.time_started)
+                const color  = y>0?"black":"white"
+
                 ctx.fillStyle = color;
+          
 
-                // const color  = (y>0.5?1:0)*255
+                // const color  = (y>0?1:0)*255
                 // ctx.fillStyle = `rgb(${color},${color},${color})`;
 
                 const coor = this.gridHelper.getCoordinate(currentIndex.index)
@@ -206,7 +213,6 @@ class SubSpeller {
         }
      
 
-}
     renderTarget(ctx:CanvasRenderingContext2D):void {
        
         if (this.state!.getCurrentState() != State.Targeting) {
@@ -240,7 +246,7 @@ class CurrentIndex{
 }
 
 enum SSVPMode{
-    SinWaveMode,
+    // SinWaveMode,
     // PeriodTimeMode
     PulseWaveMode
 }
