@@ -194,11 +194,11 @@ class SubSpeller {
             this.currentIndexes.forEach((currentIndex)=>{
 
 
-                // const y = Math.abs(this.sinWave._get_y_t(this_now-currentIndex.time_started))
-                // const color  = y>0.5?"black":"white"
+                const y = Math.abs(this.sinWave._get_y_t(this_now-currentIndex.time_started))
+                const color  = y>0.5?"black":"white"
 
-                const y = this.sinWave._get_y_t(this_now-currentIndex.time_started)
-                const color  = y>0?"black":"white"
+                // const y = this.sinWave._get_y_t(this_now-currentIndex.time_started)
+                // const color  = y>0?"black":"white"
 
                 ctx.fillStyle = color;
           

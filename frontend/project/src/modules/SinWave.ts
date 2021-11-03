@@ -3,8 +3,8 @@ class SinWave {
     freq:number
     phare:number
     constructor(freq:number, phare:number) {
-        // this.freq = freq /2
-        this.freq = freq 
+        this.freq = freq /2
+        // this.freq = freq 
         this.phare = phare
     }
     _get_y_t(time:number):number {
