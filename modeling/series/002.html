@@ -75,6 +75,51 @@
         </li>
     </ul>
     <h1>SSVEP Part</h1>
+    <h2 id="ssvp-2021-11-03" >2021-11-03</h2>
+    <h3>Dataset</h3>
+    <ul>
+        <li><a href="../index.html#data-collection-attempt-9"><p>A09S01</p></a></li>
+    </ul>
+    <h3>Data processing</h3>
+    <ul>
+        <li>notch_filter(np.arange(50, 125, 50), filter_length='auto', phase='zero')</li>
+    </ul>
+    <h3>Result</h3>
+    <ul>
+        <li><p>class-0 => 6</p></li>
+        <li><p>class-1 => 10</p></li>
+        <li><p>class-2 => 16</p></li>
+        <img src="./img/a09-all-mean.png" alt="">
+        <code>--------------------
+rho=[1.2593675500155532, 1.1882689701214808, 0.6044675665862372]
+y_true=FP(freq=6, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[1.0985578369679172, 0.861462923192541, 1.2163017252633441]
+y_true=FP(freq=10, phare=0),y_hat=FP(freq=16, phare=0)
+--------------------
+rho=[1.1554722626149265, 1.0604678211437153, 0.8947112440928142]
+y_true=FP(freq=16, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[1.1630632075173437, 0.9781252163908896, 0.7519029260351239]
+y_true=FP(freq=6, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[1.0266208320474468, 0.6901172285064037, 0.6812667996490231]
+y_true=FP(freq=10, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[1.1323819860285094, 1.0000893706647114, 0.7449477462440112]
+y_true=FP(freq=16, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[1.111118694237158, 1.1406494246784786, 0.6454537551811573]
+y_true=FP(freq=6, phare=0),y_hat=FP(freq=10, phare=0)
+--------------------
+rho=[1.3136170277507029, 0.8446409152043909, 0.8911168253806591]
+y_true=FP(freq=10, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[1.1196123911442415, 1.0792308999641007, 0.6481547245724518]
+y_true=FP(freq=16, phare=0),y_hat=FP(freq=6, phare=0)
+acc: 0.2222222222222222</code>
+    </ul>
+
     <h2>2021-10-27</h2>
     <h3>Dataset</h3>
     <ul>
