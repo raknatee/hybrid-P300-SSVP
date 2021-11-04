@@ -16,7 +16,7 @@ const ssvpConfig:HYPSCommands = {
         {cmd:CommandType.target,details:{gridIndex:10,alpIndex:4},repeat:1},
         {cmd:CommandType.target,details:{gridIndex:11,alpIndex:4},repeat:1},
     ],
-    repeat:1
+    repeat:3
 }
 
 export {ssvpConfig}

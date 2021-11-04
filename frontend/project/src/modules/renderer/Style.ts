@@ -8,10 +8,10 @@ type Style = {
 }
 const style:Style = {
     fontSize: getSizeW(0.03),
-    // boxHighlightWScale:1.2,
-    // boxHighlightHScale:1.3
-    boxHighlightWScale:1.2*4,
-    boxHighlightHScale:1.3*4
+    boxHighlightWScale:1.2,
+    boxHighlightHScale:1.3
+    // boxHighlightWScale:1.2*4,
+    // boxHighlightHScale:1.3*4
 }
 export {
     style
