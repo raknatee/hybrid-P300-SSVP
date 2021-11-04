@@ -9,7 +9,8 @@ from scipy.ndimage.measurements import label #type:ignore
 
 from module import object_saver
 
-from module.experiment_info import ATTEMPT2, ATTEMPT3, ATTEMPT4, ATTEMPT5, ATTEMPT6, ATTEMPT7, ATTEMPT8, ExperimentInfo
+from module.experiment_info import ATTEMPT11
+from module.ssvp_module.ssvp_freq_info import wave_data_2021_11_4
 
 from module.ssvp_module import ssvp_freq_info
 from module.ssvp_module.fbcca import predict
@@ -19,7 +20,7 @@ from mongo.query.get_dataset import  P300Data, SSVPData, SSVPDataWithLabel, comp
 
 mne.set_log_file("./logs/mne.log",overwrite=True)
 
-P_ID = "A10S01"
+P_ID = "A11S01"
 def main():
     def load()->list[Union[SSVPData,SSVPDataWithLabel]]:
     
@@ -27,7 +28,7 @@ def main():
         experiment_docs = get_experiment_docs_with_target_grid(P_ID)
 
 
-        return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT8,(10,20),[*[0,1,2]])
+        return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT11,(2,20),[*[0,1,2]])
 
  
 
@@ -36,8 +37,8 @@ def main():
 
     count_correct = 0 
     analysis = Analysis()
-    # wavesData = [None,None,ssvp_freq_info.FP(6, 0),None,ssvp_freq_info.FP(11,0),None,None,ssvp_freq_info.FP(15,0),None, None,None,None]
-    wavesData = [None,None,ssvp_freq_info.FP(6, 0),None,ssvp_freq_info.FP(10,0),None,None,ssvp_freq_info.FP(16,0),None, None,None,None]
+    
+    wavesData = wave_data_2021_11_4
     for ssvp in list_ssvp:
         if( isinstance(ssvp,SSVPDataWithLabel) ): # For mypy
             
@@ -45,7 +46,7 @@ def main():
             analysis.add(ssvp.eeg, wavesData[ssvp.target_grid].freq)
 
 
-            result = predict(ssvp.eeg,ATTEMPT8,[wave for wave in wavesData if wave is not None],remove_Thailand_power_line=True)
+            result = predict(ssvp.eeg,ATTEMPT11,[wave for wave in wavesData if wave is not None],remove_Thailand_power_line=True)
         
          
             y_true = wavesData[ssvp.target_grid]
@@ -63,34 +64,24 @@ def main():
     print(f"acc: {count_correct/len(list_ssvp)}")
 
 class Analysis:
-    # data_6_hz:list[np.ndarray]
-    # data_11_hz:list[np.ndarray]
-    # data_15_hz:list[np.ndarray]
-    data_6_hz:list[np.ndarray]
-    data_10_hz:list[np.ndarray]
-    data_16_hz:list[np.ndarray]
+
+    data_hz:dict[str,list[np.ndarray]]
     def __init__(self) -> None:
-        # self.data_6_hz = []
-        # self.data_11_hz = []
-        # self.data_15_hz = []
-        self.data_6_hz = []
-        self.data_10_hz = []
-        self.data_16_hz = []
+
         self.channel = 3
         self.ch_types = ['eeg'] * (self.channel)
+        self.data_hz = {}
 
-    def add(self,data:np.ndarray,freq:int)->None:
+    def add(self,data:np.ndarray,freq:float)->None:
 
         filtered_data:RawArray = mne.io.RawArray(to_mne_format(data),mne.create_info([str(i) for i in range(self.channel)],230,self.ch_types))    
         filtered_data.notch_filter(np.arange(50, 125, 50), filter_length='auto', phase='zero')
-        filtered_data = np.abs(filtered_data.get_data()[:,:440])
-
-        if(freq==6):
-            self.data_6_hz.append(filtered_data)
-        if(freq==10):
-            self.data_10_hz.append(filtered_data)
-        if(freq==16):
-            self.data_16_hz.append(filtered_data)
+        filtered_data = np.abs(filtered_data.get_data()[:,:220])
+      
+        
+        if(str(freq) not in self.data_hz):
+            self.data_hz[str(freq)] = []
+        self.data_hz[str(freq)].append(filtered_data)
     
     def analyze_ssvp(self)->None:
 
@@ -101,17 +92,17 @@ class Analysis:
             return np.arange(0,sample_rate/2,df)
 
         plt.cla()
-
-        for index,data_each_hz in enumerate([self.data_6_hz,self.data_10_hz,self.data_16_hz]):
-        # for index,data_each_hz in enumerate([self.data_6_hz,self.data_11_hz,self.data_15_hz]):
+        for index,data_each_hz in self.data_hz.items():
+       
             temp = data_each_hz[0]
             for i,each_data in enumerate(data_each_hz): 
+           
                 if(i==0):continue
                 temp = np.concatenate((temp,each_data),axis=0)
 
-
-       
+   
             temp = temp.mean(axis=0)
+   
           
 
             X = x_freq(230,len(temp) )

@@ -24,3 +24,18 @@ wave_data:list[Union[FP,None]] = [
     FP(14, .8),
     FP(14.2, 1.15),
 ]
+
+wave_data_2021_11_4:list[Union[FP,None]] = [
+    FP(6, 0),
+    FP(6.6, .5),
+    FP(7.2, 0),
+    FP(7.8, .5),
+    FP(8.4, 0),
+    FP(9, .5),
+    FP(9.6, 0),
+    FP(10.2, .5),
+    None, None,
+    FP(10.8, 0),
+    FP(11.4, .5),
+]
+
