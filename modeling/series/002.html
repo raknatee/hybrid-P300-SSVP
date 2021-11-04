@@ -75,6 +75,65 @@
         </li>
     </ul>
     <h1>SSVEP Part</h1>
+    <h2 id="ssvp-2021-11-04-2">2021-11-04 Part 2</h2>
+    <h3>Dataset</h3>
+    <ul>
+        <li><a href="../index.html#data-collection-attempt-11"><p>A11S01</p></a></li>
+
+    </ul>
+    <h3>Data processing</h3>
+    <ul>
+        <li>notch_filter(np.arange(50, 125, 50), filter_length='auto', phase='zero')</li>
+    </ul>
+    <h3>Result</h3>
+    <img src="./img/a11s01-all-mean.png" alt="">
+    <h2 id="ssvp-2021-11-04">2021-11-04</h2>
+    <h3>Dataset</h3>
+
+    <ul>
+        <li><a href="../index.html#data-collection-attempt-10"><p>A10S01</p></a></li>
+
+    </ul>
+    <h3>Data processing</h3>
+    <ul>
+        <li>notch_filter(np.arange(50, 125, 50), filter_length='auto', phase='zero')</li>
+    </ul>
+    <h3>Result</h3>
+    <ul>
+        <li><p>class-0 => 6</p></li>
+        <li><p>class-1 => 10</p></li>
+        <li><p>class-2 => 16</p></li>
+        <img src="./img/a10s01-all-mean.png" alt="">
+        <code>--------------------
+rho=[1.0696815344359691, 1.230960235173711, 0.861255482145896]
+y_true=FP(freq=6, phare=0),y_hat=FP(freq=10, phare=0)
+--------------------
+rho=[0.9761669454231154, 1.0044733728404083, 0.6959585229921256]
+y_true=FP(freq=10, phare=0),y_hat=FP(freq=10, phare=0)
+--------------------
+rho=[1.2646740117860609, 1.1533172351341234, 1.2040243435456959]
+y_true=FP(freq=16, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[1.1530708805025747, 0.9811728877434985, 0.9587045305681416]
+y_true=FP(freq=6, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[1.0369348456483665, 1.0602579395504579, 0.7694086393115036]
+y_true=FP(freq=10, phare=0),y_hat=FP(freq=10, phare=0)
+--------------------
+rho=[0.986301729191787, 0.9048597544148096, 0.6696010026099829]
+y_true=FP(freq=16, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[0.9751368496667183, 0.9056711354372612, 0.5813131777304067]
+y_true=FP(freq=6, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[0.9888420681518415, 1.1229238865515232, 0.6625604846183999]
+y_true=FP(freq=10, phare=0),y_hat=FP(freq=10, phare=0)
+--------------------
+rho=[1.031774045577321, 1.263773587461586, 0.6476140573603533]
+y_true=FP(freq=16, phare=0),y_hat=FP(freq=10, phare=0)
+acc: 0.5555555555555556
+</code>
+    </ul>
     <h2 id="ssvp-2021-11-03" >2021-11-03</h2>
     <h3>Dataset</h3>
     <ul>
