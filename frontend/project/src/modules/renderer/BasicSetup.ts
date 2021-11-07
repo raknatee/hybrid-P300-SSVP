@@ -1,7 +1,7 @@
-const setBG = (_this:any):void => {
+const setBG = (ctx: CanvasRenderingContext2D,canvasWidth:number,canvasHeight:number):void => {
 
-    _this.ctx.fillStyle = `rgb(125,125,125)`;
-    _this.ctx.fillRect(0, 0, _this.canvas.width, _this.canvas.height);
+    ctx.fillStyle = `rgb(125,125,125)`;
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 }
 
 export {

@@ -214,7 +214,7 @@ export default defineComponent({
       // const nextBtn = new NextSSVP(getSizeW(.55),getSizeH(.9),this.appState)
 
       const tick = () => {
-        setBG(this);
+        setBG(this.ctx!,this.canvas!.width,this.canvas!.height);
         UserText.render(this.ctx!, this.userText.join(","));
         SysText.render(this.ctx!,this.sysText)
         // nextBtn.render(this)

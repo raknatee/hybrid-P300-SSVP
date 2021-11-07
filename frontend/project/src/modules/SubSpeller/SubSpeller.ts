@@ -80,7 +80,7 @@ class SubSpeller {
     }
     render(ctx: CanvasRenderingContext2D): void {
 
-
+        this.renderGridLine(ctx)
         this.renderFlash(ctx)
         this.renderTarget(ctx)
 
@@ -144,6 +144,11 @@ class SubSpeller {
                 "is_target_activated": is_activated
             })
         }
+    }
+    renderGridLine(ctx:CanvasRenderingContext2D):void{
+        ctx.strokeStyle = "#000000";
+        ctx.strokeRect(this.x-style.fontSize,this.y-style.fontSize*1.2,getSizeW(.2),getSizeH(.25));
+     
     }
     renderFlash(ctx: CanvasRenderingContext2D): void {
 
