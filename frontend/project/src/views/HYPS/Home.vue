@@ -15,7 +15,7 @@
         <div v-if="mode=='offline'">
             <button @click="applyFullHYPS200200" >Full Offline HYPS 200,200</button>
             <button @click="applyFullHYPS100200" >Full Offline HYPS 100,200</button>
-            <button @click="applyMiniHYPS100200" >Mini Offline HYPS 100,200</button>
+            <button @click="applyMiniHYPS300600" >Mini Offline HYPS 300,600</button>
         <button @click="applyOnlySSVP" >Only SSVP</button>
         </div>
 
@@ -113,9 +113,9 @@ export default defineComponent({
         4
       );
     };
-    const applyMiniHYPS100200 = () =>{
+    const applyMiniHYPS300600 = () =>{
       ExperimentConfigOffline.value = JSON.stringify(ssvpConfig, null, 4);
-       const p300:P300Config = { spawn: 100, ttl: 200, time_per_round: 1000 }
+       const p300:P300Config = { spawn: 300, ttl: 600, time_per_round: 3000 }
       P300ConfigString.value = JSON.stringify(
         p300,
         null,
@@ -157,7 +157,7 @@ export default defineComponent({
       ExperimentConfigOffline,
       applyFullHYPS200200,
       applyFullHYPS100200,
-      applyMiniHYPS100200,
+      applyMiniHYPS300600,
       applyOnlySSVP,
       applyOnline
     };
