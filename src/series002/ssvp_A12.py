@@ -9,7 +9,7 @@ from scipy.ndimage.measurements import label #type:ignore
 
 from module import object_saver
 
-from module.experiment_info import ATTEMPT11
+from module.experiment_info import ATTEMPT12
 from module.ssvp_module.ssvp_freq_info import wave_data_2021_11_4
 
 from module.ssvp_module import ssvp_freq_info
@@ -29,7 +29,7 @@ def main():
 
 
         # return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT11,None,[*[0,1,2]])
-        return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT11,(1,30),[*[0,1,2]])
+        return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT12,(1,30),[*[0,1,2]])
 
  
 
@@ -48,7 +48,7 @@ def main():
             analysis.add(ssvp.eeg, wavesData[ssvp.target_grid].freq)
 
 
-            result = predict(ssvp.eeg,ATTEMPT11,[wave for wave in wavesData if wave is not None],remove_Thailand_power_line=True)
+            result = predict(ssvp.eeg,ATTEMPT12,[wave for wave in wavesData if wave is not None],remove_Thailand_power_line=True)
         
          
             y_true = wavesData[ssvp.target_grid]
@@ -110,7 +110,7 @@ class Analysis:
             X = x_freq(230,len(temp) )
             X = X[X<20]
           
-            plt.plot(X,temp[:len(X)],label=f"class-{index}")
+            plt.scatter(X,temp[:len(X)],label=f"class-{index}")
             
 
         plt.legend()
