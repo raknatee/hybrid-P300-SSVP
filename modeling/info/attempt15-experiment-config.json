@@ -1,0 +1,10 @@
+{
+    "cmds": [{
+        "cmd": "sleep",
+        "details": {
+            "time": 5000
+        },
+        "repeat": 3
+    }],
+    "repeat": 3
+}
