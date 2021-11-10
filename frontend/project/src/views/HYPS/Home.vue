@@ -43,13 +43,14 @@ import { setBG } from "@/modules/renderer/BasicSetup";
 import { getSizeW, getSizeH } from "@/modules/renderer/Sizing";
 
 import { getJsonFromWSMessage } from "@/modules/RestAPIHelper/WSHelper";
-import { getNow } from "@/modules/Time";
+import { getNow,getPerformanceNow } from "@/modules/Time";
 
 import { AppState } from "@/modules/SubSpeller/AppState";
 import { sleep } from "@/modules/Time";
 // import { NextSSVP } from "@/modules/SubSpeller/NextSSVP";
 import { UserText } from "@/modules/SubSpeller/UserText";
 import { SysText } from "@/modules/SubSpeller/SysText";
+import { FPSText } from "@/modules/SubSpeller/FPSText";
 // import {choise} from "@/modules/Random.js"
 
 import { restAPIPost } from "@/modules/RestAPIHelper/RestAPIHelper";
@@ -225,8 +226,16 @@ export default defineComponent({
 
       // const nextBtn = new NextSSVP(getSizeW(.55),getSizeH(.9),this.appState)
 
+      let previousTime = getPerformanceNow()
       const tick = () => {
+
+      
         setBG(this.ctx!,this.canvas!.width,this.canvas!.height);
+
+        const now = getPerformanceNow()
+        FPSText.render(this.ctx!,Math.round(1/(now-previousTime)).toString())
+        previousTime = now
+        
         UserText.render(this.ctx!, this.userText.join(","));
         SysText.render(this.ctx!,this.sysText)
         // nextBtn.render(this)
@@ -250,7 +259,7 @@ export default defineComponent({
         if (msg["cmd"] == "next") {
           await sleep(1000);
           this.begin_time = getNow();
-          this.appState!.toFlashingP300();
+          this.appState!.toFlashingP300(timePerRound);
           await sleep(timePerRound);
           this.appState!.toZERO();
           this.ws!.send(
@@ -326,7 +335,7 @@ export default defineComponent({
             await sleep(1000);
             this.appState!.toZERO();
             await sleep(1000);
-            this.appState!.toFlashingP300();
+            this.appState!.toFlashingP300(timePerRound);
             await sleep(timePerRound);
             console.log("--------------------------------------")
             this.appState!.toZERO();

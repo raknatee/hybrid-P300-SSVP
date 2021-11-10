@@ -6,16 +6,21 @@ import { getNow, getPerformanceNow } from "../Time"
 import { checkerboard } from "@/modules/Random"
 import { style } from "@/modules/renderer/Style"
 import { AppState, State } from "./AppState"
+import {BoxColor} from "./BlackWhiteBox"
 
-
-
+const FRAMERATE = 60
 
 class SubSpeller {
     gridIndex: number
     alphabets: string[]
-    freq: number
-    phare: number
-    sinWave: SinWave
+
+    freq: number | undefined
+    phare: number | undefined
+    sinWave: SinWave | undefined
+
+    frameMod: number | undefined
+    currentColor: BoxColor | undefined
+
     x: number
     y: number
     w: number
@@ -41,10 +46,17 @@ class SubSpeller {
         this.gridIndex = index
         this.alphabets = subSpellerData[this.gridIndex]!
 
+        
         const waveParam = wavesData[this.gridIndex]!
-        this.freq = waveParam.freq
-        this.phare = waveParam.phare * Math.PI
-        this.sinWave = new SinWave(this.freq, this.phare)
+        if(ssvpMode == SSVPMode.PulseWaveMode){
+            this.freq = waveParam.freq
+            this.phare = waveParam.phare * Math.PI
+            this.sinWave = new SinWave(this.freq, this.phare)
+        }
+        if(ssvpMode == SSVPMode.PeriodTimeMode){
+            this.frameMod = Math.round(FRAMERATE/waveParam.freq)
+        }
+
         this.x = x
         this.y = y
 
@@ -95,8 +107,11 @@ class SubSpeller {
             i++;
         })
     }
-    setStartForP300(): void {
+    setStartForP300(time_per_round:number): void {
 
+        if(this.ssvpMode==SSVPMode.PeriodTimeMode){
+            this.currentColor = BoxColor.BLACK
+        }
 
         this.randomIndex = checkerboard(this.alphabets.length)
 
@@ -104,8 +119,9 @@ class SubSpeller {
         this.startTimeForSSVP = getPerformanceNow()
 
 
-
-        console.log(`previous FPS ${this._countFrame}`)
+        if(this._countFrame!=null){
+            console.log(`previous FPS ${this._countFrame/(time_per_round/1000)}`)
+        }
         this._countFrame = 0
 
         for (let i = 0; i < this.randomIndex.length; i++) {
@@ -167,25 +183,63 @@ class SubSpeller {
             this.currentIndexes.shift()
         }
 
-        const this_now = getPerformanceNow()
-        this.currentIndexes.forEach((currentIndex) => {
 
 
-            const y = this.sinWave._get_y_t(this_now - currentIndex.time_started)
-            const color = y > 0 ? "black" : "white"
+        if(this.ssvpMode==SSVPMode.PeriodTimeMode){
+       
+            if(this._countFrame! % this.frameMod! == 0){
+                if(this.currentColor == BoxColor.BLACK){
+                    this.currentColor = BoxColor.WHITE
+                }
+                if(this.currentColor == BoxColor.WHITE){
+                    this.currentColor = BoxColor.BLACK
+                }
+            }
+
+
+            this.currentIndexes.forEach((currentIndex) => {
 
             const coor = this.gridHelper.getCoordinate(currentIndex.index)
             const xBox = Math.floor(coor.x - style.fontSize / 4)
             const yBox = Math.floor(coor.y - style.fontSize)
-            if (color == "black") {
+            if(this.currentColor == BoxColor.BLACK){
                 this.state!.blackBoxPreDefine.fill(xBox, yBox)
+                console.log("fill black")
+
             }
-            if (color == "white") {
+
+            if(this.currentColor == BoxColor.WHITE){
                 this.state!.whiteBoxPreDefine.fill(xBox, yBox)
+                console.log("fill white")
+
+
             }
+            })
+        }
 
-
-        })
+        if(this.ssvpMode==SSVPMode.PulseWaveMode){
+            const this_now = getPerformanceNow()
+            this.currentIndexes.forEach((currentIndex) => {
+    
+    
+                const y = this.sinWave!._get_y_t(this_now - currentIndex.time_started)
+                const color = y > 0 ? "black" : "white"
+                const coor = this.gridHelper.getCoordinate(currentIndex.index)
+                const xBox = Math.floor(coor.x - style.fontSize / 4)
+                const yBox = Math.floor(coor.y - style.fontSize)
+    
+               
+                if (color == "black") {
+                    this.state!.blackBoxPreDefine.fill(xBox, yBox)
+                }
+                if (color == "white") {
+                    this.state!.whiteBoxPreDefine.fill(xBox, yBox)
+                }
+    
+    
+            })
+        }
+      
     }
 
     renderTarget(ctx: CanvasRenderingContext2D): void {
@@ -222,8 +276,10 @@ class CurrentIndex {
 
 enum SSVPMode {
     // SinWaveMode,
-    // PeriodTimeMode
-    PulseWaveMode
+    PeriodTimeMode,
+    PulseWaveMode,
+    
 }
+
 
 export { SubSpeller, State, SSVPMode }

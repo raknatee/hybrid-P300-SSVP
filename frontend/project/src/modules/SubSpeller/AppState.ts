@@ -65,7 +65,7 @@ class AppState {
                 continue;
             }
             const coor = gridHelper.getCoordinate(i);
-            const thisSubSpller = new SubSpeller(i, coor.x, coor.y, spawn, ttl,SSVPMode.PulseWaveMode)
+            const thisSubSpller = new SubSpeller(i, coor.x, coor.y, spawn, ttl,SSVPMode.PeriodTimeMode)
             subSpellers.push(thisSubSpller);
         }
         return subSpellers
@@ -79,9 +79,9 @@ class AppState {
             subSpeller.reset()
         })
     }
-    toFlashingP300():void {
+    toFlashingP300(time_per_round:number):void {
         this.subSpellers.forEach((e) => {
-            e.setStartForP300()
+            e.setStartForP300(time_per_round)
         })
 
         this.appState = State.FlashingP300
