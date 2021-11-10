@@ -43,8 +43,8 @@ def main():
     # wavesData = wave_data_2021_11_4
     wavesData = [
     FP(6, 0),
-    FP(6.2,0),
-    FP(7,0),
+    # FP(6.2,0),
+    # FP(7,0),
     FP(8,0),
  
     ] 
