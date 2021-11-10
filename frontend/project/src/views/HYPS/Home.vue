@@ -60,6 +60,7 @@ import {
   experimentConfigDefault,
   RuntimeCommand,
 } from "./experimentConfig/configs";
+import {FPS} from "@/modules/renderer/FPS"
 import {
   HYPSCommands,
   DBConfig,
@@ -232,10 +233,10 @@ export default defineComponent({
       
         setBG(this.ctx!,this.canvas!.width,this.canvas!.height);
 
-        const now = getPerformanceNow()
-        FPSText.render(this.ctx!,Math.round(1/(now-previousTime)).toString())
-        previousTime = now
-        
+        FPSText.render(this.ctx!,FPS.get().toString())
+        FPS.tick()
+     
+
         UserText.render(this.ctx!, this.userText.join(","));
         SysText.render(this.ctx!,this.sysText)
         // nextBtn.render(this)
