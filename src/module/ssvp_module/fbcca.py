@@ -16,10 +16,18 @@ import numpy as np
 import mne #type:ignore
 
 
+def zero_padding(data:np.ndarray)->np.ndarray:
+    len_data = data.shape[0]
+    len_channel  = data.shape[1]    
+    padding_array = np.zeros((len_data*9,len_channel))
+    data = np.concatenate((data,padding_array),axis=0)
 
-def predict(eeg:Union[list[list[float]],np.ndarray],experiment_info:ExperimentInfo,freqs:Optional[list[FP]]=None,remove_Thailand_power_line:bool=False)->tuple[FP,list[float]]:
+    return data
 
-    channel = len(eeg[0])
+def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:Optional[list[FP]]=None,remove_Thailand_power_line:bool=False)->tuple[FP,list[float]]:
+
+    
+    channel = eeg.shape[1]
 
     ch_types = ['eeg'] * (channel)
 

@@ -84,7 +84,7 @@ class Analysis:
 
     def add(self,data:np.ndarray,freq:float)->None:
 
-        filtered_data:RawArray = mne.io.RawArray(to_mne_format(data),mne.create_info([str(i) for i in range(self.channel)],230,self.ch_types))    
+        filtered_data:RawArray = mne.io.RawArray(to_mne_format(data),mne.create_info([str(i) for i in range(self.channel)],250,self.ch_types))    
         filtered_data.notch_filter(np.arange(50, 125, 50), filter_length='auto', phase='zero')
         filtered_data = np.abs(filtered_data.get_data()[:,:220])
       
