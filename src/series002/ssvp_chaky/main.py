@@ -71,9 +71,9 @@ def main():
             eeg_round = [ data.eeg for data in pad_non_target(target.timestamp,ssvp_data_list)]
        
 
-            eeg_mne_arr:RawArray =  mne.io.RawArray(to_mne_format(eeg_round),mne.create_info(channel_names,230,ch_types))
-            eeg_mne_arr.set_montage(mne.channels.make_standard_montage('standard_1020'))
-            eeg_mne_arr.plot_psd()
+            eeg_mne_arr2:RawArray =  mne.io.RawArray(to_mne_format(eeg_round),mne.create_info(channel_names,230,ch_types))
+            eeg_mne_arr2.set_montage(mne.channels.make_standard_montage('standard_1020'))
+            eeg_mne_arr2.plot_psd()
             plt.savefig(f"./logs/plot-ssvp-chaky-{index}-{count['all']}-gitignore.png")
 
             

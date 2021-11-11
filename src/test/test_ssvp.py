@@ -10,7 +10,7 @@ def test_get_ssvp_dataset_A07():
     eeg_docs = get_eeg_docs("A07S01")
     experiment_docs = get_experiment_docs("A07S01")
 
-    list_ssvp:list[SSVPData] = compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT7,bandpass_filter=None,selected_eeg_channels=[0,1,2])
+    list_ssvp = compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT7,bandpass_filter=None,selected_eeg_channels=[0,1,2])
     assert len(list_ssvp) == 10
     for ssvp in list_ssvp:
         assert 230 <=  ssvp.eeg.shape[0] < 310
@@ -20,7 +20,7 @@ def test_get_ssvp_dataset_A06():
     eeg_docs = get_eeg_docs("A06S01")
     experiment_docs = get_experiment_docs("A06S01")
 
-    list_ssvp:list[SSVPData] = compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT6,bandpass_filter=None,selected_eeg_channels=[0,1,2])
+    list_ssvp = compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT6,bandpass_filter=None,selected_eeg_channels=[0,1,2])
     assert len(list_ssvp) == 10
     for ssvp in list_ssvp:
         assert 230 <=  ssvp.eeg.shape[0] < 310
@@ -30,7 +30,7 @@ def test_get_ssvp_dataset_A02():
     eeg_docs = get_eeg_docs("A02S01")
     experiment_docs = get_experiment_docs("A02S01")
 
-    list_ssvp:list[SSVPData] = compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT2,bandpass_filter=None,selected_eeg_channels=[0,1,2])
+    list_ssvp = compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT2,bandpass_filter=None,selected_eeg_channels=[0,1,2])
     assert len(list_ssvp) == 300
     for ssvp in list_ssvp:
         assert 360 <=  ssvp.eeg.shape[0] < 500
@@ -45,7 +45,7 @@ def test_get_ssvp_dataset_A01():
         eeg_docs = get_eeg_docs(p_id)
         experiment_docs = get_experiment_docs(p_id)
 
-        list_ssvp:list[SSVPData] = compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT1,bandpass_filter=None)
+        list_ssvp = compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT1,bandpass_filter=None)
 
         for ssvp_data in list_ssvp:
             

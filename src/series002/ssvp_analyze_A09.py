@@ -21,7 +21,7 @@ mne.set_log_file("./logs/mne.log",overwrite=True)
 
 P_ID = "A10S01"
 def main():
-    def load()->list[Union[SSVPData,SSVPDataWithLabel]]:
+    def load()->Union[list[SSVPData],list[SSVPDataWithLabel]]:
     
         eeg_docs = get_eeg_docs(P_ID)
         experiment_docs = get_experiment_docs_with_target_grid(P_ID)
@@ -42,7 +42,9 @@ def main():
         if( isinstance(ssvp,SSVPDataWithLabel) ): # For mypy
             
 
-            analysis.add(ssvp.eeg, wavesData[ssvp.target_grid].freq)
+            current_fp = wavesData[ssvp.target_grid]
+            if current_fp is not None:
+                analysis.add(ssvp.eeg, int(current_fp.freq))
 
 
             result = predict(ssvp.eeg,ATTEMPT8,[wave for wave in wavesData if wave is not None],remove_Thailand_power_line=True)

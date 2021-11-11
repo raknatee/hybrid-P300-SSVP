@@ -22,7 +22,7 @@ mne.set_log_file("./logs/mne.log",overwrite=True)
 
 P_ID = "A15S01"
 def main():
-    def load()->list[Union[SSVPData,SSVPDataWithLabel]]:
+    def load()->Union[list[SSVPData],list[SSVPDataWithLabel]]:
     
         eeg_docs = get_eeg_docs(P_ID)
         experiment_docs = get_experiment_docs_with_target_grid(P_ID)

@@ -113,7 +113,7 @@ def train(p_id:str):
                
 
 def ssvp(p_id:str):
-    def load()->list[Union[SSVPData,SSVPDataWithLabel]]:
+    def load()->Union[list[SSVPData],list[SSVPDataWithLabel]]:
     
         eeg_docs = get_eeg_docs(p_id)
         experiment_docs = get_experiment_docs_with_target_grid(p_id)

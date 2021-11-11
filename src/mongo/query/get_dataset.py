@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable, Optional, Sequence, Union
+from typing import Callable, Optional, Sequence, Union, cast
 from matplotlib import pyplot as plt #type:ignore
 
 import mne #type: ignore
@@ -159,10 +159,10 @@ class SSVPDataWithLabel:
     eeg: ndarray
     target_grid:int
 
-def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:Sequence[Union[ExperimentDoc,ExperimentDocWithTargetGrid]],experiment_info:ExperimentInfo,bandpass_filter:Optional[tuple[float,float]],selected_eeg_channels:list[int]=None,debug=False)->list[Union[SSVPData,SSVPDataWithLabel]]:
+def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:Sequence[Union[ExperimentDoc,ExperimentDocWithTargetGrid]],experiment_info:ExperimentInfo,bandpass_filter:Optional[tuple[float,float]],selected_eeg_channels:list[int]=None,debug=False)->Union[list[SSVPData],list[SSVPDataWithLabel]]:
 
-    returned:list[Union[SSVPData,SSVPDataWithLabel]] = []
- 
+    returned = []
+  
     
     for index,experiment_doc in enumerate(experiment_docs) :
         this_data:Union[SSVPData,SSVPDataWithLabel]
@@ -192,7 +192,7 @@ def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:Sequence[Union[Ex
         returned.append(this_data)
 
 
-    return returned
+    return cast(Union[list[SSVPData],list[SSVPDataWithLabel]],returned)
 
 
 

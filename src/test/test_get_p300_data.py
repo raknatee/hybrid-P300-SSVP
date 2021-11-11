@@ -19,8 +19,8 @@ def test_get_p300_dataset_A02():
         assert data.eeg.shape[0] >= 0
         assert data.eeg.shape[1] == 8
   
-    data = P300Dataset(compose_p300_dataset(eeg_docs,experiment_docs,ATTEMPT2))
-    assert len(data) == 300*9
+    data_1 = P300Dataset(compose_p300_dataset(eeg_docs,experiment_docs,ATTEMPT2))
+    assert len(data_1) == 300*9
     
 
 
@@ -67,8 +67,8 @@ def test_get_p300_dataset_A01():
   
 
 
-    data = P300Dataset(compose_p300_dataset(eeg_docs,experiment_docs,ATTEMPT1,do_pad=True))
-    assert len(data) == 138
+    data1 = P300Dataset(compose_p300_dataset(eeg_docs,experiment_docs,ATTEMPT1,do_pad=True))
+    assert len(data1) == 138
     
 
 

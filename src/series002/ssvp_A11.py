@@ -22,7 +22,7 @@ mne.set_log_file("./logs/mne.log",overwrite=True)
 
 P_ID = "A12S01"
 def main():
-    def load()->list[Union[SSVPData,SSVPDataWithLabel]]:
+    def load()->Union[list[SSVPData],list[SSVPDataWithLabel]]:
     
         eeg_docs = get_eeg_docs(P_ID)
         experiment_docs = get_experiment_docs_with_target_grid(P_ID)
@@ -44,8 +44,9 @@ def main():
     for ssvp in list_ssvp:
         if( isinstance(ssvp,SSVPDataWithLabel) ): # For mypy
             
-
-            analysis.add(ssvp.eeg, wavesData[ssvp.target_grid].freq)
+            current_fp = wavesData[ssvp.target_grid]
+            if current_fp is not None:
+                analysis.add(ssvp.eeg, current_fp.freq)
 
 
             result = predict(ssvp.eeg,ATTEMPT11,[wave for wave in wavesData if wave is not None],remove_Thailand_power_line=True)
@@ -75,11 +76,11 @@ class Analysis:
         self.data_hz = {}
 
     def add(self,data:np.ndarray,freq:float)->None:
-
+  
         filtered_data:RawArray = mne.io.RawArray(to_mne_format(data),mne.create_info([str(i) for i in range(self.channel)],230,self.ch_types))    
         filtered_data.notch_filter(np.arange(50, 125, 50), filter_length='auto', phase='zero')
         filtered_data = np.abs(filtered_data.get_data()[:,:220])
-      
+    
         
         if(str(freq) not in self.data_hz):
             self.data_hz[str(freq)] = []
