@@ -1,7 +1,7 @@
 
 
 import sys
-from typing import Optional, Union
+from typing import Optional, Union, overload
 from mne.io.array.array import RawArray #type:ignore
 from numpy.ma.core import count
 from sklearn.cross_decomposition import CCA #type:ignore
@@ -24,9 +24,38 @@ def zero_padding(data:np.ndarray)->np.ndarray:
 
     return data
 
-def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:Optional[list[FP]]=None,remove_Thailand_power_line:bool=False)->tuple[FP,list[float]]:
+def fft(data:list[float],sample_rate:float)->tuple[np.ndarray,np.ndarray]:
+    """
+    return fft, X
+    """
+    def x_freq(sample_rate:float,lenght_data:int)->np.ndarray:
+            df = sample_rate/lenght_data
+            return np.arange(0,sample_rate/2,df)
 
-    
+    data_fft = np.abs(np.fft.fft(np.array(data)))
+
+    return data_fft, x_freq(sample_rate,len(data_fft))
+
+@overload
+def predict(eeg:np.ndarray,experiment_info:ExperimentInfo)->tuple[FP,list[float]]:
+    ...
+
+@overload
+def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:list[FP])->tuple[FP,list[float]]:
+    ...
+
+@overload
+def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:list[FP],remove_Thailand_power_line:bool)->tuple[FP,list[float]]:
+    ...
+
+@overload
+def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:list[FP],remove_Thailand_power_line:bool,enable_zero_padding:bool)->tuple[FP,list[float]]:
+    ...
+
+def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:Optional[list[FP]]=None,remove_Thailand_power_line:bool=False,enable_zero_padding:bool=False)->tuple[FP,list[float]]:
+
+    if(enable_zero_padding):
+        eeg = zero_padding(eeg)
     channel = eeg.shape[1]
 
     ch_types = ['eeg'] * (channel)

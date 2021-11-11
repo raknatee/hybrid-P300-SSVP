@@ -45,7 +45,8 @@ def main():
     FP(6, 0),
     # FP(6.2,0),
     # FP(7,0),
-    FP(8,0),
+    # FP(8,0),
+    FP(9,0),
  
     ] 
     print(wavesData)
@@ -56,7 +57,7 @@ def main():
             analysis.add(ssvp.eeg, wavesData[ssvp.target_grid].freq)
 
 
-            result = predict(ssvp.eeg,ATTEMPT15,[wave for wave in wavesData if wave is not None],remove_Thailand_power_line=True)
+            result = predict(ssvp.eeg,ATTEMPT15,[wave for wave in wavesData if wave is not None],remove_Thailand_power_line=True,enable_zero_padding=True)
         
          
             y_true = wavesData[ssvp.target_grid]

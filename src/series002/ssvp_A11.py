@@ -49,7 +49,7 @@ def main():
                 analysis.add(ssvp.eeg, current_fp.freq)
 
 
-            result = predict(ssvp.eeg,ATTEMPT11,[wave for wave in wavesData if wave is not None],remove_Thailand_power_line=True)
+            result = predict(ssvp.eeg,ATTEMPT11,[wave for wave in wavesData if wave is not None],True)
         
          
             y_true = wavesData[ssvp.target_grid]

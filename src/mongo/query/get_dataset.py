@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable, Optional, Sequence, Union, cast
+from typing import Callable, Optional, Sequence, Union, cast, overload
 from matplotlib import pyplot as plt #type:ignore
 
 import mne #type: ignore
@@ -159,7 +159,16 @@ class SSVPDataWithLabel:
     eeg: ndarray
     target_grid:int
 
-def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:Sequence[Union[ExperimentDoc,ExperimentDocWithTargetGrid]],experiment_info:ExperimentInfo,bandpass_filter:Optional[tuple[float,float]],selected_eeg_channels:list[int]=None,debug=False)->Union[list[SSVPData],list[SSVPDataWithLabel]]:
+
+@overload
+def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDoc],experiment_info:ExperimentInfo,bandpass_filter:Optional[tuple[float,float]],selected_eeg_channels:list[int]=None)->list[SSVPData]:
+    ...
+
+@overload
+def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDocWithTargetGrid],experiment_info:ExperimentInfo,bandpass_filter:Optional[tuple[float,float]],selected_eeg_channels:list[int]=None)->list[SSVPDataWithLabel]:
+    ...
+
+def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:Union[list[ExperimentDoc],list[ExperimentDocWithTargetGrid]],experiment_info:ExperimentInfo,bandpass_filter:Optional[tuple[float,float]],selected_eeg_channels:list[int]=None)->Union[list[SSVPData],list[SSVPDataWithLabel]]:
 
     returned = []
   
@@ -172,18 +181,19 @@ def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:Sequence[Union[Ex
             this_data = SSVPDataWithLabel()
             this_data.target_grid = experiment_doc.target_grid
         
-        eeg_temp = [ eeg_doc.data[:len(experiment_info.headset_info.channel_names)] for eeg_doc in eeg_docs if (experiment_doc.min <= eeg_doc.timestamp <= experiment_doc.max +experiment_info.p300_experiment_config.ttl )]
-        if(debug):
-            eeg_temp_but_non_target:list[list[float]] = [ eeg_doc.data[:len(experiment_info.headset_info.channel_names)] for eeg_doc in eeg_docs if (experiment_doc.max <= eeg_doc.timestamp <= experiment_doc.max + 1 )]
-            eeg_temp2_but_non_target:RawArray = notch_and_bandpass_filter(eeg_temp_but_non_target,experiment_info,bandpass_filter=bandpass_filter)
-            eeg_temp2_but_non_target.plot_psd()
+        if(isinstance(experiment_doc,ExperimentDoc) or isinstance(experiment_doc,ExperimentDocWithTargetGrid)):
+            eeg_temp = [ eeg_doc.data[:len(experiment_info.headset_info.channel_names)] for eeg_doc in eeg_docs if (experiment_doc.min + (40/1000) <= eeg_doc.timestamp <= experiment_doc.max +experiment_info.p300_experiment_config.ttl )]
+        # if(debug):
+        #     eeg_temp_but_non_target:list[list[float]] = [ eeg_doc.data[:len(experiment_info.headset_info.channel_names)] for eeg_doc in eeg_docs if (experiment_doc.max <= eeg_doc.timestamp <= experiment_doc.max + 1 )]
+        #     eeg_temp2_but_non_target:RawArray = notch_and_bandpass_filter(eeg_temp_but_non_target,experiment_info,bandpass_filter=bandpass_filter)
+        #     eeg_temp2_but_non_target.plot_psd()
             
-            plt.savefig(f"./logs/plot-non-target-{experiment_doc.max}-gitignore.png")
+        #     plt.savefig(f"./logs/plot-non-target-{experiment_doc.max}-gitignore.png")
 
         eeg_temp2:RawArray =  notch_and_bandpass_filter(eeg_temp,experiment_info,bandpass_filter=bandpass_filter)
-        if(debug):
-            eeg_temp2.plot_psd()
-            plt.savefig(f"./logs/plot-target-{experiment_doc.min}-gitignore.png")
+        # if(debug):
+        #     eeg_temp2.plot_psd()
+        #     plt.savefig(f"./logs/plot-target-{experiment_doc.min}-gitignore.png")
         this_data.eeg = eeg_temp2.get_data().T
 
         if selected_eeg_channels is not None:
