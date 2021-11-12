@@ -28,8 +28,8 @@ def main():
         experiment_docs = get_experiment_docs_with_target_grid(P_ID)
 
 
-        # return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT11,None,[*[0,1,2]])
-        return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT15,(.5,30),[*[0,1,2]])
+        return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT15,None,[*[0,1,2]])
+        # return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT15,(1,30),[*[0,1,2]])
 
  
 
@@ -43,10 +43,12 @@ def main():
     # wavesData = wave_data_2021_11_4
     wavesData = [
     FP(6, 0),
+ 
+    # FP(5,0),
     # FP(6.2,0),
     # FP(7,0),
     # FP(8,0),
-    FP(9,0),
+    # FP(9,0),
  
     ] 
     print(wavesData)
