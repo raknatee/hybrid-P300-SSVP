@@ -20,7 +20,7 @@ from mongo.query.get_dataset import  P300Data, SSVPData, SSVPDataWithLabel, comp
 
 mne.set_log_file("./logs/mne.log",overwrite=True)
 
-P_ID = "A15S01"
+P_ID = "A15S02"
 def main():
     def load()->Union[list[SSVPData],list[SSVPDataWithLabel]]:
     
@@ -28,8 +28,8 @@ def main():
         experiment_docs = get_experiment_docs_with_target_grid(P_ID)
 
 
-        return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT15,None,[*[0,1,2]])
-        # return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT15,(1,30),[*[0,1,2]])
+        # return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT15,None,[*[0,1,2]])
+        return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT15,(1,30),[*[0,1,2]])
 
  
 
@@ -44,11 +44,11 @@ def main():
     wavesData = [
     FP(6, 0),
  
-    # FP(5,0),
+    FP(5,0),
     # FP(6.2,0),
-    # FP(7,0),
-    # FP(8,0),
-    # FP(9,0),
+    FP(7,0),
+    FP(8,0),
+    FP(9,0),
  
     ] 
     print(wavesData)
@@ -59,7 +59,7 @@ def main():
             analysis.add(ssvp.eeg, wavesData[ssvp.target_grid].freq)
 
 
-            result = predict(ssvp.eeg,ATTEMPT15,[wave for wave in wavesData if wave is not None],remove_Thailand_power_line=True,enable_zero_padding=True)
+            result = predict(ssvp.eeg,ATTEMPT15,[wave for wave in wavesData if wave is not None],enable_zero_padding=False)
         
          
             y_true = wavesData[ssvp.target_grid]
@@ -76,6 +76,16 @@ def main():
     analysis.analyze_ssvp()
     print(f"acc: {count_correct/len(list_ssvp)}")
 
+def zero_padding(data:np.ndarray)->np.ndarray:
+    print(f"{data.shape=}")
+    len_data = data.shape[1]
+    len_channel  = data.shape[0]    
+    padding_array = np.zeros((len_channel,len_data*5))
+    data = np.concatenate((data,padding_array),axis=1)
+
+    return data
+
+
 class Analysis:
 
     data_hz:dict[str,list[np.ndarray]]
@@ -89,7 +99,9 @@ class Analysis:
 
         filtered_data:RawArray = mne.io.RawArray(to_mne_format(data),mne.create_info([str(i) for i in range(self.channel)],250,self.ch_types))    
         filtered_data.notch_filter(np.arange(50, 125, 50), filter_length='auto', phase='zero')
-        filtered_data = np.abs(filtered_data.get_data()[:,:220])
+        # filtered_data = np.abs(filtered_data.get_data())
+        filtered_data = filtered_data.get_data()[:,:650]
+        print(f"{filtered_data.shape=}")
       
         
         if(str(freq) not in self.data_hz):
@@ -107,22 +119,33 @@ class Analysis:
         plt.cla()
         for index,data_each_hz in self.data_hz.items():
        
-            temp = data_each_hz[0]
+            print(f"{data_each_hz[0].shape=}")
+
+            temp_zero_padding = zero_padding(data_each_hz[0])
+            print(f"{temp_zero_padding.shape=}")
+            temp = np.abs(np.fft.fft(temp_zero_padding))
+            print(f"before {temp.shape=}")
+            # temp = data_each_hz[0]
             for i,each_data in enumerate(data_each_hz): 
            
                 if(i==0):continue
-                temp = np.concatenate((temp,each_data),axis=0)
+                temp = np.concatenate((temp,np.abs(np.fft.fft(zero_padding(each_data)))),axis=0)
 
+                np.abs(np.fft.fft(zero_padding(data_each_hz[0])))
+                # temp = np.concatenate((temp,each_data),axis=0)
+            print(f"after {temp.shape=}")
    
             temp = temp.mean(axis=0)
-   
-          
+            
 
-            X = x_freq(230,len(temp) )
-            X = X[X<35]
-          
-            plt.scatter(X,temp[:len(X)],label=f"class-{index}")
+            X = x_freq(250,len(temp) )
+            # X = X[X<10]
+            print(f"{X=}")
+            print(f"{X.shape=}")
+            print(f"{temp.shape=}")
+            # plt.scatter(X,temp[:len(X)],label=f"class-{index}")
+            plt.plot(X,temp[:len(X)],label=f"class-{index}")
             
 
         plt.legend()
-        plt.savefig(f"./logs/{P_ID}-all-mean.png")
+        plt.savefig(f"./logs/{P_ID}-all-mean-code-1.png")

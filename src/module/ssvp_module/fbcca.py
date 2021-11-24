@@ -45,14 +45,10 @@ def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:list[FP])->tuple
     ...
 
 @overload
-def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:list[FP],remove_Thailand_power_line:bool)->tuple[FP,list[float]]:
+def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:list[FP],enable_zero_padding:bool)->tuple[FP,list[float]]:
     ...
 
-@overload
-def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:list[FP],remove_Thailand_power_line:bool,enable_zero_padding:bool)->tuple[FP,list[float]]:
-    ...
-
-def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:Optional[list[FP]]=None,remove_Thailand_power_line:bool=False,enable_zero_padding:bool=False)->tuple[FP,list[float]]:
+def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:Optional[list[FP]]=None,enable_zero_padding:bool=False)->tuple[FP,list[float]]:
 
     if(enable_zero_padding):
         eeg = zero_padding(eeg)
@@ -63,8 +59,8 @@ def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:Optional[list[FP
   
     eeg_mne_arr:RawArray =  mne.io.RawArray(to_mne_format(eeg),mne.create_info([str(i) for i in range(channel)],experiment_info.headset_info.sample_rate,ch_types))    
     
-    if(remove_Thailand_power_line):
-        eeg_mne_arr.notch_filter(np.arange(50, 125, 50), filter_length='auto', phase='zero')
+    # if(remove_Thailand_power_line):
+    #     eeg_mne_arr.notch_filter(np.arange(50, 125, 50), filter_length='auto', phase='zero')
  
 
 
@@ -78,6 +74,20 @@ def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:Optional[list[FP
 
 
     return fbcca(eeg_numpy,freqs,experiment_info.headset_info.sample_rate)
+
+
+
+def predict2(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:list[FP],enable_zero_padding:bool=False)->tuple[FP,list[float]]:
+    """
+    eeg needs to be FFT
+    """
+    if(enable_zero_padding):
+        eeg = zero_padding(eeg)
+   
+
+    eeg = np.expand_dims(eeg.T, axis=0)
+
+    return fbcca(eeg,freqs,experiment_info.headset_info.sample_rate)
 
 
 """

@@ -121,7 +121,7 @@ def compose_p300_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDo
     experiment_doc:ExperimentDoc
     for experiment_doc in experiment_docs:
         eeg_round = get_eeg_in_round(experiment_doc.min,experiment_doc.max+P300_DELAY_END,eeg_docs,len(experiment_info.headset_info.channel_names))
-        eeg_mne = notch_and_bandpass_filter(eeg_round,experiment_info)
+        eeg_mne = notch_and_bandpass_filter(eeg_round,experiment_info,(1,20))
         eeg_numpy:ndarray = eeg_mne.get_data()
 
         # I prefer to use this format (n,channel)
@@ -153,22 +153,29 @@ def compose_p300_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDo
 
 
 class SSVPData:
+    """
+    eeg shape (time_step, channel)
+    """
     eeg: ndarray
 
+
 class SSVPDataWithLabel:
+    """
+    eeg shape (time_step, channel)
+    """
     eeg: ndarray
     target_grid:int
 
 
 @overload
-def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDoc],experiment_info:ExperimentInfo,bandpass_filter:Optional[tuple[float,float]],selected_eeg_channels:list[int]=None)->list[SSVPData]:
+def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDoc],experiment_info:ExperimentInfo,bandpass_filter:tuple[float,float],selected_eeg_channels:list[int]=None)->list[SSVPData]:
     ...
 
 @overload
-def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDocWithTargetGrid],experiment_info:ExperimentInfo,bandpass_filter:Optional[tuple[float,float]],selected_eeg_channels:list[int]=None)->list[SSVPDataWithLabel]:
+def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDocWithTargetGrid],experiment_info:ExperimentInfo,bandpass_filter:tuple[float,float],selected_eeg_channels:list[int]=None)->list[SSVPDataWithLabel]:
     ...
 
-def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:Union[list[ExperimentDoc],list[ExperimentDocWithTargetGrid]],experiment_info:ExperimentInfo,bandpass_filter:Optional[tuple[float,float]],selected_eeg_channels:list[int]=None)->Union[list[SSVPData],list[SSVPDataWithLabel]]:
+def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:Union[list[ExperimentDoc],list[ExperimentDocWithTargetGrid]],experiment_info:ExperimentInfo,bandpass_filter:tuple[float,float],selected_eeg_channels:list[int]=None)->Union[list[SSVPData],list[SSVPDataWithLabel]]:
 
     returned = []
   
@@ -206,6 +213,49 @@ def compose_ssvp_dataset(eeg_docs:list[EEGDoc],experiment_docs:Union[list[Experi
 
 
 
+
+@overload
+def compose_ssvp_dataset_fft_version(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDoc],experiment_info:ExperimentInfo,bandpass_filter:tuple[float,float],selected_eeg_channels:list[int])->list[SSVPData]:
+    ...
+
+@overload
+def compose_ssvp_dataset_fft_version(eeg_docs:list[EEGDoc],experiment_docs:list[ExperimentDocWithTargetGrid],experiment_info:ExperimentInfo,bandpass_filter:tuple[float,float],selected_eeg_channels:list[int])->list[SSVPDataWithLabel]:
+    ...
+
+def compose_ssvp_dataset_fft_version(eeg_docs:list[EEGDoc],experiment_docs:Union[list[ExperimentDoc],list[ExperimentDocWithTargetGrid]],experiment_info:ExperimentInfo,bandpass_filter:tuple[float,float],selected_eeg_channels:list[int])->Union[list[SSVPData],list[SSVPDataWithLabel]]:
+
+    returned = []
+  
+    eeg_temp:list[list[float]]
+    for index,experiment_doc in enumerate(experiment_docs) :
+        this_data:Union[SSVPData,SSVPDataWithLabel]
+        if isinstance(experiment_doc,ExperimentDoc):
+            this_data = SSVPData()
+        if isinstance(experiment_doc,ExperimentDocWithTargetGrid):
+            this_data = SSVPDataWithLabel()
+            this_data.target_grid = experiment_doc.target_grid
+        
+        if(isinstance(experiment_doc,ExperimentDoc) or isinstance(experiment_doc,ExperimentDocWithTargetGrid)):
+            eeg_temp = [ eeg_doc.data[:len(experiment_info.headset_info.channel_names)] for eeg_doc in eeg_docs if (experiment_doc.min + (40/1000) <= eeg_doc.timestamp <= experiment_doc.max +experiment_info.p300_experiment_config.ttl )]
+     
+        eeg_temp2:RawArray =  notch_and_bandpass_filter(eeg_temp,experiment_info,bandpass_filter=bandpass_filter)
+     
+        this_data.eeg = eeg_temp2.get_data().T
+
+        # select eeg channel   
+        this_data.eeg = this_data.eeg[:,selected_eeg_channels]
+        
+        # fft
+        this_data.eeg = np.abs(np.fft.fft(this_data.eeg))
+     
+
+        returned.append(this_data)
+
+
+    return cast(Union[list[SSVPData],list[SSVPDataWithLabel]],returned)
+
+
+
 def get_eeg_in_round(time_start:float,time_end:float,all_eeg:list[EEGDoc],n_eeg_channel:int)->list[list[float]]:
     returned:list[list[float]] = []
     for d in all_eeg:
@@ -214,14 +264,14 @@ def get_eeg_in_round(time_start:float,time_end:float,all_eeg:list[EEGDoc],n_eeg_
     return returned
 
 
-def notch_and_bandpass_filter(eeg_round:list[list[float]],experiment_info:ExperimentInfo,bandpass_filter:Optional[tuple[float,float]]=(1,20))->RawArray:
+def notch_and_bandpass_filter(eeg_round:list[list[float]],experiment_info:ExperimentInfo,bandpass_filter:tuple[float,float])->RawArray:
     ch_types = ['eeg'] * (len(experiment_info.headset_info.channel_names) - 1) + ['stim']
 
     eeg_mne_arr:RawArray =  mne.io.RawArray(to_mne_format(eeg_round),mne.create_info(experiment_info.headset_info.channel_names,experiment_info.headset_info.sample_rate,ch_types))
         
     # eeg_mne_arr.notch_filter(get_thailand_power_line_noise(experiment_info),filter_length='auto', phase='zero')
-    if bandpass_filter is not None:
-        eeg_mne_arr.filter(bandpass_filter[0],bandpass_filter[1], method='iir')
+ 
+    eeg_mne_arr.filter(bandpass_filter[0],bandpass_filter[1], method='iir')
     return eeg_mne_arr
 
 
