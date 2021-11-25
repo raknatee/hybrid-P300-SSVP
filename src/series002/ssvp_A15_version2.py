@@ -15,12 +15,13 @@ from module.ssvp_module.ssvp_freq_info import FP, wave_data_2021_11_4
 from module.ssvp_module import ssvp_freq_info
 from module.ssvp_module.fbcca import predict, predict2
 from mongo.query.torch_dataset import P300Dataset
-from mongo.query.get_dataset import  P300Data, SSVPData, SSVPDataWithLabel, compose_p300_dataset, compose_ssvp_dataset, compose_ssvp_dataset_fft_version, get_eeg_docs, get_experiment_docs, get_experiment_docs_with_target_grid, to_mne_format
+from mongo.query.get_dataset import  P300Data, SSVPData, SSVPDataWithLabel, compose_p300_dataset, compose_ssvp_dataset, get_eeg_docs, get_experiment_docs, get_experiment_docs_with_target_grid, to_mne_format
 
 
 mne.set_log_file("./logs/mne.log",overwrite=True)
 
-P_ID = "A15S01"
+P_ID = "A15S02"
+MAX_FS = 240
 def main():
   
     def load()->list[SSVPDataWithLabel]:
@@ -29,8 +30,8 @@ def main():
         experiment_docs = get_experiment_docs_with_target_grid(P_ID)
 
 
-        # return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT15,(1,30),[*[0,1,2]])
-        return compose_ssvp_dataset_fft_version(eeg_docs,experiment_docs,ATTEMPT15,(1,30),[*[0,1,2]])
+        return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT15,(1,30),[*[0,1,2]])
+      
 
  
 
@@ -46,8 +47,8 @@ def main():
     FP(6, 0),
  
     # FP(5,0),
-    # FP(6.2,0),
-    FP(7,0),
+    FP(6.2,0),
+    # FP(7,0),
     # FP(8,0),
     # FP(9,0),
  
@@ -57,9 +58,14 @@ def main():
     inspectData = InspectData()
     for ssvp in list_ssvp:
       
+        print("-"*20)
+       
         inspectData.add(ssvp)
-        print(ssvp.eeg.shape)
-        result = predict2(ssvp.eeg,ATTEMPT15,[wave for wave in wavesData if wave is not None],enable_zero_padding=False)
+     
+        # result = predict2(ssvp.eeg,250,[wave for wave in wavesData if wave is not None],enable_zero_padding=False)
+        # result = predict2(ssvp.eeg,ssvp.fs,[wave for wave in wavesData if wave is not None],enable_zero_padding=False)
+        result = predict2(ssvp.eeg,min(ssvp.fs,MAX_FS),[wave for wave in wavesData if wave is not None],enable_zero_padding=False)
+        # result = predict2(ssvp.eeg,MAX_FS,[wave for wave in wavesData if wave is not None],enable_zero_padding=False)
     
         
         y_true = wavesData[ssvp.target_grid]
@@ -68,7 +74,6 @@ def main():
         rho:list[float]
         y_hat,rho = result
 
-        print("-"*20)
         print(f"{rho=}")
         print(f"{y_true=},{y_hat=}")
         if(y_true ==  y_hat ):
@@ -116,9 +121,11 @@ class InspectData:
                 eeg_mean = InspectData.mean(self.eeg_data[each_label])
             else:
                 eeg_mean = InspectData.mean(self.eeg_data[each_label][:selected_sample])
-            x_axis = x_freq(250,len(eeg_mean))
+
+            eeg_mean = np.abs(np.fft.fft(eeg_mean))
+            x_axis = x_freq(MAX_FS,len(eeg_mean))
             x_axis = x_axis[x_axis<15]
-            plt.scatter(x_axis,eeg_mean[:len(x_axis)],label=f"class-{each_label}")
+            plt.plot(x_axis,eeg_mean[:len(x_axis)],label=f"class-{each_label}")
         
         plt.legend()
         plt.savefig(f"./logs/{P_ID}-all-mean-code-2.png")

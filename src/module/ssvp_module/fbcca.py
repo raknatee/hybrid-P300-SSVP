@@ -48,19 +48,27 @@ def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:list[FP])->tuple
 def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:list[FP],enable_zero_padding:bool)->tuple[FP,list[float]]:
     ...
 
-def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:Optional[list[FP]]=None,enable_zero_padding:bool=False)->tuple[FP,list[float]]:
+
+@overload
+def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:list[FP],enable_zero_padding:bool,is_chaky_dataset:bool)->tuple[FP,list[float]]:
+    ...
+
+
+def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:Optional[list[FP]]=None,enable_zero_padding:bool=False,is_chaky_dataset:bool=False)->tuple[FP,list[float]]:
 
     if(enable_zero_padding):
         eeg = zero_padding(eeg)
     channel = eeg.shape[1]
-
+ 
     ch_types = ['eeg'] * (channel)
 
   
     eeg_mne_arr:RawArray =  mne.io.RawArray(to_mne_format(eeg),mne.create_info([str(i) for i in range(channel)],experiment_info.headset_info.sample_rate,ch_types))    
     
-    # if(remove_Thailand_power_line):
-    #     eeg_mne_arr.notch_filter(np.arange(50, 125, 50), filter_length='auto', phase='zero')
+    if(is_chaky_dataset):
+        eeg_mne_arr.notch_filter(np.arange(50, 125, 50), filter_length='auto', phase='zero')
+        eeg_mne_arr.filter(4,77, method='iir')
+
  
 
 
@@ -77,17 +85,14 @@ def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:Optional[list[FP
 
 
 
-def predict2(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:list[FP],enable_zero_padding:bool=False)->tuple[FP,list[float]]:
-    """
-    eeg needs to be FFT
-    """
+def predict2(eeg:np.ndarray,fs:int,freqs:list[FP],enable_zero_padding:bool=False)->tuple[FP,list[float]]:
     if(enable_zero_padding):
         eeg = zero_padding(eeg)
    
-
+    print(f"predict function used {fs} Hz for fs")
     eeg = np.expand_dims(eeg.T, axis=0)
-
-    return fbcca(eeg,freqs,experiment_info.headset_info.sample_rate)
+   
+    return fbcca(eeg,freqs,fs)
 
 
 """

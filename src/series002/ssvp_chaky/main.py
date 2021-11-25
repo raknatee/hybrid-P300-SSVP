@@ -71,10 +71,10 @@ def main():
             eeg_round = [ data.eeg for data in pad_non_target(target.timestamp,ssvp_data_list)]
        
 
-            eeg_mne_arr2:RawArray =  mne.io.RawArray(to_mne_format(eeg_round),mne.create_info(channel_names,230,ch_types))
-            eeg_mne_arr2.set_montage(mne.channels.make_standard_montage('standard_1020'))
-            eeg_mne_arr2.plot_psd()
-            plt.savefig(f"./logs/plot-ssvp-chaky-{index}-{count['all']}-gitignore.png")
+            # eeg_mne_arr2:RawArray =  mne.io.RawArray(to_mne_format(eeg_round),mne.create_info(channel_names,250,ch_types))
+            # eeg_mne_arr2.set_montage(mne.channels.make_standard_montage('standard_1020'))
+            # eeg_mne_arr2.plot_psd()
+            # plt.savefig(f"./logs/plot-ssvp-chaky-{index}-{count['all']}-gitignore.png")
 
             
 
@@ -82,7 +82,7 @@ def main():
 
             y_hat:FP
             rho:list[float]
-            y_hat,rho = predict(np.array(eeg_round),I_dont_know_real_but_just_dummy,expected_fp,remove_Thailand_power_line=True)
+            y_hat,rho = predict(np.array(eeg_round),I_dont_know_real_but_just_dummy,expected_fp,is_chaky_dataset=True)
             print(f"{rho=}")
             print(f"{y_true=}")
             print(f"{y_hat=}")
