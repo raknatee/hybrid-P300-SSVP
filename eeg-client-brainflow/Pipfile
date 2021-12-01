@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+brainflow = "==4.8.0"
+websocket-client = "==1.2.1"
+mypy = "*"
+pyopenbci = "*"
+pyserial = "*"
+requests = "*"
+xmltodict = "*"
+mne = "*"
+matplotlib = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
