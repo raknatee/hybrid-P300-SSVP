@@ -16,13 +16,7 @@ import numpy as np
 import mne #type:ignore
 
 
-def zero_padding(data:np.ndarray)->np.ndarray:
-    len_data = data.shape[0]
-    len_channel  = data.shape[1]    
-    padding_array = np.zeros((len_data*5,len_channel))
-    data = np.concatenate((data,padding_array),axis=0)
 
-    return data
 
 def fft(data:list[float],sample_rate:float)->tuple[np.ndarray,np.ndarray]:
     """
@@ -56,14 +50,14 @@ def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:list[FP],enable_
 
 def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:Optional[list[FP]]=None,enable_zero_padding:bool=False,is_chaky_dataset:bool=False)->tuple[FP,list[float]]:
 
-    if(enable_zero_padding):
-        eeg = zero_padding(eeg)
+    # if(enable_zero_padding):
+    #     eeg = zero_padding(eeg)
     channel = eeg.shape[1]
  
     ch_types = ['eeg'] * (channel)
 
   
-    eeg_mne_arr:RawArray =  mne.io.RawArray(to_mne_format(eeg),mne.create_info([str(i) for i in range(channel)],experiment_info.headset_info.sample_rate,ch_types))    
+    eeg_mne_arr:RawArray =  mne.io.RawArray(to_mne_format(eeg),mne.create_info([str(i) for i in range(channel)],experiment_info.headset_info.sampling_rate,ch_types))    
     
     if(is_chaky_dataset):
         eeg_mne_arr.notch_filter(np.arange(50, 125, 50), filter_length='auto', phase='zero')
@@ -78,16 +72,15 @@ def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:Optional[list[FP
 
     if(freqs is None):
         freqs_default:list[FP] = [wave for wave in wave_data if wave is not None]
-        return fbcca(eeg_numpy,freqs_default,experiment_info.headset_info.sample_rate)
+        return fbcca(eeg_numpy,freqs_default,experiment_info.headset_info.sampling_rate)
 
 
-    return fbcca(eeg_numpy,freqs,experiment_info.headset_info.sample_rate)
+    return fbcca(eeg_numpy,freqs,experiment_info.headset_info.sampling_rate)
 
 
 
-def predict2(eeg:np.ndarray,fs:int,freqs:list[FP],enable_zero_padding:bool=False)->tuple[FP,list[float]]:
-    if(enable_zero_padding):
-        eeg = zero_padding(eeg)
+def predict2(eeg:np.ndarray,fs:int,freqs:list[FP])->tuple[FP,list[float]]:
+
    
     print(f"predict function used {fs} Hz for fs")
     eeg = np.expand_dims(eeg.T, axis=0)

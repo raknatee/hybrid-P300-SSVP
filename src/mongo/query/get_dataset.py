@@ -5,7 +5,8 @@ from matplotlib import pyplot as plt #type:ignore
 import mne #type: ignore
 from mne.io.array.array import RawArray #type: ignore
 import numpy as np
-from numpy import ndarray
+from numpy import arange, ndarray
+from numpy.lib.arraysetops import isin
 
 
 from module.experiment_info import ExperimentInfo, get_thailand_power_line_noise 
@@ -207,6 +208,7 @@ def compose_ssvp_dataset(eeg_docs:list[EEGDoc],markers:Union[list[ExperimentDoc]
 
     returned = []
   
+    sampling_rate = experiment_info.headset_info.sampling_rate
 
     for marker in markers:
         
@@ -218,11 +220,13 @@ def compose_ssvp_dataset(eeg_docs:list[EEGDoc],markers:Union[list[ExperimentDoc]
 
         start_time = marker.first_timestamp + (40/1000)
         end_time = marker.last_timestamp +experiment_info.p300_experiment_config.ttl
-        eeg_round = [ eeg_doc.data[:len(experiment_info.headset_info.channel_names)] for eeg_doc in eeg_docs if (start_time <= eeg_doc.timestamp <= end_time )]
+   
+        eeg_round = get_eeg_in_round_by_count_sampling(start_time,end_time,sampling_rate,eeg_docs)
 
-        fs_this_round = int(len(eeg_round)/(end_time-start_time))
+        # eeg_round = zero_padding(eeg_round)
+       
     
-        eeg_temp2:RawArray =  notch_and_bandpass_filter(eeg_round,experiment_info,bandpass_filter,fs_this_round)
+        eeg_temp2:RawArray =  notch_and_bandpass_filter(eeg_round,experiment_info,bandpass_filter,sampling_rate)
     
         eeg_temp3:ndarray = eeg_temp2.get_data().T
 
@@ -233,9 +237,9 @@ def compose_ssvp_dataset(eeg_docs:list[EEGDoc],markers:Union[list[ExperimentDoc]
 
         this_data:Union[SSVPData,SSVPDataWithLabel]
         if isinstance(marker,ExperimentDoc):
-            this_data = SSVPData(eeg_temp3,fs_this_round)
+            this_data = SSVPData(eeg_temp3,sampling_rate)
         if isinstance(marker,ExperimentDocWithTargetGrid):
-            this_data = SSVPDataWithLabel(eeg_temp3,fs_this_round,marker.target_grid)
+            this_data = SSVPDataWithLabel(eeg_temp3,sampling_rate,marker.target_grid)
          
         
         
@@ -247,7 +251,23 @@ def compose_ssvp_dataset(eeg_docs:list[EEGDoc],markers:Union[list[ExperimentDoc]
 
 
 
+def zero_padding(data:list[list[float]])->list[list[float]]:
+    n_channel = len(data[0])
+    padding = [[0.0]*n_channel]*(len(data)*3)
+    
+    return [*data,* padding]
 
+# def zero_padding(data:Union[np.ndarray,list[list[float]]])->Union[np.ndarray,list[list[float]]]:
+#     if isinstance(data,np.ndarray):
+#         len_data = data.shape[0]
+#         len_channel  = data.shape[1]    
+#         padding_array = np.zeros((len_data*5,len_channel))
+#         data = np.concatenate((data,padding_array),axis=0)
+
+#         return data
+#     else:
+    
+#     return 
 
 
 def get_eeg_in_round(time_start:float,time_end:float,all_eeg:list[EEGDoc],n_eeg_channel:int)->list[list[float]]:
@@ -258,12 +278,56 @@ def get_eeg_in_round(time_start:float,time_end:float,all_eeg:list[EEGDoc],n_eeg_
     return returned
 
 
+def get_eeg_in_round_by_count_sampling(time_start:float,time_end:float,fs:int,all_eeg:list[EEGDoc])->list[list[float]]:
+    """
+    1. Find which document is closed to time_start => A
+    2. Find (time_end-time_start) * fs then we knew how many document from A to end
+    """
+    returned:list[list[float]]=[]
+
+    """
+    filter [time_start-1 : time_end+1] second
+    """
+    filter_array:list[EEGDoc] = [eeg_doc for eeg_doc in all_eeg if  time_start-1 <= eeg_doc.timestamp <= time_end+1]
+
+    index_closest_eeg_doc_to_time_start = find_closest_to(time_start,filter_array)
+    if(index_closest_eeg_doc_to_time_start is not None):
+        n_sample_next = int((time_end-time_start)*fs)
+        print(f"time {time_end-time_start}")
+        print(f"{n_sample_next=}")
+        filter_array = filter_array[index_closest_eeg_doc_to_time_start:index_closest_eeg_doc_to_time_start+n_sample_next]
+        returned = [eeg_doc.data for eeg_doc in filter_array]
+        
+    
+
+
+    return returned
+
+
+def find_closest_to(time_expected:float,array:list[EEGDoc])->Optional[int]:
+    for i in range(len(array)):
+        if(array[i].timestamp <= time_expected <= array[i+1].timestamp):
+            return i
+    return None
+
+
+ 
+@overload
 def notch_and_bandpass_filter(eeg_round:list[list[float]],experiment_info:ExperimentInfo,bandpass_filter:tuple[float,float],fs:int)->RawArray:
+    ...
+
+@overload
+def notch_and_bandpass_filter(eeg_round:list[list[float]],experiment_info:ExperimentInfo,bandpass_filter:tuple[float,float],fs:int,remove_thailand_power_line:bool)->RawArray:
+    ...
+
+
+def notch_and_bandpass_filter(eeg_round:list[list[float]],experiment_info:ExperimentInfo,bandpass_filter:tuple[float,float],fs:int,remove_thailand_power_line:bool=False)->RawArray:
     ch_types = ['eeg'] * (len(experiment_info.headset_info.channel_names) - 1) + ['stim']
 
     eeg_mne_arr:RawArray =  mne.io.RawArray(to_mne_format(eeg_round),mne.create_info(experiment_info.headset_info.channel_names,fs,ch_types))
         
-    # eeg_mne_arr.notch_filter(get_thailand_power_line_noise(experiment_info),filter_length='auto', phase='zero')
+    if remove_thailand_power_line:
+        eeg_mne_arr.notch_filter(get_thailand_power_line_noise(experiment_info),filter_length='auto', phase='zero')
  
     eeg_mne_arr.filter(bandpass_filter[0],bandpass_filter[1], method='iir')
     return eeg_mne_arr

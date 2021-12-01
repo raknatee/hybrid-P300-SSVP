@@ -20,8 +20,10 @@ from mongo.query.get_dataset import  P300Data, SSVPData, SSVPDataWithLabel, comp
 
 mne.set_log_file("./logs/mne.log",overwrite=True)
 
-P_ID = "A15S02"
-MAX_FS = 240
+P_ID = "A15S01"
+time_per_round = 3
+
+sampling_rate = ATTEMPT15.headset_info.sampling_rate
 def main():
   
     def load()->list[SSVPDataWithLabel]:
@@ -30,7 +32,7 @@ def main():
         experiment_docs = get_experiment_docs_with_target_grid(P_ID)
 
 
-        return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT15,(1,30),[*[0,1,2]])
+        return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT15,(4,70),[0,1,2])
       
 
  
@@ -47,7 +49,8 @@ def main():
     FP(6, 0),
  
     # FP(5,0),
-    FP(6.2,0),
+    # FP(6.2,0),
+    FP(11.5,0),
     # FP(7,0),
     # FP(8,0),
     # FP(9,0),
@@ -64,7 +67,8 @@ def main():
      
         # result = predict2(ssvp.eeg,250,[wave for wave in wavesData if wave is not None],enable_zero_padding=False)
         # result = predict2(ssvp.eeg,ssvp.fs,[wave for wave in wavesData if wave is not None],enable_zero_padding=False)
-        result = predict2(ssvp.eeg,min(ssvp.fs,MAX_FS),[wave for wave in wavesData if wave is not None],enable_zero_padding=False)
+      
+        result = predict2(ssvp.eeg,sampling_rate,[wave for wave in wavesData if wave is not None])
         # result = predict2(ssvp.eeg,MAX_FS,[wave for wave in wavesData if wave is not None],enable_zero_padding=False)
     
         
@@ -96,8 +100,24 @@ class InspectData:
         if label not in self.eeg_data:
             self.eeg_data[label] = []
          
+        print(ssvp_data_with_label.eeg.shape)
+        # self.eeg_data[label].append(ssvp_data_with_label.eeg[:2950])
+        self.eeg_data[label].append(ssvp_data_with_label.eeg[:sampling_rate*time_per_round-50])
 
-        self.eeg_data[label].append(ssvp_data_with_label.eeg[:650])
+    @staticmethod
+    def calFFT(signal:np.ndarray,fs:int):
+        number_sample = signal.shape[0]
+        realRange = fs//2
+
+        mag = np.abs(np.fft.fft(signal))
+        mag_norm = mag / (number_sample/2)
+        mag_range = mag_norm[:number_sample//2]
+
+        f_range = np.linspace(0,realRange,number_sample//2)
+        
+        return mag_range, f_range
+
+
 
     @overload
     def save_fig(self)->None:
@@ -107,7 +127,7 @@ class InspectData:
     def save_fig(self,selected_sample:int)->None:
         ...
 
-
+   
     def save_fig(self,selected_sample:Optional[int]=None)->None:
         def x_freq(sample_rate:float,lenght_data:int)->np.ndarray:
             df = sample_rate/lenght_data
@@ -123,9 +143,22 @@ class InspectData:
                 eeg_mean = InspectData.mean(self.eeg_data[each_label][:selected_sample])
 
             eeg_mean = np.abs(np.fft.fft(eeg_mean))
-            x_axis = x_freq(MAX_FS,len(eeg_mean))
-            x_axis = x_axis[x_axis<15]
-            plt.plot(x_axis,eeg_mean[:len(x_axis)],label=f"class-{each_label}")
+            # eeg_mean = 10 * np.log10(eeg_mean)
+            x_axis = x_freq(sampling_rate,len(eeg_mean))
+
+            # eeg_mean,x_axis = InspectData.calFFT(eeg_mean,250)
+
+
+            x_axis = x_axis[ x_axis<100 ]
+            print(x_axis.shape)
+
+
+            def zoom(x:np.ndarray)->np.ndarray:
+                # return x
+                return x[10:50]
+                # return x[40:90]
+
+            plt.plot(zoom(x_axis),zoom(eeg_mean[:len(x_axis)]),label=f"class-{each_label}")
         
         plt.legend()
         plt.savefig(f"./logs/{P_ID}-all-mean-code-2.png")

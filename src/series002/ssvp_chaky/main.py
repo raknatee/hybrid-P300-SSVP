@@ -82,7 +82,7 @@ def main():
 
             y_hat:FP
             rho:list[float]
-            y_hat,rho = predict(np.array(eeg_round),I_dont_know_real_but_just_dummy,expected_fp,is_chaky_dataset=True)
+            y_hat,rho = predict(np.array(eeg_round),I_dont_know_real_but_just_dummy,expected_fp,False,is_chaky_dataset=True)
             print(f"{rho=}")
             print(f"{y_true=}")
             print(f"{y_hat=}")
