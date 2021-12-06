@@ -56,7 +56,7 @@ const subSpellerData = [
 
 
 const wavesData = [
-    new fp(6, 0),
+    new fp(7, 0),
     new fp(9, 0),
     new fp(11, 0),
     new fp(13, 0),
