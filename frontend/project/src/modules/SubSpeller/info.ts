@@ -42,9 +42,9 @@ class fp{
 
 const subSpellerData = [
     ['ภ', 'ถ', '-ุ', '-ู', 'ๆ', 'ไ', 'ฎ', ' ำ', 'ฑ'],
-    null,
-    null,
-    null,
+    ['-ึ', 'ค', 'พ', 'ธ', 'ะ', '-ํ', '-ั', '-๊', '-ี', ],
+    ['ต', 'จ', 'ข', 'ณ', 'ฯ', 'ญ', 'ร', 'น', 'ย'],
+    ['ฐ', 'ช', 'ฅ', 'บ', 'ล', 'ฃ', '.', 'ง', ','],
     null,
     null,
     null,
@@ -57,10 +57,9 @@ const subSpellerData = [
 
 const wavesData = [
     new fp(6, 0),
-    null,
-    null,
-    null,
-    null,
+    new fp(9, 0),
+    new fp(11, 0),
+    new fp(13, 0),
     null,
     null,
     null,

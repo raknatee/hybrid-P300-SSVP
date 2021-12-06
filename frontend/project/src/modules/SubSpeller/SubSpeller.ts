@@ -53,9 +53,9 @@ class SubSpeller {
             this.phare = waveParam.phare * Math.PI
             this.sinWave = new SinWave(this.freq, this.phare)
         }
-        if(ssvpMode == SSVPMode.PeriodTimeMode){
-            this.frameMod = Math.round(FRAMERATE/waveParam.freq)
-        }
+        // if(ssvpMode == SSVPMode.PeriodTimeMode){
+        //     this.frameMod = Math.round(FRAMERATE/waveParam.freq)
+        // }
 
         this.x = x
         this.y = y
@@ -109,9 +109,9 @@ class SubSpeller {
     }
     setStartForP300(time_per_round:number): void {
 
-        if(this.ssvpMode==SSVPMode.PeriodTimeMode){
-            this.currentColor = BoxColor.BLACK
-        }
+        // if(this.ssvpMode==SSVPMode.PeriodTimeMode){
+        //     this.currentColor = BoxColor.BLACK
+        // }
 
         this.randomIndex = checkerboard(this.alphabets.length)
 
@@ -185,37 +185,37 @@ class SubSpeller {
 
 
 
-        if(this.ssvpMode==SSVPMode.PeriodTimeMode){
+        // if(this.ssvpMode==SSVPMode.PeriodTimeMode){
        
-            if(this._countFrame! % this.frameMod! == 0){
-                if(this.currentColor == BoxColor.BLACK){
-                    this.currentColor = BoxColor.WHITE
-                }
-                if(this.currentColor == BoxColor.WHITE){
-                    this.currentColor = BoxColor.BLACK
-                }
-            }
+        //     if(this._countFrame! % this.frameMod! == 0){
+        //         if(this.currentColor == BoxColor.BLACK){
+        //             this.currentColor = BoxColor.WHITE
+        //         }
+        //         if(this.currentColor == BoxColor.WHITE){
+        //             this.currentColor = BoxColor.BLACK
+        //         }
+        //     }
 
 
-            this.currentIndexes.forEach((currentIndex) => {
+        //     this.currentIndexes.forEach((currentIndex) => {
 
-            const coor = this.gridHelper.getCoordinate(currentIndex.index)
-            const xBox = Math.floor(coor.x - style.fontSize / 4)
-            const yBox = Math.floor(coor.y - style.fontSize)
-            if(this.currentColor == BoxColor.BLACK){
-                this.state!.blackBoxPreDefine.fill(xBox, yBox)
-                console.log("fill black")
+        //     const coor = this.gridHelper.getCoordinate(currentIndex.index)
+        //     const xBox = Math.floor(coor.x - style.fontSize / 4)
+        //     const yBox = Math.floor(coor.y - style.fontSize)
+        //     if(this.currentColor == BoxColor.BLACK){
+        //         this.state!.blackBoxPreDefine.fill(xBox, yBox)
+        //         console.log("fill black")
 
-            }
+        //     }
 
-            if(this.currentColor == BoxColor.WHITE){
-                this.state!.whiteBoxPreDefine.fill(xBox, yBox)
-                console.log("fill white")
+        //     if(this.currentColor == BoxColor.WHITE){
+        //         this.state!.whiteBoxPreDefine.fill(xBox, yBox)
+        //         console.log("fill white")
 
 
-            }
-            })
-        }
+        //     }
+        //     })
+        // }
 
         if(this.ssvpMode==SSVPMode.PulseWaveMode){
             const this_now = getPerformanceNow()
@@ -276,7 +276,7 @@ class CurrentIndex {
 
 enum SSVPMode {
     // SinWaveMode,
-    PeriodTimeMode,
+    // PeriodTimeMode,
     PulseWaveMode,
     
 }

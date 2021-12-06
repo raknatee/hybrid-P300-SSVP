@@ -11,13 +11,9 @@ class FPS{
             return 0
         }
         const fps = Math.round(1/(now-FPS.lastTick))
-        if(fps>58 && fps<62){
-            return 60
-        }
-        else{
-            
+    
             return fps
-        }
+        
     }
 }
 

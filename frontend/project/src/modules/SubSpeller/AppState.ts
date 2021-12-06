@@ -65,7 +65,7 @@ class AppState {
                 continue;
             }
             const coor = gridHelper.getCoordinate(i);
-            const thisSubSpller = new SubSpeller(i, coor.x, coor.y, spawn, ttl,SSVPMode.PeriodTimeMode)
+            const thisSubSpller = new SubSpeller(i, coor.x, coor.y, spawn, ttl,SSVPMode.PulseWaveMode)
             subSpellers.push(thisSubSpller);
         }
         return subSpellers
