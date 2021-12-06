@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Any, Optional, Union
-
+from threading import Lock
 
 class DataBufferManager:
     buffer:Buffer
@@ -11,6 +11,8 @@ class DataBufferManager:
             cls.buffer = Buffer()
         return cls.buffer
 
+
+lock = Lock()
 class Buffer(list):
 
     def __init__(self):
@@ -19,7 +21,7 @@ class Buffer(list):
         super().append(data)
 
     def get_and_clear(self)->list[dict[str,Any]]:
-
-        copy_of_myself = [*self]
-        self.clear()
+        with lock:
+            copy_of_myself = [*self]
+            self.clear()
         return copy_of_myself

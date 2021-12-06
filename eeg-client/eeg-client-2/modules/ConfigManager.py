@@ -41,11 +41,6 @@ class Config:
     DUMMY_MODE:bool
     DO_LOCAL_SAVE:bool
 
-    """
-    Package Config
-    """
-    DATA_SIZE:int
-
     @staticmethod
     def create_sample_configuration()->Config:
         sample_config = Config()
@@ -59,7 +54,7 @@ class Config:
         sample_config.DUMMY_MODE = False
         sample_config.DO_LOCAL_SAVE = False
 
-        sample_config.DATA_SIZE = 100
+    
         
 
         return sample_config
