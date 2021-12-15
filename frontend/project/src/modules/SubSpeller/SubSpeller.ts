@@ -96,16 +96,53 @@ class SubSpeller {
         this.renderFlash(ctx)
         this.renderTarget(ctx)
 
-        let i = 0
+  
+
+        if(this.state!.getCurrentState()!=State.FlashingP300){
+            this._render_all(ctx)
+        }else{
+            this._render_all_except(ctx)
+        }
+        
+        
+    }
+    _render_all(ctx:CanvasRenderingContext2D):void{
+        let i =0
         this.alphabets.forEach(element => {
 
             const coord = this.gridHelper.getCoordinate(i)
 
+           
             ctx.fillStyle = "black";
 
             ctx.fillText(element, coord.x, coord.y);
             i++;
         })
+    }
+    _render_all_except(ctx:CanvasRenderingContext2D):void{
+        const except_list:number[] = []
+
+        this.currentIndexes.forEach(e=>{
+            except_list.push(e.index)
+        })
+
+     
+        for(let i=0;i<this.alphabets.length;i++){
+
+            if(except_list.includes(i)){
+                continue
+            }
+            const element = this.alphabets[i]
+
+            const coord = this.gridHelper.getCoordinate(i)
+
+           
+            ctx.fillStyle = "black";
+
+            ctx.fillText(element, coord.x, coord.y);
+       
+
+        }
     }
     setStartForP300(time_per_round:number): void {
 
