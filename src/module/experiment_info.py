@@ -67,6 +67,16 @@ ATTEMPT15 = ExperimentInfo(headset_info=HeadsetInfo(250,['O2','OZ','O1','P8','P4
 ATTEMPT16 = ExperimentInfo(headset_info=HeadsetInfo(250,['O2','OZ','O1','P8','P4','P3','P7','FpZ']),
                             p300_experiment_config=P300ExperimentConfig(0,1))
 
+ATTEMPT17 = ATTEMPT15
+
+ATTEMPT18 = ExperimentInfo(headset_info=HeadsetInfo(250,['O2','OZ','O1','P8','P4','P3','P7','FpZ']),
+                            p300_experiment_config=P300ExperimentConfig(0,3))
+
+ATTEMPT19 = ATTEMPT18
+
+ATTEMPT20 = ExperimentInfo(headset_info=HeadsetInfo(250,['O2','OZ','O1','P8','P4','P3','P7','FpZ']),
+                            p300_experiment_config=P300ExperimentConfig(.3,.6))
+
 THAILAND_POWER_LINE_FREQ = 50
 def get_thailand_power_line_noise(experiment_info:ExperimentInfo)->np.ndarray:
     return np.arange(THAILAND_POWER_LINE_FREQ,experiment_info.headset_info.sampling_rate/2,THAILAND_POWER_LINE_FREQ)

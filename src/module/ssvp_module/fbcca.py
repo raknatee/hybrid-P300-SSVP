@@ -18,17 +18,6 @@ import mne #type:ignore
 
 
 
-def fft(data:list[float],sample_rate:float)->tuple[np.ndarray,np.ndarray]:
-    """
-    return fft, X
-    """
-    def x_freq(sample_rate:float,lenght_data:int)->np.ndarray:
-            df = sample_rate/lenght_data
-            return np.arange(0,sample_rate/2,df)
-
-    data_fft = np.abs(np.fft.fft(np.array(data)))
-
-    return data_fft, x_freq(sample_rate,len(data_fft))
 
 @overload
 def predict(eeg:np.ndarray,experiment_info:ExperimentInfo)->tuple[FP,list[float]]:

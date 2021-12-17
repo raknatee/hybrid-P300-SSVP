@@ -293,8 +293,6 @@ def get_eeg_in_round_by_count_sampling(time_start:float,time_end:float,fs:int,al
     index_closest_eeg_doc_to_time_start = find_closest_to(time_start,filter_array)
     if(index_closest_eeg_doc_to_time_start is not None):
         n_sample_next = int((time_end-time_start)*fs)
-        print(f"time {time_end-time_start}")
-        print(f"{n_sample_next=}")
         filter_array = filter_array[index_closest_eeg_doc_to_time_start:index_closest_eeg_doc_to_time_start+n_sample_next]
         returned = [eeg_doc.data for eeg_doc in filter_array]
         

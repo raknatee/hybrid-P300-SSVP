@@ -1,5 +1,5 @@
 
-from typing import Optional, Union, overload
+from typing import Optional, Sequence, Union, overload
 import mne #type:ignore
 
 from matplotlib import pyplot as plt #type:ignore
@@ -9,22 +9,23 @@ from scipy.ndimage.measurements import label #type:ignore
 
 from module import object_saver
 
-from module.experiment_info import ATTEMPT15
+from module.experiment_info import ATTEMPT17
+from module.fft import to_fft
 from module.ssvp_module.ssvp_freq_info import FP, wave_data_2021_11_4
 
 from module.ssvp_module import ssvp_freq_info
-from module.ssvp_module.fbcca import predict, predict2
+from module.ssvp_module.fbcca import  predict2
 from mongo.query.torch_dataset import P300Dataset
 from mongo.query.get_dataset import  P300Data, SSVPData, SSVPDataWithLabel, compose_p300_dataset, compose_ssvp_dataset, get_eeg_docs, get_experiment_docs, get_experiment_docs_with_target_grid, to_mne_format
 
 
 mne.set_log_file("./logs/mne.log",overwrite=True)
 
-P_ID = "A15S01"
-time_per_round = 3
+P_ID = "A17S01"
+TIME_PER_ROUND = 3
 
-sampling_rate = ATTEMPT15.headset_info.sampling_rate
-# sampling_rate = ATTEMPT15.headset_info.sampling_rate
+SAMPLING_RATE = ATTEMPT17.headset_info.sampling_rate
+# sampling_rate = 240
 def main():
   
     def load()->list[SSVPDataWithLabel]:
@@ -33,7 +34,7 @@ def main():
         experiment_docs = get_experiment_docs_with_target_grid(P_ID)
 
 
-        return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT15,(4,70),[0,1,2])
+        return compose_ssvp_dataset(eeg_docs,experiment_docs,ATTEMPT17,(4,30),[0,1,2])
       
 
  
@@ -43,18 +44,16 @@ def main():
     list_ssvp = load()
 
     count_correct = 0 
+    count_correct_fft_look = 0
     
     
     # wavesData = wave_data_2021_11_4
     wavesData = [
     FP(6, 0),
+    FP(9, 0),
+    FP(11, 0),
+    FP(13, 0),
  
-    # FP(5,0),
-    # FP(6.2,0),
-    FP(11.5,0),
-    # FP(7,0),
-    # FP(8,0),
-    # FP(9,0),
  
     ] 
     print(wavesData)
@@ -66,11 +65,9 @@ def main():
        
         inspectData.add(ssvp)
      
-        # result = predict2(ssvp.eeg,250,[wave for wave in wavesData if wave is not None],enable_zero_padding=False)
-        # result = predict2(ssvp.eeg,ssvp.fs,[wave for wave in wavesData if wave is not None],enable_zero_padding=False)
+
       
-        result = predict2(ssvp.eeg,sampling_rate,[wave for wave in wavesData if wave is not None])
-        # result = predict2(ssvp.eeg,MAX_FS,[wave for wave in wavesData if wave is not None],enable_zero_padding=False)
+        result = predict2(ssvp.eeg,SAMPLING_RATE,[wave for wave in wavesData if wave is not None])
     
         
         y_true = wavesData[ssvp.target_grid]
@@ -81,11 +78,40 @@ def main():
 
         print(f"{rho=}")
         print(f"{y_true=},{y_hat=}")
+
+        amplitudes, y_hat_fft_look = FFTPoint.look(ssvp.eeg,wavesData)
+        print(f"{amplitudes=}")
+        print(f"FFTlook {y_true=} {y_hat_fft_look=}")
         if(y_true ==  y_hat ):
             count_correct+=1
+        if(y_true == y_hat_fft_look):
+            count_correct_fft_look+=1
 
     print(f"acc: {count_correct/len(list_ssvp)}")
+    print(f"acc fftlook: {count_correct_fft_look/len(list_ssvp)}")
     inspectData.save_fig()
+
+
+class FFTPoint:
+
+    @staticmethod
+    def look(signal:np.ndarray, freqs:list[FP])->tuple[list[float],FP]:
+        """
+        need signal in time domain
+        """
+
+        fft,x_axis = to_fft(signal,SAMPLING_RATE)
+        amplitudes:list[float] = []
+        for freq in freqs:
+           index = (x_axis>freq.freq-0.5) & (x_axis<freq.freq+0.5)
+        #    index = (x_axis>freq.freq-0.2) & (x_axis<freq.freq+0.2)
+     
+           amplitude = fft[index]   * 1e5
+           amplitudes.append(amplitude.mean())
+        
+        predict_index = amplitudes.index(max(amplitudes))
+        
+        return amplitudes,freqs[predict_index]
 
 
 class InspectData:
@@ -98,25 +124,17 @@ class InspectData:
         label:str = str(ssvp_data_with_label.target_grid)
         if(label == "0"):
             label = "6Hz"
+        if(label == "1"):
+            label = "9Hz"
+        if(label == "2"):
+            label = "11Hz"
+        if(label == "3"):
+            label = "13Hz"
         if label not in self.eeg_data:
             self.eeg_data[label] = []
          
-        print(ssvp_data_with_label.eeg.shape)
-        # self.eeg_data[label].append(ssvp_data_with_label.eeg[:2950])
-        self.eeg_data[label].append(ssvp_data_with_label.eeg[:sampling_rate*time_per_round-50])
-
-    @staticmethod
-    def calFFT(signal:np.ndarray,fs:int):
-        number_sample = signal.shape[0]
-        realRange = fs//2
-
-        mag = np.abs(np.fft.fft(signal))
-        mag_norm = mag / (number_sample/2)
-        mag_range = mag_norm[:number_sample//2]
-
-        f_range = np.linspace(0,realRange,number_sample//2)
-        
-        return mag_range, f_range
+      
+        self.eeg_data[label].append(ssvp_data_with_label.eeg[:SAMPLING_RATE*TIME_PER_ROUND-15])
 
 
 
@@ -130,9 +148,7 @@ class InspectData:
 
    
     def save_fig(self,selected_sample:Optional[int]=None)->None:
-        def x_freq(sample_rate:float,lenght_data:int)->np.ndarray:
-            df = sample_rate/lenght_data
-            return np.arange(0,sample_rate/2,df)
+     
 
     
         for each_label in self.eeg_data:
@@ -143,15 +159,15 @@ class InspectData:
             else:
                 eeg_mean = InspectData.mean(self.eeg_data[each_label][:selected_sample])
 
-            eeg_mean = np.abs(np.fft.fft(eeg_mean))
-            # eeg_mean = 10 * np.log10(eeg_mean)
-            x_axis = x_freq(sampling_rate,len(eeg_mean))
+           
+            eeg_mean,x_axis = to_fft(eeg_mean.reshape(-1,1),SAMPLING_RATE)
+        
 
-            # eeg_mean,x_axis = InspectData.calFFT(eeg_mean,250)
+    
 
 
             x_axis = x_axis[ x_axis<100 ]
-            print(x_axis.shape)
+    
 
 
             def zoom(x:np.ndarray)->np.ndarray:
@@ -162,7 +178,7 @@ class InspectData:
             plt.plot(zoom(x_axis),zoom(eeg_mean[:len(x_axis)]),label=f"class-{each_label}")
         
         plt.legend()
-        plt.savefig(f"./logs/{P_ID}-all-mean-code-2.png")
+        plt.savefig(f"./logs/{P_ID}.png")
         
        
 
@@ -177,5 +193,5 @@ class InspectData:
         for i in range(1,len(eeg)):
             stacked_eeg = np.concatenate((stacked_eeg,eeg[i]),axis=1)
         stacked_eeg = stacked_eeg.mean(axis=1)
-        print(f"{stacked_eeg.shape=}")
+    
         return stacked_eeg
