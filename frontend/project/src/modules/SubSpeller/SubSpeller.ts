@@ -8,7 +8,7 @@ import { style } from "@/modules/renderer/Style"
 import { AppState, State } from "./AppState"
 import {BoxColor} from "./BlackWhiteBox"
 
-const FRAMERATE = 60
+
 
 class SubSpeller {
     gridIndex: number
@@ -60,9 +60,9 @@ class SubSpeller {
         this.x = x
         this.y = y
 
-        this.w = getSizeW(.05)
-        this.h = getSizeH(.08)
-        this.wMargin = getSizeW(.01)
+        this.w = getSizeW(.06)
+        this.h = getSizeH(.09)
+        this.wMargin = getSizeW(.02)
         this.gridHelper = new GridHelper(this.x, this.y, 3, this.w, this.h, this.wMargin)
 
 
@@ -200,7 +200,7 @@ class SubSpeller {
     }
     renderGridLine(ctx:CanvasRenderingContext2D):void{
         ctx.strokeStyle = "#000000";
-        ctx.strokeRect(this.x-style.fontSize,this.y-style.fontSize*1.2,getSizeW(.2),getSizeH(.25));
+        ctx.strokeRect(this.x-style.fontSize/2,this.y-style.fontSize,getSizeW(.22),getSizeH(.27));
      
     }
     renderFlash(ctx: CanvasRenderingContext2D): void {

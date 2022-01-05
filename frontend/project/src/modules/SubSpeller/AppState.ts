@@ -53,7 +53,7 @@ class AppState {
         this.ctx.fillStyle = "black";
 
         const gridHelper = new GridHelper(
-            getSizeW(0.05),
+            getSizeW(0.03),
             getSizeH(0.08),
             4,
             getSizeW(0.25),
