@@ -57,7 +57,7 @@ class AppState {
             getSizeH(0.08),
             4,
             getSizeW(0.25),
-            getSizeH(0.3)
+            getSizeH(0.35)
         );
         const subSpellers = [];
         for (let i = 0; i < 12; i++) {

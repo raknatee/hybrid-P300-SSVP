@@ -43,7 +43,7 @@ import { setBG } from "@/modules/renderer/BasicSetup";
 import { getSizeW, getSizeH } from "@/modules/renderer/Sizing";
 
 import { getJsonFromWSMessage } from "@/modules/RestAPIHelper/WSHelper";
-import { getNow,getPerformanceNow } from "@/modules/Time";
+import { getNow, getPerformanceNow } from "@/modules/Time";
 
 import { AppState } from "@/modules/SubSpeller/AppState";
 import { sleep } from "@/modules/Time";
@@ -60,7 +60,7 @@ import {
   experimentConfigDefault,
   RuntimeCommand,
 } from "./experimentConfig/configs";
-import {FPS} from "@/modules/renderer/FPS"
+import { FPS } from "@/modules/renderer/FPS";
 import {
   HYPSCommands,
   DBConfig,
@@ -69,7 +69,6 @@ import {
   TargetDetails,
   P300Config,
 } from "./experimentConfig/ConfigType";
-import { ssvpConfig } from "./experimentConfig/SSVPConfig/experimentDefault";
 export default defineComponent({
   setup() {
     let canvas: HTMLCanvasElement | undefined;
@@ -95,44 +94,82 @@ export default defineComponent({
         null,
         4
       );
-      const p300:P300Config = { spawn: 200, ttl: 200, time_per_round: 2000 }
-      P300ConfigString.value = JSON.stringify(
-        p300,
-        null,
-        4
-      );
+      const p300: P300Config = { spawn: 200, ttl: 200, time_per_round: 2000 };
+      P300ConfigString.value = JSON.stringify(p300, null, 4);
     };
-      const applyFullHYPS100200 = () => {
+    const applyFullHYPS100200 = () => {
       ExperimentConfigOffline.value = JSON.stringify(
         experimentConfigDefault,
         null,
         4
       );
-      const p300:P300Config = { spawn: 100, ttl: 200, time_per_round: 1000 }
-      P300ConfigString.value = JSON.stringify(
-        p300,
+      const p300: P300Config = { spawn: 100, ttl: 200, time_per_round: 1000 };
+      P300ConfigString.value = JSON.stringify(p300, null, 4);
+    };
+    const applyMiniHYPS300600 = () => {
+      const p300: P300Config = { spawn: 300, ttl: 600, time_per_round: 3000 };
+      P300ConfigString.value = JSON.stringify(p300, null, 4);
+      ExperimentConfigOffline.value = JSON.stringify(
+        {
+          cmds: [
+            { cmd: CommandType.sleep, details: { time: 5000 }, repeat: 1 },
+            {
+              cmd: CommandType.target,
+              details: { gridIndex: 0, alpIndex: 4 },
+              repeat: 3,
+            },
+            {
+              cmd: CommandType.target,
+              details: { gridIndex: 1, alpIndex: 4 },
+              repeat: 3,
+            },
+            {
+              cmd: CommandType.target,
+              details: { gridIndex: 2, alpIndex: 4 },
+              repeat: 3,
+            },
+            {
+              cmd: CommandType.target,
+              details: { gridIndex: 3, alpIndex: 4 },
+              repeat: 3,
+            },
+          ],
+          repeat: 3,
+        } as HYPSCommands,
+
         null,
         4
       );
     };
-    const applyMiniHYPS300600 = () =>{
-      ExperimentConfigOffline.value = JSON.stringify(ssvpConfig, null, 4);
-       const p300:P300Config = { spawn: 300, ttl: 600, time_per_round: 3000 }
-      P300ConfigString.value = JSON.stringify(
-        p300,
-        null,
-        4
-      );
-
-    }
     const applyOnlySSVP = () => {
-      const p300:P300Config ={ spawn: 0, ttl: 1000, time_per_round: 1000 }
-      ExperimentConfigOffline.value = JSON.stringify(ssvpConfig, null, 4);
-      P300ConfigString.value = JSON.stringify(
-        p300,
+      const p300: P300Config = { spawn: 0, ttl: 5000, time_per_round: 5000 };
+      ExperimentConfigOffline.value = JSON.stringify(
+        {
+          cmds: [
+            { cmd: CommandType.sleep, details: { time: 5000 }, repeat: 1 },
+            {
+              cmd: CommandType.target,
+              details: { gridIndex: 2, alpIndex: 0 },
+              repeat: 3,
+            },
+            {
+              cmd: CommandType.target,
+              details: { gridIndex: 4, alpIndex: 0 },
+              repeat: 3,
+            },
+            {
+              cmd: CommandType.target,
+              details: { gridIndex: 7, alpIndex: 0 },
+              repeat: 3,
+            },
+          
+          ],
+          repeat: 3,
+        } as HYPSCommands,
         null,
         4
       );
+      P300ConfigString.value = JSON.stringify(p300, null, 4);
     };
 
     const applyOnline = () => {
@@ -161,16 +198,16 @@ export default defineComponent({
       applyFullHYPS100200,
       applyMiniHYPS300600,
       applyOnlySSVP,
-      applyOnline
+      applyOnline,
     };
   },
 
   mounted() {
     this.canvas = document.getElementById("canvas")! as HTMLCanvasElement;
-    this.ctx = this.canvas.getContext("2d",{alpha:false})!;
- 
+    this.ctx = this.canvas.getContext("2d", { alpha: false })!;
+
     if (this.mode == "online") {
-      this.applyOnline()
+      this.applyOnline();
     }
   },
   computed: {
@@ -215,8 +252,8 @@ export default defineComponent({
         this.setUpWSOffline(P300ConfigObject.time_per_round);
       }
 
-      this.canvas!.width = getSizeW(1) ;
-      this.canvas!.height = getSizeH(1) ;
+      this.canvas!.width = getSizeW(1);
+      this.canvas!.height = getSizeH(1);
 
       this.appState = new AppState(
         this.canvas!,
@@ -227,25 +264,21 @@ export default defineComponent({
 
       // const nextBtn = new NextSSVP(getSizeW(.55),getSizeH(.9),this.appState)
 
-      let previousTime = getPerformanceNow()
+      let previousTime = getPerformanceNow();
       const tick = () => {
+        setBG(this.ctx!, this.canvas!.width, this.canvas!.height);
 
-      
-        setBG(this.ctx!,this.canvas!.width,this.canvas!.height);
-
-        FPSText.render(this.ctx!,FPS.get().toString())
-        FPS.tick()
-     
+        FPSText.render(this.ctx!, FPS.get().toString());
+        FPS.tick();
 
         UserText.render(this.ctx!, this.userText.join(","));
-        SysText.render(this.ctx!,this.sysText)
+        SysText.render(this.ctx!, this.sysText);
         // nextBtn.render(this)
         this.appState!.subSpellers.forEach((subSpeller) => {
           subSpeller.render(this.ctx!);
         });
-     
-          window.requestAnimationFrame(tick);
-     
+
+        window.requestAnimationFrame(tick);
       };
       tick();
     },
@@ -338,7 +371,7 @@ export default defineComponent({
             await sleep(1000);
             this.appState!.toFlashingP300(timePerRound);
             await sleep(timePerRound);
-            console.log("--------------------------------------")
+            console.log("--------------------------------------");
             this.appState!.toZERO();
             this.appState!.doneRound();
             console.log(msgExperiment);
