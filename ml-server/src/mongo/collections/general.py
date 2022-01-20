@@ -30,7 +30,7 @@ def set_data(current_mode:str,current_p_id:str)->None:
     get_collection_connector().update_one({"type":"experiment_config"},
     {"$set":{
         "current_mode":current_mode,
-        "current_participant_id": current_p_id.upper()
+        "current_participant_id": current_p_id
     }})
  
 class EEGClientStatus(Enum):
