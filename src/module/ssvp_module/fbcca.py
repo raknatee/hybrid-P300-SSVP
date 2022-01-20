@@ -71,7 +71,7 @@ def predict(eeg:np.ndarray,experiment_info:ExperimentInfo,freqs:Optional[list[FP
 def predict2(eeg:np.ndarray,fs:int,freqs:list[FP])->tuple[FP,list[float]]:
 
    
-    print(f"predict function used {fs} Hz for fs")
+ 
     eeg = np.expand_dims(eeg.T, axis=0)
    
     return fbcca(eeg,freqs,fs)
@@ -107,9 +107,12 @@ Reference:
 """
 # Adapted for working with python mne
 
-def fbcca(eeg:np.ndarray, freqs:list[FP], sampling_frequency:Union[float,int], num_harms=5, num_fbs=5)->tuple[FP,list[float]]:
+def fbcca(eeg:np.ndarray, freqs:list[FP], sampling_frequency:Union[float,int])->tuple[FP,list[float]]:
 
    
+    num_harms=5
+    num_fbs=5
+
     fb_coefs = np.power(np.arange(1, num_fbs + 1), (-1.25)) + 0.25
 
     num_targs = len(freqs)
@@ -184,7 +187,7 @@ Reference:
       J. Neural Eng., 6 (2009) 046002 (6pp).
 '''
 
-def cca_reference(freqs:list[FP], fs, num_smpls, num_harms=3):
+def cca_reference(freqs:list[FP], fs, num_smpls, num_harms):
     num_freqs = len(freqs)
     tidx = np.arange(1, num_smpls + 1) / fs  # time index
 
