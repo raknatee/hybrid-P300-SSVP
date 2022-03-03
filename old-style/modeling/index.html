@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document & Daily</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../global-style.css">
+    <link rel="stylesheet" href="../code-highlight.css">
+    <style>
+        h2 {
+            text-decoration: underline;
+        }
+        
+        .highlight {
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="big-head">Modeling</h1>
+
+    <h1>EEG & Model Selection</h1>
+    <h2>P300 Part</h2>
+    <h3>Data Selection</h3>
+    <ul>
+        <li> Node: P </li>
+    </ul>
+    <h3>Model</h3>
+    <a href="https://github.com/chanapapan/BCI/blob/master/Thai-P300-Speller/3-analysis/train_model.ipynb"> Brain Lab's (Chaky) Github </a>
+    <ul>
+        <li>ERP + TS + LogisticRegression</li>
+        <li>ERP + MDM</li>
+        <li>Xdawn + RegLDA</li>
+        <li>Xdawn + MDM</li>
+    </ul>
+
+    <h2>SSVEP Part</h2>
+    <p>Recommended Freq: 6-15 Hz</p>
+    <h3>Data Selection</h3>
+    <ul>
+        <li>Node: O1 O2 [OZ] </li>
+    </ul>
+    <h3>Prediction Method</h3>
+    <p> Filter-bank csp ( common spatial pattern ) <a href="https://github.com/chaklam-silpasuwanchai/BCI/tree/master/SSVEP/utils">Chaky's Github</a>. It isn't a ML model but this method needs a parameter (THRESHOLD) which is required for each person</p>
+
+    <h1 class="big-head">Data collection</h1>
+    <p>For set up the headset read <a href="https://docs.openbci.com/AddOns/Headwear/MarkIV/">OpenBCI Doc</a> </p>
+    <p>before running every experiment please check Amplitude of signal (must be less than 20 uVms), we can use <a href="https://openbci.com/downloads"> OpenBCI GUI</a> </p>
+
+
+
+    <div>
+        <h2 id="data-collection-attempt-19">attempt20</h2>
+        <ul>
+            <li>7 9 11 13 Hz</li>
+        </ul>
+        <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;spawn&quot;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span>
+    <span class="s2">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">600</span><span class="p">,</span>
+    <span class="s2">&quot;time_per_round&quot;</span><span class="p">:</span> <span class="mi">3000</span>
+<span class="p">}</span>
+</pre></div>
+
+
+
+
+
+        <div>
+            <h2 id="data-collection-attempt-19">attempt19</h2>
+            <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;spawn&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">3000</span><span class="p">,</span>
+    <span class="s2">&quot;time_per_round&quot;</span><span class="p">:</span> <span class="mi">3000</span>
+<span class="p">}</span>
+                    </pre></div>
+            <h2 id="data-collection-attempt-18">attempt18</h2>
+            <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;spawn&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">3000</span><span class="p">,</span>
+    <span class="s2">&quot;time_per_round&quot;</span><span class="p">:</span> <span class="mi">3000</span>
+<span class="p">}</span>
+                    </pre></div>
+            <h2 id="data-collection-attempt-17">attempt17</h2>
+            <p>As same A15</p>
+            <h2 id="data-collection-attempt-16">attempt16</h2>
+            <ul>
+                <li>Same as A15</li>
+                <li>S01: r10LOKYtW/89YfWF+tP8uxt0h7aJM6AkJTTbQA==</li>
+                <li>Layout <a href="./info/A15-layout.png">Layout</a></li>
+                <li>P300 Config</li>
+                <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;spawn&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="s2">&quot;time_per_round&quot;</span><span class="p">:</span> <span class="mi">1000</span>
+<span class="p">}</span>
+            </pre></div>
+                <li><a href="./info/attempt15-experiment-config.json">Experiment Config </a> </li>
+            </ul>
+        </div>
+
+        <div>
+            <h2 id="data-collection-attempt-15">attempt15</h2>
+            <ul>
+                <li>S01: F4BqyDq7qgOHqg==R+A4RXE0LWTNByChjSj7QA==</li>
+                <li>S02: r10LOKYtW/89YfWF+tP8uxt0h7aJM6AkJTTbQA==</li>
+                <li>Layout <a href="./info/A15-layout.png">Layout</a></li>
+                <li>P300 Config</li>
+                <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;spawn&quot;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span>
+    <span class="s2">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">600</span><span class="p">,</span>
+    <span class="s2">&quot;time_per_round&quot;</span><span class="p">:</span> <span class="mi">3000</span>
+<span class="p">}</span>
+            </pre></div>
+                <li><a href="./info/attempt15-experiment-config.json">Experiment Config </a> </li>
+            </ul>
+        </div>
+
+
+
+        <div>
+            <h2 id="data-collection-attempt-14">attempt14</h2>
+            <ul>
+                <li>kOCL5C0L7Ws=qNPIS+p9u/g0GlKC10bv4g==</li>
+                <li>P300 Config</li>
+                <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;spawn&quot;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span>
+    <span class="s2">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">600</span><span class="p">,</span>
+    <span class="s2">&quot;time_per_round&quot;</span><span class="p">:</span> <span class="mi">3000</span>
+<span class="p">}</span>
+            </pre></div>
+                <li><a href="./info/attempt11-experiment-config.json">Experiment Config </a> </li>
+            </ul>
+        </div>
+
+
+
+        <div>
+            <h2 id="data-collection-attempt-13">attempt13</h2>
+            <ul>
+                <li>kOCL5C0L7Ws=qNPIS+p9u/g0GlKC10bv4g==</li>
+                <li>P300 Config</li>
+                <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;spawn&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="s2">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="s2">&quot;time_per_round&quot;</span><span class="p">:</span> <span class="mi">1000</span>
+<span class="p">}</span>
+            </pre></div>
+                <li><a href="./info/attempt11-experiment-config.json">Experiment Config </a> </li>
+            </ul>
+        </div>
+
+        <div>
+            <h2 id="data-collection-attempt-12">attempt12</h2>
+            <ul>
+                <li>kOCL5C0L7Ws=qNPIS+p9u/g0GlKC10bv4g==</li>
+                <li>P300 Config</li>
+                <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;spawn&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="s2">&quot;time_per_round&quot;</span><span class="p">:</span> <span class="mi">1000</span>
+<span class="p">}</span>
+            </pre></div>
+                <li><a href="./info/attempt11-experiment-config.json">Experiment Config </a> </li>
+            </ul>
+        </div>
+        <div>
+            <h2 id="data-collection-attempt-11">attempt11</h2>
+            <ul>
+                <li>7ieuR1XGv/W/JXGzeIXLP601X0BGsd3aoY4fmg==</li>
+                <li>Restore all grids and alps but every alp in particular SubSpeller appeared in same time.</li>
+                <li>Changed Freq and Phase
+                    <pre><code>FP(6, 0),
+FP(6.6, .5),
+FP(7.2, 0),
+FP(7.8, .5),
+FP(8.4, 0),
+FP(9, .5),
+FP(9.6, 0),
+FP(10.2, .5),
+None, None,
+FP(10.8, 0),
+FP(11.4, .5),
+</code></pre>
+
+                </li>
+                <li>P300 Config</li>
+                <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;spawn&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="s2">&quot;time_per_round&quot;</span><span class="p">:</span> <span class="mi">1000</span>
+<span class="p">}</span>
+            </pre></div>
+                <li><a href="./info/attempt11-experiment-config.json">Experiment Config </a> </li>
+            </ul>
+        </div>
+        <div>
+            <h2 id="data-collection-attempt-10">attempt10</h2>
+            <ul>
+                <li>I changed How to render Black and White. Therefore, I wanted to make sure that everything is okay.</li>
+                <li>Same as <a href="#data-collection-attempt-8">attempt8</a> but changed freq to 6, 10, 16 Hz </li>
+                <li>Only one participant n+Ud6B+IT+QCNyI=gWDx75cxEiW36KeZv8EGrQ==</li>
+            </ul>
+        </div>
+        <div>
+            <h2 id="data-collection-attempt-9">attempt9</h2>
+            <ul>
+                <li>Same as <a href="#data-collection-attempt-8">attempt8</a> but changed freq to 6, 10, 16 Hz </li>
+                <li>Only one participant nYz0GzPci//hzGCpSF5XvwYfcvprWA==</li>
+                <li>used 8 channels: O2,OZ,O1 | P8, P4, P3, P7 | FpZ</li>
+            </ul>
+        </div>
+        <div>
+            <h2 id="data-collection-attempt-8">attempt 8</h2>
+            <ul>
+                <li>I had changed the freq of Experiment (6, 11, 15 Hz) and reduced the alp to have only 3.</li>
+                <li>Only one participant q/sTrz4=Syxv14EAKKNlcr45f3rbdg==</li>
+                <li>
+                    <p>P300 Config</p>
+
+                    <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;spawn&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span>
+    <span class="s2">&quot;time_per_round&quot;</span><span class="p">:</span> <span class="mi">2000</span>
+<span class="p">}</span>
+</pre></div>
+
+
+                </li>
+                <li>
+                    <a href="./info/attempt8-experiment-config.json">Experiment task/config</a>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <h2 id="data-collection-attempt-7">attempt 7
+            </h2>
+            <ul>
+                <li>
+                    <p>Same as <a href="#data-collection-attempt-4">attempt4</a></p>
+                </li>
+                <li>
+                    <p>P300 Config</p>
+                    <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;spawn&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="s2">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="s2">&quot;time_per_round&quot;</span><span class="p">:</span> <span class="mi">1000</span>
+<span class="p">}</span>
+</pre></div>
+
+                </li>
+
+            </ul>
+            <h3 id="participant-A07S01">Participant A07S01</h3>
+            <ul>
+                <li>name: Cb/1XvLKmu2WOF5PvFa+jZw4xRTkLk4UonpiVA==</li>
+                <li>male</li>
+                <li>age: 25</li>
+                <li>hand: right</li>
+            </ul>
+
+
+
+        </div>
+        <div>
+            <h2 id="data-collection-attempt-6">attempt 6
+            </h2>
+            <ul>
+                <li>
+                    <p>Same as <a href="#data-collection-attempt-3">attempt3</a></p>
+                </li>
+                <li>
+                    <p>P300 Config</p>
+
+                    <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;spawn&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="s2">&quot;time_per_round&quot;</span><span class="p">:</span> <span class="mi">1000</span>
+<span class="p">}</span>
+</pre></div>
+
+
+                </li>
+
+            </ul>
+            <h3 id="participant-A06S01">Participant A06S01</h3>
+            <ul>
+                <li>name: Cb/1XvLKmu2WOF5PvFa+jZw4xRTkLk4UonpiVA==</li>
+                <li>male</li>
+                <li>age: 25</li>
+                <li>hand: right</li>
+            </ul>
+
+
+
+        </div>
+        <div>
+            <h2 id="data-collection-attempt-5">attempt 5
+            </h2>
+            <ul>
+                <li>
+                    <p>Same as <a href="#data-collection-attempt-3">attempt3</a> but change P300 config and all SubSpeller did only 8 Hz </p>
+                </li>
+                <li>
+                    <p>P300 Config</p>
+
+                    <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;spawn&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">1000</span>
+<span class="p">}</span>
+</pre></div>
+
+
+
+                </li>
+
+            </ul>
+            <h3 id="participant-A05S01">Participant A05S01</h3>
+            <ul>
+                <li>name: fsWzwRhAN8I3O/b+eDpRubRm7pcRLcAGaqfE/w==</li>
+                <li>male</li>
+                <li>age: 25</li>
+                <li>hand: right</li>
+            </ul>
+
+
+
+        </div>
+        <div>
+            <h2 id="data-collection-attempt-4">attempt 4
+            </h2>
+            <ul>
+                <li>
+                    <p>Same as <a href="#data-collection-attempt-3">attempt3</a> but change P300 config </p>
+                </li>
+                <li>
+                    <p>P300 Config</p>
+                    <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;spawn&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="s2">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">200</span>
+<span class="p">}</span>
+</pre></div>
+
+
+                </li>
+
+            </ul>
+            <h3 id="participant-A04S01">Participant A04S01</h3>
+            <ul>
+                <li>name: XC/efR7f322J1+I4TH33VqWXP2GmbfgTRg==</li>
+                <li>male</li>
+                <li>age: 26</li>
+                <li>hand: right</li>
+            </ul>
+            <h3 id="participant-A04S02">Participant A04S02</h3>
+            <ul>
+                <li>name: fsWzwRhAN8I3O/b+eDpRubRm7pcRLcAGaqfE/w==</li>
+                <li>male</li>
+                <li>age: 25</li>
+                <li>hand: right</li>
+            </ul>
+
+        </div>
+        <div>
+            <h2 id="data-collection-attempt-3">attempt 3
+            </h2>
+            <ul>
+                <li>
+                    <p>Due to the fact that SSVP would not work on attempt 2. That's quite weird.</p>
+                </li>
+                <li>
+                    <p>Therefore, I? decided to collect the data for SSVP only</p>
+                </li>
+                <li>
+                    <p>
+                        Headset: Ultracortex Mark IV
+                    </p>
+                </li>
+                <li>
+                    <p>Display: Acer-K242HQL bid</p>
+                </li>
+
+                <li>
+                    <p>used 8 channels: O2,OZ,O1 | P8, P4, P3, P7 | FpZ</p>
+                </li>
+                <li>
+                    <p>P300 Config</p>
+                    <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;spawn&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">800</span>
+<span class="p">}</span>
+</pre></div>
+
+
+                </li>
+                <li>
+
+                    <p>Experiment Config <a href="./info/attempt3-experiment-config.json">click here because it's too long</a> </p>
+
+                </li>
+            </ul>
+            <h3 id="participant-A03S01">Participant A03S01</h3>
+            <ul>
+                <li>name: XC/efR7f322J1+I4TH33VqWXP2GmbfgTRg==</li>
+                <li>male</li>
+                <li>age: 26</li>
+                <li>hand: right</li>
+            </ul>
+            <h3 id="participant-A03S02">Participant A03S02</h3>
+            <ul>
+                <li>name: fsWzwRhAN8I3O/b+eDpRubRm7pcRLcAGaqfE/w==</li>
+                <li>male</li>
+                <li>age: 25</li>
+                <li>hand: right</li>
+            </ul>
+        </div>
+        <div>
+            <h2 id="data-collection-attempt-2">attempt 2</h2>
+            <ul>
+                <li>
+                    <p>
+                        Headset: Ultracortex Mark IV
+                    </p>
+                </li>
+
+                <li>
+                    <p>used 8 channels: O2,OZ,O1 | P8, P4, P3, P7 | FpZ</p>
+                </li>
+                <li>
+                    <p>P300 Config</p>
+                    <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;spawn&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="s2">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">200</span>
+<span class="p">}</span>
+</pre></div>
+
+                </li>
+                <li>
+                    <p>Experiment Config <a href="./info/attempt2-experiment-config.json">click here because it's too long</a> (300 targeted data) </p>
+                </li>
+                <h3 id="participant-A02S01">Participant S01</h3>
+                <ul>
+                    <li>
+                        <p>name: geidNMT8pbE=LgZ6EYJw7KQbCJJIybZf0w==</p>
+                    </li>
+                    <li>
+                        <p>Display: Acer-K242HQL bid</p>
+                        <!-- <p>Display: ASUS VG259Q</p> -->
+                    </li>
+                    <li>
+                        <p>male</p>
+                    </li>
+                    <li>
+                        <p>age: 25</p>
+                    </li>
+                    <li>
+                        <p>hand: right</p>
+                    </li>
+                </ul>
+            </ul>
+        </div>
+        <div>
+            <h2 id="data-collection-attempt-1">attempt 1 </h2>
+            <ul>
+                <li>
+                    <p>
+                        Headset: Ultracortex Mark IV
+                    </p>
+                </li>
+
+                <li>
+                    <p>used 7 channels: O2,OZ,O1 | P8, P4, P3, P7</p>
+                </li>
+                <li>
+                    <p>P300 Config</p>
+                    <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;spawn&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="s2">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">200</span>
+<span class="p">}</span>
+</pre></div>
+
+                </li>
+                <li>
+                    <p>Experiment Config</p>
+                    <div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;targets&quot;</span><span class="p">:</span> <span class="p">[{</span>
+            <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;gridIndex&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;alpIndex&quot;</span><span class="p">:</span> <span class="mi">2</span> <span class="p">},</span>
+            <span class="s2">&quot;repeat&quot;</span><span class="p">:</span> <span class="mi">3</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;gridIndex&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;alpIndex&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="p">},</span>
+            <span class="s2">&quot;repeat&quot;</span><span class="p">:</span> <span class="mi">3</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;gridIndex&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="s2">&quot;alpIndex&quot;</span><span class="p">:</span> <span class="mi">8</span> <span class="p">},</span>
+            <span class="s2">&quot;repeat&quot;</span><span class="p">:</span> <span class="mi">3</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;repeat&quot;</span><span class="p">:</span> <span class="mi">2</span>
+<span class="p">}</span>
+</pre></div>
+                </li>
+
+            </ul>
+            <h3 id="participant-s01">Participant S01</h3>
+            <ul>
+                <li>
+                    <p>name: HqdbSnbXj2D5UIhmjW/17VoGCvRZSWxAPulomA==gU/hKwY2wHu4jE9MJ+U3yQ==</p>
+                </li>
+                <li>
+                    <p>Display: Samsung UA32J4003AK 32' 1366x768</p>
+                </li>
+                <li>
+                    <p>male</p>
+                </li>
+                <li>
+                    <p>age: 36</p>
+                </li>
+                <li>
+                    <p>hand: right</p>
+                </li>
+            </ul>
+            <h3 id="participant-A01S02">Participant S02</h3>
+            <ul>
+                <li>
+                    <p>name: y9SxtTnQLAjrJVyK7e+8MrUCPtopt4CqZdylYA==</p>
+                </li>
+                <li>
+                    <p>Display: DELL P2417Hb 24" 1920 X 1080 HDMI DP LED</p>
+                </li>
+                <li>
+                    <p>male</p>
+                </li>
+                <li>
+                    <p>age: 25</p>
+                </li>
+                <li>
+                    <p>hand: right</p>
+                </li>
+            </ul>
+            <h3 id="participant-A01S03">Participant S03</h3>
+            <ul>
+                <li>
+                    <p>name: QpiHPGkWJXiAXj2Mqg==g5z6iTLS4z0LApY0AS/TFg==</p>
+                </li>
+                <li>
+                    <p>Display: DELL P2417Hb 24" 1920 X 1080 HDMI DP LED</p>
+                </li>
+                <li>
+                    <p>male</p>
+                </li>
+                <li>
+                    <p>age: 22</p>
+                </li>
+                <li>
+                    <p>hand: right</p>
+                </li>
+            </ul>
+        </div>
+
+</body>
+
+</html>

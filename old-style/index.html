@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document & Daily</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./global-style.css">
+
+</head>
+
+<body>
+    <div class="menu">
+        <h1>Menu</h1>
+        <ul>
+            <li>
+                <a href="./papers/index.html">
+                    <h2>Paper</h2>
+                </a>
+            </li>
+            <li>
+                <a href="./experiment-mode/index.html">
+                    <h2>Experiment Flow</h2>
+                </a>
+
+            </li>
+            <li>
+                <a href="./apiV1/index.html">
+                    <h2>ML-server API</h2>
+                </a>
+
+            </li>
+            <li>
+                <a href="./GUI/index.html">
+                    <h2>GUI Layout</h2>
+                </a>
+            </li>
+            <li>
+                <a href="./data-model/index.html">
+                    <h2>Data Model</h2>
+                </a>
+            </li>
+            <li>
+                <a href="./modeling/index.html">
+                    <h2>ML Modeling & Data Collections</h2>
+                </a>
+                <ul>
+                    <li> <a href="./modeling/series/001.html">Series 001</a></li>
+                    <li> <a href="./modeling/series/002.html">Series 002</a></li>
+
+                </ul>
+            </li>
+            <li>
+                <a href="./stacktalk/index.html">
+                    <h2>Stack Talk</h2>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="todo-box">
+        <h1>TODO</h1>
+        <ul>
+
+            <li>
+                <p><span class="status unfinish">Offline mode but minimize it</span>
+                </p>
+            </li>
+
+            <li>
+                <p><span class="status not-test-yet">catch CMD does not be found error</span>
+                </p>
+            </li>
+
+            <li>
+                <p><span class="status not-test-yet">UX fix: EEG client must have last missing packed message</span>
+                </p>
+            </li>
+
+            <li>
+                <p><span class="status not-test-yet">Checkerboard but switching the white and black have some overlap</span>
+                </p>
+            </li>
+
+        </ul>
+    </div>
+    <div class="thinking-box">
+        <h1>Thinking</h1>
+        <ul>
+            <li></li>
+
+        </ul>
+    </div>
+
+    <div class="daily">
+        <h1>My Daily</h1>
+
+        <h2>2021-12-17</h2>
+        <ul>
+            <li>A20S01</li>
+            <li></li>
+        </ul>
+        <h2>2021-12-15</h2>
+
+        <p>All was failed</p>
+        <ul>
+            <li>A17S01: 6 9 11 13 Hz 1cell/grid</li>
+            <li>A18S01: 6 9 11 13 Hz all cells/grid</li>
+            <li>A19S01: 6 9 11 13 Hz all cells/grid</li>
+
+        </ul>
+        <h2>2021-11-11</h2>
+        <ul>
+            <li>Zero padding for FFT in SSVEP</li>
+        </ul>
+        <h2>2021-11-09</h2>
+        <ul>
+            <li>leave only 1 grid</li>
+            <li>A15S01 A15S02 A16S01 failed</li>
+        </ul>
+        <h2>2021-11-08</h2>
+        <ul>
+            <li>Add grid line</li>
+            <li><a href="./modeling/#data-collection-attempt-12">A12S01</a></li>
+
+            <li><a href="./modeling/#data-collection-attempt-13">A13S01</a></li>
+            <li><a href="./modeling/#data-collection-attempt-14">A14S01</a></li>
+            <li>
+                <p>However, the result was not good.</p>
+            </li>
+            <li>
+                <p>Plan A15</p>
+            </li>
+
+        </ul>
+        <h3>2021-11-04</h3>
+        <ul>
+            <li>Okay, used PreImage Black White for rendering. And it can improve the browser performance. Ref: <a href="https://stackoverflow.com/questions/58482163/how-to-improve-html-canvas-performance-drawing-pixels">StackOverflow</a></li>
+            <li>PulseWave = Sin(y) > 0 ? black : white</li>
+            <li>
+                <a href="./modeling/series/002.html#ssvp-2021-11-04">
+                    <p>Acceptable and Better Result For A10S01</p>
+                </a>
+            </li>
+            <li>Moreover, I had tried to use all of Alp (so we had all grid and all alps). Then tried <a href="./modeling/index.html#data-collection-attempt-11">A11S01</a> but <a href="./modeling/series/002.html#ssvp-2021-11-04-2">result</a> was not good
+                but we got something. The result showed that Participant saw all of the signals. He/She could not focus on only one grid field. So, I decided to draw a line between each grid. </li>
+        </ul>
+        <h2>2021-11-03</h2>
+        <ul>
+            <li>Fixed bugs: Please be careful about GUI Rendering. IF you GUI cannot Flash the signal (black and white) clearly. SSVP would not be working.</li>
+            <li>Change Black and White from RBG to string value.</li>
+            <li>Upgrade Sin to Pulse Wave (Sin(t)> 0.5 ? 1 : 0)</li>
+            <li>
+                <a href="./modeling/series/002.html#ssvp-2021-11-03">
+                    <p>Acceptable Result</p>
+                </a>
+            </li>
+            <li>
+                <p>After, I came back to home. I decided to remove SinWave mode and used only Pulse Wave = Sin(t) > 0 ? 1 : 0. Therefore, Pulse Wave would have freq and phare same as original SinWave.</p>
+                <p>However, Im curious that would it work or not. Let me test it tmr.</p>
+            </li>
+        </ul>
+        <h2>2021-10-28</h2>
+        <ul>
+            <li>
+                <a href="./modeling/index.html#data-collection-attempt-8">Attempt8</a>
+            </li>
+            <li>Result: not okay</li>
+        </ul>
+        <h2>2021-10-27</h2>
+        <ul>
+            <li>Fixed: SSVEP uses FFT not the real (time domain) EEG data.</li>
+            <li>used Chaky's SSVP dataset for testing</li>
+        </ul>
+        <h2>2021-10-26</h2>
+        <ul>
+            <li>
+                <p>Today, I fixed the SSVEP blinking</p>
+                <ul>
+                    <li>Change API from Date.now() to performance.now() <a href="https://stackoverflow.com/questions/30795525/performance-now-vs-date-now">click here for stackoverflow</a> </li>
+                    <li>Timing for SSVP must be blinking at the started time of each round (not the REAL time).</li>
+                    <li>There was a problem about blinking because SinWave can be [-1, 1] so the -255 color can be White so USER can see double of real frequency.</li>
+                    <ul>
+                        <li>Ex: 1Hz but User saw 2Hz (Black 2 times)</li>
+                        <li>Fixed by reduce it to one half.</li>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <p>Data collection (did it again because I changed Frontend)</p>
+            </li>
+            <ul>
+                <li><a href="./modeling/#participant-A06S01">A06S01</a></li>
+                <li><a href="./modeling/#participant-A07S01">A07S01</a></li>
+
+            </ul>
+        </ul>
+        <h2>2021-10-25</h2>
+        <ul>
+            <li>
+                <p>Data collection</p>
+            </li>
+            <ul>
+                <li><a href="./modeling/#participant-A03S01">A03S01</a></li>
+                <li><a href="./modeling/#participant-A04S01">A04S01</a></li>
+                <li><a href="./modeling/#participant-A03S02">A03S02</a></li>
+                <li><a href="./modeling/#participant-A04S02">A04S02</a></li>
+                <li><a href="./modeling/#participant-A05S01">A05S01</a></li>
+            </ul>
+        </ul>
+        <h2>2021-10-23</h2>
+        <ul>
+            <li>
+                <p>Plan data collection: <a href="./modeling/index.html#data-collection-attempt-4">attempt 4</a> <a href="./modeling/index.html#data-collection-attempt-3">attempt 3</a> </p>
+            </li>
+            <li>
+                <p>Fixed: Canvas would stop when exit FullScreen</p>
+            </li>
+            <li>
+                <p>Fixed: Online mode with corrent configuration</p>
+            </li>
+            <li>
+                <p>Fixed: Online mode: need to change from guess_index to guess_index_order </p>
+            </li>
+        </ul>
+        <h2>2021-10-21</h2>
+        <ul>
+            <li>
+                <p>Done Model Series 002</p>
+            </li>
+            <li>
+                <p>Checkerboard randoms white and black</p>
+            </li>
+            <li>
+                <p>
+                    GUI has many config like FullHYPS, SSVP only, etc.
+                </p>
+            </li>
+        </ul>
+        <h2>2021-10-20</h2>
+        <ul>
+            <li>
+                <p>SSVP method okay</p>
+            </li>
+        </ul>
+        <h2>2021-10-18</h2>
+        <ul>
+            <li>
+                <p>series002 CNN2D <a href="./modeling/series/002.html">Series 002</a></p>
+            </li>
+        </ul>
+        <h2>2021-10-17</h2>
+        <ul>
+            <li>
+                <p>data collection: <a href="./modeling/index.html#data-collection-attempt-2">Attemp 2</a> <a href="./modeling/index.html#participant-A02S01">Participant A02S01</a> </p>
+            </li>
+        </ul>
+        <h2>2021-10-14</h2>
+        <ul>
+            <li>
+                <p>
+                    Frontend added Cooldown for sleep function
+                </p>
+            </li>
+            <li>
+                <p>Change default of experiment <a href="./modeling/info/attempt2-experiment-config.json">click here</a></p>
+            </li>
+
+        </ul>
+        <h2>2021-10-13</h2>
+        <ul>
+            <li>
+                <p>
+                    Frontend Upgrade from Vue2 To Vue3 with Typescript
+                </p>
+            </li>
+
+        </ul>
+        <h2>2021-10-12</h2>
+        <ul>
+            <li>
+                <p>
+                    Add get SSVP dataset and notch+bypass filter
+                </p>
+            </li>
+            <li>
+                <p>GUI supports Sleep for Offline but I need to test it more</p>
+            </li>
+        </ul>
+        <h2>2021-10-11</h2>
+        <ul>
+            <li> Add selected channel feature in DataExtractor class.
+            </li>
+
+        </ul>
+        <h2>2021-10-10</h2>
+        <ul>
+            <li> Model Series001 <a href="./modeling/series/001.html">Series 001</a>
+            </li>
+
+        </ul>
+        <h2>2021-10-09</h2>
+        <ul>
+            <li>Start new branch ml-session
+            </li>
+            <li>data processing: Notch filter and bypass filter</li>
+            <li>create a P300 dataset with those filter and padding to make all sizes are equal.</li>
+        </ul>
+        <h2>2021-10-07</h2>
+        <ul>
+            <li>
+                <p>Finally, I changed <a href="./apiV1/index.html#eeg_streaming-api">/eeg_offline</a> and <a href="./apiV1/index.html#eeg_online-api">/eeg_online</a> to WS</p>
+            </li>
+
+        </ul>
+        <h2>2021-10-05</h2>
+        <ul>
+            <li>
+                <p>Collected EEG from A01 <a href="./modeling/index.html#participant-A01S02">S02</a> <a href="./modeling/index.html#participant-A01S03">S03</a> </p>
+            </li>
+            <li>
+                <p>Add Database viewer both GUI and <a href="./apiV1/index.html#database_viewer">ML-server</a> </p>
+            </li>
+        </ul>
+        <h2>2021-10-04</h2>
+        <ul>
+            <li>
+                <p>Checkerboard</p>
+            </li>
+
+        </ul>
+        <h2>2021-10-03</h2>
+        <ul>
+            <li>
+                <p>refactoring database name and add ML-server API for naming Mongo collection</p>
+            </li>
+            <li>
+                <p>sync GUI and eeg-client</p>
+            </li>
+            <li>
+                <p>edit db-script which matchs with new Database name</p>
+            </li>
+
+        </ul>
+        <h2>2021-09-30</h2>
+        <ul>
+            <li>
+                <p>Experiment can configurate on Frontend</p>
+
+            </li>
+            <li>
+                <p>collect data
+                    <a href="./modeling/index.html#participant-s01">S01</a> </p>
+            </li>
+        </ul>
+        <h2>2021-09-29</h2>
+        <ul>
+            <li>
+                <p>set up and plan a EEG headset <a href="./modeling/index.html#data-collection-attempt-1">data collection attempt 1</a> </p>
+
+            </li>
+            <li>
+                <p>create export db-script (only export not import)</p>
+            </li>
+            <li>
+                <p>Refactor Frontend and overlap time is implemented. Checkerboard hasnt been implemented</p>
+            </li>
+
+        </ul>
+        <h2>2021-09-28</h2>
+        <ul>
+            <li>
+                <p>I had spent almost 2 days to fix the spam problem on EEG-client (read on <a href="/stacktalk/index.html#eeg-client">My Stack Task</a> For more details)</p>
+                <p>Update Doc</p>
+            </li>
+
+        </ul>
+        <h2>2021-09-25</h2>
+        <ul>
+            <li>implement GUI on offline mode and change status to <span class="status okay">okay</span>
+                <a href="/apiV1/index.html#begin_offline_mode-api">click me (API Doc) </a>
+            </li>
+
+        </ul>
+        <h2>2021-09-24</h2>
+        <ul>
+            <li>implement GUI on online mode and change status to <span class="status okay">okay</span>
+                <a href="/apiV1/index.html#begin_online_mode-api">click me (API Doc) </a>
+            </li>
+
+        </ul>
+        <h2>2021-09-23</h2>
+        <ul>
+            <li>plan the offline and online mode
+                <a href="/experiment-mode/index.html">click me (Experiment API Doc) </a>
+            </li>
+            <li>coding dummy server and change status to <span class="status okay">okay</span></li>
+        </ul>
+    </div>
+
+</body>
+
+</html>

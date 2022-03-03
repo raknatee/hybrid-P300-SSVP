@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document & Daily</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../global-style.css">
+    <style>
+        .grid_2_col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1 class="big-head">Series 002</h1>
+    <h1>P300 Part</h1>
+
+    <h2>2021-10-18</h2>
+    <ul>
+        <li>
+            <p>
+                dataset :
+                <a href="../index.html#data-collection-attempt-2">Attempt2</a> , with only 4 channels => 3,4,5,6 => P8, P4, P3, P7
+            </p>
+        </li>
+        <li>
+            <p>hyper-params</p>
+        </li>
+        <ul>
+            <li>
+                <p>- </p>
+            </li>
+
+        </ul>
+        <li>
+            <p>data processing</p>
+            <ul>
+                <li>
+                    <p>Only band pass 1-20Hz</p>
+                </li>
+                <li>
+                    <p>P300 Interval: (0.25-0.3) PS. Even though, I used 0.2-0.5 the acc are same</p>
+                </li>
+                <li>
+                    <p>For all channels find the mean</p>
+                    <img src="./img/1-false-all.png" alt="">
+                    <img src="./img/1-false-mean.png" alt="" width="400">
+                    <br>
+                    <img src="./img/2-true-all.png" alt="">
+                    <img src="./img/2-true-mean.png" alt="" width="400">
+
+                </li>
+                <li>
+                    <p>Convert to Image and no norm </p>
+                </li>
+                <li>
+                    <p>balances class => finally, I got 300 sets for target and 300 sets non-target data.</p>
+                </li>
+
+            </ul>
+        </li>
+        <li>
+            <p>model = CNN 2D and FC</p>
+
+        </li>
+        <li>
+            <p>result <a href="./log/2021-10-18-p300.txt"> click here, it's too long</a> </p>
+        </li>
+    </ul>
+    <h1>SSVEP Part</h1>
+    <h2 id="ssvp-2021-12-17">2021-12-17</h2>
+    <img src="./img/A20S01.png" alt="">
+    <code>[FP(freq=7, phare=0), FP(freq=9, phare=0), FP(freq=11, phare=0), FP(freq=13, phare=0)]
+--------------------
+predict function used 250 Hz for fs
+rho=[0.5062840081129812, 0.5391262795100437, 0.4408105371852773, 0.5451506331351462]
+y_true=FP(freq=7, phare=0),y_hat=FP(freq=13, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.7046647622393764, 0.5497322989045718, 0.6328419783858825, 0.4659947751544071]
+y_true=FP(freq=7, phare=0),y_hat=FP(freq=7, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.6332560302098381, 0.4138876123083072, 0.8263223470256791, 0.4304866889057048]
+y_true=FP(freq=7, phare=0),y_hat=FP(freq=11, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.6871841533585525, 0.765009452342593, 0.39183571832069697, 0.6053094283651953]
+y_true=FP(freq=9, phare=0),y_hat=FP(freq=9, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.4142469806209812, 0.6977155073523565, 0.5889811038066642, 0.44244177641454163]
+y_true=FP(freq=9, phare=0),y_hat=FP(freq=9, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.3018522982560037, 0.5370430308107419, 0.42980610054819235, 0.49284636571509427]
+y_true=FP(freq=9, phare=0),y_hat=FP(freq=9, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.5204934642592991, 0.47003491891746524, 0.6157351649613363, 0.587076067295125]
+y_true=FP(freq=11, phare=0),y_hat=FP(freq=11, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.5170290947080713, 0.5776896178527555, 0.23738356109895217, 0.6072887002946301]
+y_true=FP(freq=11, phare=0),y_hat=FP(freq=13, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.49891008381210694, 0.6329908114174837, 0.40645234562923405, 0.6916016795547627]
+y_true=FP(freq=11, phare=0),y_hat=FP(freq=13, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.48247244978522924, 0.42691392494727065, 0.6408114795043971, 0.3741444523919181]
+y_true=FP(freq=13, phare=0),y_hat=FP(freq=11, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.41113255649737207, 0.34011590052862833, 0.42275315011785974, 0.4394133261729305]
+y_true=FP(freq=13, phare=0),y_hat=FP(freq=13, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.48045625962930466, 0.46380192334311177, 0.48565673718124375, 0.5668508510652879]
+y_true=FP(freq=13, phare=0),y_hat=FP(freq=13, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.5332815613276187, 0.6472658386904602, 0.5126063406346502, 0.39702939162313555]
+y_true=FP(freq=7, phare=0),y_hat=FP(freq=9, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.5468892988438988, 0.3556749034048864, 0.46060370806954126, 0.37560780015756656]
+y_true=FP(freq=7, phare=0),y_hat=FP(freq=7, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.6780542102809911, 0.40283254405041563, 0.6218894677554487, 0.46031741519981006]
+y_true=FP(freq=7, phare=0),y_hat=FP(freq=7, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.46365197306578765, 0.48333942668050706, 0.3889617689595915, 0.24227050776138942]
+y_true=FP(freq=9, phare=0),y_hat=FP(freq=9, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.47722424069671854, 0.5163421937812014, 0.6847692648003476, 0.6405215999267816]
+y_true=FP(freq=9, phare=0),y_hat=FP(freq=11, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.5201036066771784, 0.4228351842500647, 0.531071135061692, 0.6239925391872219]
+y_true=FP(freq=9, phare=0),y_hat=FP(freq=13, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.5345241736249378, 0.745439059773053, 0.45135295188449853, 0.5172463927082029]
+y_true=FP(freq=11, phare=0),y_hat=FP(freq=9, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.4438774366074828, 0.31506822649821103, 0.5542077972357602, 0.4278298721623284]
+y_true=FP(freq=11, phare=0),y_hat=FP(freq=11, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.4591787693162155, 0.6049012485915087, 0.6622287667831018, 0.46728620067952553]
+y_true=FP(freq=11, phare=0),y_hat=FP(freq=11, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.41134695115237313, 0.4474163192339631, 0.5892722112777439, 0.5166561225724147]
+y_true=FP(freq=13, phare=0),y_hat=FP(freq=11, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.3752185116084357, 0.6457797862660188, 0.3793421476340135, 0.5408463526614917]
+y_true=FP(freq=13, phare=0),y_hat=FP(freq=9, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.4374966107267225, 0.4349820484704826, 0.5587579417371803, 0.4425141417504658]
+y_true=FP(freq=13, phare=0),y_hat=FP(freq=11, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.2586662298580403, 0.5122195688258473, 0.47769082638338733, 0.3314748207075933]
+y_true=FP(freq=7, phare=0),y_hat=FP(freq=9, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.4413447017118605, 0.5067900791807252, 0.5665562726545964, 0.5052860287410219]
+y_true=FP(freq=7, phare=0),y_hat=FP(freq=11, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.47654854396613017, 0.4586688380996672, 0.49742268557100255, 0.4251945159454495]
+y_true=FP(freq=7, phare=0),y_hat=FP(freq=11, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.4756447739323833, 0.8351266526068203, 0.35462962686360366, 0.582307837981394]
+y_true=FP(freq=9, phare=0),y_hat=FP(freq=9, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.4532899313175195, 0.5220490351878936, 0.4045975565432674, 0.523425358538716]
+y_true=FP(freq=9, phare=0),y_hat=FP(freq=13, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.46944107475522384, 0.615162350317143, 0.4630425191781751, 0.5353971979687993]
+y_true=FP(freq=9, phare=0),y_hat=FP(freq=9, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.4003584234123981, 0.4331676880618619, 0.5916124306226408, 0.46145451666150294]
+y_true=FP(freq=11, phare=0),y_hat=FP(freq=11, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.3988830433362789, 0.5805378675727494, 0.379244104823712, 0.41462018830397174]
+y_true=FP(freq=11, phare=0),y_hat=FP(freq=9, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.2980392098732959, 0.37600755875251624, 0.5450820169537585, 0.4664091628110574]
+y_true=FP(freq=11, phare=0),y_hat=FP(freq=11, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.43652478501493636, 0.6382402635587641, 0.3554332014500215, 0.46825402499253027]
+y_true=FP(freq=13, phare=0),y_hat=FP(freq=9, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.504729433745254, 0.4176523445117588, 0.5814095247301062, 0.5229127151606403]
+y_true=FP(freq=13, phare=0),y_hat=FP(freq=11, phare=0)
+--------------------
+predict function used 250 Hz for fs
+rho=[0.46074324506230063, 0.4930124161234823, 0.29105082939823207, 0.6104739837588872]
+y_true=FP(freq=13, phare=0),y_hat=FP(freq=13, phare=0)
+acc: 0.4722222222222222
+        </code>
+    <h2 id="ssvp-2021-11-04-2">2021-11-04 Part 2</h2>
+    <h3>Dataset</h3>
+    <ul>
+        <li>
+            <a href="../index.html#data-collection-attempt-11">
+                <p>A11S01</p>
+            </a>
+        </li>
+
+    </ul>
+    <h3>Data processing</h3>
+    <ul>
+        <li>notch_filter(np.arange(50, 125, 50), filter_length='auto', phase='zero')</li>
+    </ul>
+    <h3>Result</h3>
+    <img src="./img/a11s01-all-mean.png" alt="">
+    <h2 id="ssvp-2021-11-04">2021-11-04</h2>
+    <h3>Dataset</h3>
+
+    <ul>
+        <li>
+            <a href="../index.html#data-collection-attempt-10">
+                <p>A10S01</p>
+            </a>
+        </li>
+
+    </ul>
+    <h3>Data processing</h3>
+    <ul>
+        <li>notch_filter(np.arange(50, 125, 50), filter_length='auto', phase='zero')</li>
+    </ul>
+    <h3>Result</h3>
+    <ul>
+        <li>
+            <p>class-0 => 6</p>
+        </li>
+        <li>
+            <p>class-1 => 10</p>
+        </li>
+        <li>
+            <p>class-2 => 16</p>
+        </li>
+        <img src="./img/a10s01-all-mean.png" alt="">
+        <code>--------------------
+rho=[1.0696815344359691, 1.230960235173711, 0.861255482145896]
+y_true=FP(freq=6, phare=0),y_hat=FP(freq=10, phare=0)
+--------------------
+rho=[0.9761669454231154, 1.0044733728404083, 0.6959585229921256]
+y_true=FP(freq=10, phare=0),y_hat=FP(freq=10, phare=0)
+--------------------
+rho=[1.2646740117860609, 1.1533172351341234, 1.2040243435456959]
+y_true=FP(freq=16, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[1.1530708805025747, 0.9811728877434985, 0.9587045305681416]
+y_true=FP(freq=6, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[1.0369348456483665, 1.0602579395504579, 0.7694086393115036]
+y_true=FP(freq=10, phare=0),y_hat=FP(freq=10, phare=0)
+--------------------
+rho=[0.986301729191787, 0.9048597544148096, 0.6696010026099829]
+y_true=FP(freq=16, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[0.9751368496667183, 0.9056711354372612, 0.5813131777304067]
+y_true=FP(freq=6, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[0.9888420681518415, 1.1229238865515232, 0.6625604846183999]
+y_true=FP(freq=10, phare=0),y_hat=FP(freq=10, phare=0)
+--------------------
+rho=[1.031774045577321, 1.263773587461586, 0.6476140573603533]
+y_true=FP(freq=16, phare=0),y_hat=FP(freq=10, phare=0)
+acc: 0.5555555555555556
+</code>
+    </ul>
+    <h2 id="ssvp-2021-11-03">2021-11-03</h2>
+    <h3>Dataset</h3>
+    <ul>
+        <li>
+            <a href="../index.html#data-collection-attempt-9">
+                <p>A09S01</p>
+            </a>
+        </li>
+    </ul>
+    <h3>Data processing</h3>
+    <ul>
+        <li>notch_filter(np.arange(50, 125, 50), filter_length='auto', phase='zero')</li>
+    </ul>
+    <h3>Result</h3>
+    <ul>
+        <li>
+            <p>class-0 => 6</p>
+        </li>
+        <li>
+            <p>class-1 => 10</p>
+        </li>
+        <li>
+            <p>class-2 => 16</p>
+        </li>
+        <img src="./img/a09-all-mean.png" alt="">
+        <code>--------------------
+rho=[1.2593675500155532, 1.1882689701214808, 0.6044675665862372]
+y_true=FP(freq=6, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[1.0985578369679172, 0.861462923192541, 1.2163017252633441]
+y_true=FP(freq=10, phare=0),y_hat=FP(freq=16, phare=0)
+--------------------
+rho=[1.1554722626149265, 1.0604678211437153, 0.8947112440928142]
+y_true=FP(freq=16, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[1.1630632075173437, 0.9781252163908896, 0.7519029260351239]
+y_true=FP(freq=6, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[1.0266208320474468, 0.6901172285064037, 0.6812667996490231]
+y_true=FP(freq=10, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[1.1323819860285094, 1.0000893706647114, 0.7449477462440112]
+y_true=FP(freq=16, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[1.111118694237158, 1.1406494246784786, 0.6454537551811573]
+y_true=FP(freq=6, phare=0),y_hat=FP(freq=10, phare=0)
+--------------------
+rho=[1.3136170277507029, 0.8446409152043909, 0.8911168253806591]
+y_true=FP(freq=10, phare=0),y_hat=FP(freq=6, phare=0)
+--------------------
+rho=[1.1196123911442415, 1.0792308999641007, 0.6481547245724518]
+y_true=FP(freq=16, phare=0),y_hat=FP(freq=6, phare=0)
+acc: 0.2222222222222222</code>
+    </ul>
+
+    <h2>2021-10-27</h2>
+    <h3>Dataset</h3>
+    <ul>
+        <li><a href="https://raw.githubusercontent.com/chaklam-silpasuwanchai/BCI/master/SSVEP/3-analysis/data/ssvep-10trials-3s-chaky-bigsquare.csv">Chaky's SSVP Data</a></li>
+    </ul>
+    <h3>Data processing</h3>
+    <ul>
+        <li>
+            <p>notch_filter(np.arange(50, 125, 50), filter_length='auto', phase='zero')</p>
+        </li>
+    </ul>
+    <h3>Result</h3>
+    <ul>
+        <li><a href="https://github.com/chaklam-silpasuwanchai/BCI/blob/master/SSVEP/3-analysis/Offline.ipynb">Chaky's Result</a></li>
+        <li><a href="./log/2021-10-27-chaky-dataset-ssvp.txt">my result</a></li>
+    </ul>
+    <hr>
+    <h3>Dataset</h3>
+    <ul>
+        <li><a href="/modeling/#participant-A06S01">A06S01</a></li>
+        <li><a href="/modeling/#participant-A07S01">A07S01</a></li>
+    </ul>
+    <h3>Data processing</h3>
+    <ul>
+        <li>
+            <p>-</p>
+        </li>
+    </ul>
+    <h3>Result</h3>
+    <ul>
+        <li><a href="./log/2021-10-27-ssvp-A06S01.txt">A06S01</a></li>
+        <li><a href="./log/2021-10-27-ssvp-A07S01.txt">A07S01</a></li>
+    </ul>
+    <h2>2021-10-25</h2>
+
+    <h3>Dataset</h3>
+    <ul>
+        <li><a href="/modeling/#participant-A03S01">A03S01</a></li>
+        <li><a href="/modeling/#participant-A04S01">A04S01</a></li>
+        <li><a href="/modeling/#participant-A03S02">A03S02</a></li>
+        <li><a href="/modeling/#participant-A04S02">A04S02</a></li>
+    </ul>
+
+    <h3>Data processing</h3>
+    <ul>
+        <li>3 channels: 0, 1, 2 => O2, OZ, O1</li>
+        <li>bandpass: (10,20)</li>
+    </ul>
+    <h3>Result</h3>
+    <ul>
+        <li> <a href="./log/2021-10-25-ssvp.txt">Click me</a> </li>
+    </ul>
+
+    <h2>2021-10-21</h2>
+    <ul>
+        <li>
+            <p>
+                dataset :
+                <a href="../index.html#data-collection-attempt-2">Attempt2</a> , with only 3 channels => 0,1,2 => O2,OZ,O1, bandpass: (1,20)
+            </p>
+        </li>
+
+        <li>
+            <p>The result isnt good only 0.14, full log -> <a href="./log/2021-10-21-ssvp.txt"> click here, it's too long</a> </p>
+        </li>
+    </ul>
+
+
+
+</body>

@@ -1,0 +1,67 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    padding: 2rem;
+}
+
+.protocol {
+    border: .1rem solid black;
+    padding: .2em;
+    border-radius: .5rem;
+    margin: .5em;
+    color: white;
+    background: linear-gradient(0deg, #243B55 0%, #141E30 100%);
+}
+
+strong {
+    border: .1rem solid black;
+    padding: .2rem;
+    border-radius: .2rem;
+    background: linear-gradient(180deg, #ffffff 0%, #a7a7a7 100%);
+}
+
+code {
+    display: inline-block;
+    border-radius: 1rem;
+    background-color: black;
+    color: white;
+    padding: 1rem;
+    white-space: pre-wrap;
+}
+
+.big-head {
+    background-color: #337474;
+    text-align: center;
+    padding: 1rem;
+    border-radius: 1rem;
+    color: white;
+}
+
+.img-full-w {
+    width: 90vw;
+}
+
+.big-head {
+    background-color: #337474;
+    text-align: center;
+    padding: 1rem;
+    border-radius: 1rem;
+    color: white;
+}
+
+.status {
+    color: #ffffff;
+    padding: .2rem;
+    border-radius: .2rem;
+}
+
+.okay {
+    background: linear-gradient(180deg, #00c210 0%, #008026 100%);
+}
+
+.not-test-yet {
+    background: linear-gradient(180deg, #ffbb6c 0%, #802900 100%);
+}
+
+.unfinish {
+    background: linear-gradient(180deg, #ff6c6c 0%, #ff0606 100%);
+}
