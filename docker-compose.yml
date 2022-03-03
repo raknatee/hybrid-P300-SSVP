@@ -1,0 +1,13 @@
+version: "3"
+services: 
+    project:
+        build: .
+        ports: 
+            - "8080:8080"
+        volumes: 
+            - ./vuepress-src:/home/src/docs
+            - ./docs:/home/deploy
+            - /home/src/docs/node_modules
+         
+        environment: 
+            - CHOKIDAR_USEPOLLING=true
