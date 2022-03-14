@@ -3,7 +3,7 @@ services:
   app:
     build: 
       context: .
-      dockerfile: cpu.Dockerfile
+      dockerfile: gpu-py39.Dockerfile
     volumes:
       - ./dataset:/home/dataset
       - ./model:/home/model
@@ -13,7 +13,13 @@ services:
       - "8888:8888"
     env_file:
         - ex-of-secret.env
-
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
 
   mongo:
         image: mongo:3.6.22-xenial
