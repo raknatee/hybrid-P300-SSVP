@@ -1,7 +1,10 @@
 import torch
 import sys
 print(sys.version)
-print(torch.cuda.is_available()) 
-print(torch.cuda.get_device_name(0))
+is_available:bool = torch.cuda.is_available()
+if(is_available):
+    print(torch.cuda.get_device_name(0))
+else:
+    print(is_available)
 
  
