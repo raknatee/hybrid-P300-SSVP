@@ -13,7 +13,9 @@ def read_objects(path:str)->list[dict]:
 
     return obj['documents']
 
-for database in os.listdir(os.path.join(folder_name)):
+databases_folder = os.listdir(os.path.join(folder_name))
+databases_folder.remove(".DS_Store")
+for database in databases_folder:
     for collection in os.listdir(os.path.join(folder_name,database)):
         documents = read_objects(os.path.join(folder_name,database,collection))
         for document in documents:
