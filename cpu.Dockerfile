@@ -20,6 +20,7 @@ RUN pip3 install pipenv
 RUN pipenv --python 3.9 
 RUN pipenv install torch==1.11.0 torchvision==0.12.0 torchaudio==0.11.0 --ignore-pipfile
 
+RUN pipenv install 'pillow' --ignore-pipfile
 RUN pipenv install "opencv-python==4.5.3.56" --ignore-pipfile
 RUN pipenv install "sklearn" --ignore-pipfile
 RUN pipenv install "pandas" --ignore-pipfile
