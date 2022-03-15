@@ -209,6 +209,7 @@ export default defineComponent({
     if (this.mode == "online") {
       this.applyOnline();
     }
+    document.title = `${this.mode} form`
   },
   computed: {
     mode() {
