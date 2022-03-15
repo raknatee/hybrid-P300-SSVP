@@ -265,12 +265,12 @@ export default defineComponent({
 
       // const nextBtn = new NextSSVP(getSizeW(.55),getSizeH(.9),this.appState)
 
-      let previousTime = getPerformanceNow();
+      FPS.init()
       const tick = () => {
         setBG(this.ctx!, this.canvas!.width, this.canvas!.height);
 
-        FPSText.render(this.ctx!, FPS.get().toString());
         FPS.tick();
+        FPSText.render(this.ctx!, FPS.get().toString());
 
         UserText.render(this.ctx!, this.userText.join(","));
         SysText.render(this.ctx!, this.sysText);
