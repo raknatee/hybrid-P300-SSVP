@@ -1,6 +1,14 @@
+
 # [Paper](./Paper/index.md)
 
-# [ML-server](./ml-server/index.md)
+# [About EEG](./eeg/index.md)
+
+# [ML-server API](./ml-server/index.md)
+
+# [Database Model](./database-model/index.md)
+
+# [Stack Talk](./stacktalk/index.md) 
+
 # Daily
 
 ## 2021-12-17
