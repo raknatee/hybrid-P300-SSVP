@@ -16,7 +16,7 @@
             <button @click="applyFullHYPS200200" >Full Offline HYPS 200,200</button>
             <button @click="applyFullHYPS100200" >Full Offline HYPS 100,200</button>
             <button @click="applyMiniHYPS300600" >Mini Offline HYPS 300,600</button>
-        <button @click="applyOnlySSVP" >Only SSVP</button>
+        <button @click="applyOnlySSVP" >Only SSVP (currently used)</button>
         </div>
 
       
@@ -43,7 +43,7 @@ import { setBG } from "@/modules/renderer/BasicSetup";
 import { getSizeW, getSizeH } from "@/modules/renderer/Sizing";
 
 import { getJsonFromWSMessage } from "@/modules/RestAPIHelper/WSHelper";
-import { getNow, getPerformanceNow } from "@/modules/Time";
+import { getNow } from "@/modules/Time";
 
 import { AppState } from "@/modules/SubSpeller/AppState";
 import { sleep } from "@/modules/Time";
