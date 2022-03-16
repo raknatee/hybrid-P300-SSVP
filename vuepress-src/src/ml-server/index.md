@@ -53,7 +53,7 @@ This API needs to set PARTICIPANT-ID from [/db](#db)
 ```
 SENDER|RECEIVER_LEN|RECEIVER_FULL
 ```
-3. client -> api
+3.1 client (SENDER) -> api 
 
 ```json
 {
@@ -85,12 +85,30 @@ SENDER|RECEIVER_LEN|RECEIVER_FULL
 
 }
 ```
-3. client <- api
+3.2 client (RECEIVER_LEN) <- api 
+```json
+{
+    "len":<int>
+} 
+```
+3.3 client (RECEIVER_FULL) <- api 
+```json
+{
+    "data": [
+        [ <float> , <float> , ..., <float> ],
+        [ <float> , <float> , ..., <float> ],
+        ...
+        [ <float> , <float> , ..., <float> ]
+    ]
+}
+```
+
+4. client (only SENDER) <- api
 
 ```
 1
 ```
-4. repeat step 3
+5. repeat step 3
 
 ## /begin_offline_mode/\<PARTICIPANT-ID>
 ### WS
