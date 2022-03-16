@@ -3,9 +3,13 @@
 
 # [About EEG](./eeg/index.md)
 
+# [Application Protocol](./application-protopol/index.md)
+
 # [ML-server API](./ml-server/index.md)
 
 # [Database Model](./database-model/index.md)
+
+# [Data Collection](./data-collection/index.md)
 
 # [Stack Talk](./stacktalk/index.md) 
 
