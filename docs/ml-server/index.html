@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>ML-server API | Hybrid P300 and SSVEP</title>
+    <meta name="generator" content="VuePress 1.9.7">
+    
+    <meta name="description" content="">
+    <meta name="theme-color" content="#3eaf7c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    <link rel="preload" href="/hybrid-P300-SSVP/assets/css/0.styles.3c4a0b30.css" as="style"><link rel="preload" href="/hybrid-P300-SSVP/assets/js/app.1f1912c3.js" as="script"><link rel="preload" href="/hybrid-P300-SSVP/assets/js/2.bf1db3e3.js" as="script"><link rel="preload" href="/hybrid-P300-SSVP/assets/js/14.867f1099.js" as="script"><link rel="prefetch" href="/hybrid-P300-SSVP/assets/js/10.c287974f.js"><link rel="prefetch" href="/hybrid-P300-SSVP/assets/js/11.29b42e58.js"><link rel="prefetch" href="/hybrid-P300-SSVP/assets/js/12.17df95f8.js"><link rel="prefetch" href="/hybrid-P300-SSVP/assets/js/13.f11eb7b8.js"><link rel="prefetch" href="/hybrid-P300-SSVP/assets/js/15.916512cd.js"><link rel="prefetch" href="/hybrid-P300-SSVP/assets/js/3.a1bad298.js"><link rel="prefetch" href="/hybrid-P300-SSVP/assets/js/4.0ff744a1.js"><link rel="prefetch" href="/hybrid-P300-SSVP/assets/js/5.8ee10a9f.js"><link rel="prefetch" href="/hybrid-P300-SSVP/assets/js/6.74671c5e.js"><link rel="prefetch" href="/hybrid-P300-SSVP/assets/js/7.81b82513.js"><link rel="prefetch" href="/hybrid-P300-SSVP/assets/js/8.e6e4d406.js"><link rel="prefetch" href="/hybrid-P300-SSVP/assets/js/9.bc614909.js">
+    <link rel="stylesheet" href="/hybrid-P300-SSVP/assets/css/0.styles.3c4a0b30.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/hybrid-P300-SSVP/" class="home-link router-link-active"><!----> <span class="site-name">Hybrid P300 and SSVEP</span></a> <div class="links"><!----> <!----></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!---->  <!----> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="ml-server-api"><a href="#ml-server-api" class="header-anchor">#</a> ML-server API</h1> <h2 id="db"><a href="#db" class="header-anchor">#</a> /db</h2> <h3 id="http-post"><a href="#http-post" class="header-anchor">#</a> HTTP POST</h3> <ul><li>GUI needs to set those information to <a href="">Generial Collection</a> for eeg-client and ML-server because they need to use it for collection naming.</li></ul> <h3 id="request-body"><a href="#request-body" class="header-anchor">#</a> Request body</h3> <div class="language-json line-numbers-mode"><pre class="language-json"><code><span class="token punctuation">{</span>
+    current_mode<span class="token operator">:</span> <span class="token string">&quot;offline&quot;</span> | <span class="token string">&quot;online&quot;</span>
+    current_participant_id<span class="token operator">:</span> &lt;str&gt;
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><h2 id="db-2"><a href="#db-2" class="header-anchor">#</a> /db</h2> <h3 id="http-get"><a href="#http-get" class="header-anchor">#</a> HTTP GET</h3> <h3 id="respone-body"><a href="#respone-body" class="header-anchor">#</a> Respone body</h3> <div class="language-json line-numbers-mode"><pre class="language-json"><code><span class="token punctuation">{</span>
+    current_mode<span class="token operator">:</span> <span class="token string">&quot;offline&quot;</span> | <span class="token string">&quot;online&quot;</span>
+    current_participant_id<span class="token operator">:</span> &lt;str&gt;
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><h2 id="db-datebase-name"><a href="#db-datebase-name" class="header-anchor">#</a> /db/&lt;DATEBASE-NAME&gt;</h2> <h3 id="http-get-2"><a href="#http-get-2" class="header-anchor">#</a> HTTP GET</h3> <ul><li>Return number of documents in each collection in particular Mongo database</li></ul> <p>Respone body</p> <div class="language-json line-numbers-mode"><pre class="language-json"><code><span class="token punctuation">{</span> 
+    &lt;Collectionname&gt;<span class="token operator">:</span> &lt;int&gt;
+    ... 
+    &lt;Collectionname&gt;<span class="token operator">:</span> &lt;int&gt;
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br></div></div><h2 id="eeg-offline-participant-id"><a href="#eeg-offline-participant-id" class="header-anchor">#</a> /eeg_offline/&lt;PARTICIPANT-ID&gt;</h2> <h3 id="ws"><a href="#ws" class="header-anchor">#</a> WS</h3> <p>For EEG client submits a EEG signal package and save in the database.</p> <p>This API needs to set PARTICIPANT-ID from <a href="#db">/db</a></p> <h3 id="flow"><a href="#flow" class="header-anchor">#</a> Flow</h3> <ol><li>WS connection</li> <li>client -&gt; api (tells API about who you are)</li></ol> <div class="language- line-numbers-mode"><pre class="language-text"><code>SENDER|RECEIVER_LEN|RECEIVER_FULL
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><ol start="3"><li>client -&gt; api</li></ol> <div class="language-json line-numbers-mode"><pre class="language-json"><code><span class="token punctuation">{</span>
+    <span class="token property">&quot;data&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+
+        <span class="token punctuation">{</span>
+            <span class="token property">&quot;timestamp&quot;</span><span class="token operator">:</span> &lt;timestamp(float of s)&gt; <span class="token punctuation">,</span>
+            <span class="token property">&quot;data&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span> &lt;float&gt; <span class="token punctuation">,</span> &lt;float&gt; <span class="token punctuation">,</span> ...<span class="token punctuation">,</span> &lt;float&gt; <span class="token punctuation">]</span>
+            <span class="token property">&quot;second_counter&quot;</span><span class="token operator">:</span> &lt;int&gt; 
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+
+        <span class="token punctuation">{</span>
+            <span class="token property">&quot;timestamp&quot;</span><span class="token operator">:</span> &lt;timestamp(float of s)&gt; <span class="token punctuation">,</span>
+            <span class="token property">&quot;data&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span> &lt;float&gt; <span class="token punctuation">,</span> &lt;float&gt; <span class="token punctuation">,</span> ...<span class="token punctuation">,</span> &lt;float&gt; <span class="token punctuation">]</span>
+            <span class="token property">&quot;second_counter&quot;</span><span class="token operator">:</span> &lt;int&gt; 
+
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+
+        ...
+
+        <span class="token punctuation">{</span>
+            <span class="token property">&quot;timestamp&quot;</span><span class="token operator">:</span> &lt;timestamp(float of s)&gt; <span class="token punctuation">,</span>
+            <span class="token property">&quot;data&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span> &lt;float&gt; <span class="token punctuation">,</span> &lt;float&gt; <span class="token punctuation">,</span> ...<span class="token punctuation">,</span> &lt;float&gt; <span class="token punctuation">]</span>
+            <span class="token property">&quot;second_counter&quot;</span><span class="token operator">:</span> &lt;int&gt; 
+
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+
+    <span class="token punctuation">]</span>
+
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br></div></div><ol start="3"><li>client &lt;- api</li></ol> <div class="language- line-numbers-mode"><pre class="language-text"><code>1
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><ol start="4"><li>repeat step 3</li></ol> <h2 id="begin-offline-mode-participant-id"><a href="#begin-offline-mode-participant-id" class="header-anchor">#</a> /begin_offline_mode/&lt;PARTICIPANT-ID&gt;</h2> <h3 id="ws-2"><a href="#ws-2" class="header-anchor">#</a> WS</h3> <ul><li>A WS connection for begining the offline mode.</li></ul> <h3 id="setup"><a href="#setup" class="header-anchor">#</a> Setup</h3> <ol><li>Client knows what they need to do right? (how to run experiments)</li> <li>target alphabets are decided by client side</li> <li>Client needs to send timestamp of each round</li></ol> <h3 id="flow-2"><a href="#flow-2" class="header-anchor">#</a> Flow</h3> <ol><li>ws connection</li> <li>client &lt;- api (API needs to tell that I'm ready)</li></ol> <div class="language-json line-numbers-mode"><pre class="language-json"><code><span class="token punctuation">{</span> <span class="token property">&quot;cmd&quot;</span><span class="token operator">:</span> <span class="token string">&quot;next&quot;</span> <span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><ol start="3"><li>client run the experiment</li></ol> <ul><li>Gap sleep for each round: <strong>sleep 1000ms</strong></li> <li>highlight the target: <strong>sleep 1000ms</strong></li> <li>back to rest/Zero state: <strong>sleep 1000ms</strong></li> <li>run the experiment: <strong>sleep 2000? ms</strong></li></ul> <ol start="4"><li>client -&gt; api (API saves the data to mongodb)</li></ol> <div class="language-json line-numbers-mode"><pre class="language-json"><code><span class="token punctuation">{</span>
+    <span class="token property">&quot;target_grid&quot;</span><span class="token operator">:</span> &lt;int&gt;<span class="token punctuation">,</span>
+    <span class="token property">&quot;target_index&quot;</span><span class="token operator">:</span> &lt;int&gt;<span class="token punctuation">,</span>
+    <span class="token property">&quot;data&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span>
+                <span class="token punctuation">{</span>
+                    <span class="token property">&quot;timestamp&quot;</span><span class="token operator">:</span> &lt;timestamp(float of s)&gt;<span class="token punctuation">,</span>
+                    <span class="token property">&quot;is_target_activated&quot;</span><span class="token operator">:</span> &lt;bool&gt;
+                <span class="token punctuation">}</span><span class="token punctuation">,</span>
+                <span class="token punctuation">{</span>
+                    <span class="token property">&quot;timestamp&quot;</span><span class="token operator">:</span> &lt;timestamp(float of s)&gt;<span class="token punctuation">,</span>
+                    <span class="token property">&quot;is_target_activated&quot;</span><span class="token operator">:</span> &lt;bool&gt;
+                <span class="token punctuation">}</span>
+                ...  # noted<span class="token operator">:</span> number == size of that grid
+            <span class="token punctuation">]</span>
+            
+
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br></div></div><ol start="5"><li>repect step 2</li></ol> <h2 id="eeg-online-participant-id"><a href="#eeg-online-participant-id" class="header-anchor">#</a> /eeg_online/&lt;PARTICIPANT-ID&gt;</h2> <h3 id="ws-3"><a href="#ws-3" class="header-anchor">#</a> WS</h3> <p>Same as <a href="#eeg-offline-participant-id">/eeg_offline</a> but for online mode.
+Future Plan: add Timeout Index in Mongo</p> <h2 id="begin-online-mode-participant-id"><a href="#begin-online-mode-participant-id" class="header-anchor">#</a> /begin_online_mode/&lt;PARTICIPANT-ID&gt;</h2> <h3 id="ws-4"><a href="#ws-4" class="header-anchor">#</a> WS</h3> <h3 id="setup-2"><a href="#setup-2" class="header-anchor">#</a> Setup</h3> <ol><li>Client does not know anything. They just do the HYPS.</li> <li>After did the round, Client just wait for API/Server to tell what grid and index should be.</li></ol> <h3 id="flow-3"><a href="#flow-3" class="header-anchor">#</a> Flow</h3> <ol><li>ws connection</li> <li>client &lt;- api (API needs to tell that I'm ready)</li></ol> <div class="language-json line-numbers-mode"><pre class="language-json"><code><span class="token punctuation">{</span> <span class="token property">&quot;cmd&quot;</span><span class="token operator">:</span> <span class="token string">&quot;next&quot;</span> <span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><ol start="3"><li>client run the experiment</li></ol> <ul><li>Gap sleep for each round: <strong>sleep 1000ms</strong></li> <li>run the experiment: <strong>sleep 2000? ms</strong></li></ul> <ol start="4"><li>client -&gt; api (API saves the data to mongodb)</li></ol> <div class="language-json line-numbers-mode"><pre class="language-json"><code><span class="token punctuation">{</span>
+    <span class="token property">&quot;begin_time&quot;</span><span class="token operator">:</span> &lt;timestamp(float of s)&gt; <span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><ol start="5"><li>client &lt;- api (model prediction)</li></ol> <ul><li>Gap for model prediction <strong>sleep ?? ms</strong></li></ul> <div class="language-json line-numbers-mode"><pre class="language-json"><code><span class="token punctuation">{</span>
+    <span class="token property">&quot;cmd&quot;</span><span class="token operator">:</span> <span class="token string">&quot;output_model&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;guessed_grid&quot;</span><span class="token operator">:</span> &lt;int&gt; <span class="token punctuation">,</span>
+    <span class="token property">&quot;guessed_index_order&quot;</span><span class="token operator">:</span> &lt;int&gt;
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br></div></div></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/hybrid-P300-SSVP/assets/js/app.1f1912c3.js" defer></script><script src="/hybrid-P300-SSVP/assets/js/2.bf1db3e3.js" defer></script><script src="/hybrid-P300-SSVP/assets/js/14.867f1099.js" defer></script>
+  </body>
+</html>

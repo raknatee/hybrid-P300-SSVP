@@ -49,7 +49,11 @@ This API needs to set PARTICIPANT-ID from [/db](#db)
 
 ### Flow
 1. WS connection
-2. client -> api
+2. client -> api (tells API about who you are)
+```
+SENDER|RECEIVER_LEN|RECEIVER_FULL
+```
+3. client -> api
 
 ```json
 {
@@ -86,7 +90,7 @@ This API needs to set PARTICIPANT-ID from [/db](#db)
 ```
 1
 ```
-4. repeat step 2
+4. repeat step 3
 
 ## /begin_offline_mode/\<PARTICIPANT-ID>
 ### WS
