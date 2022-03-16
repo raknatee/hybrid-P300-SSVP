@@ -37,6 +37,7 @@ class SenderThread(Thread):
         sleep 7 seconds
 
         """)
+       
         time.sleep(7)
         print("okay lets streaming")
         DataBufferManager.get_instance().get_and_clear()
@@ -76,6 +77,8 @@ class WSHelper:
         print("start connecting ...")
         self.ws = websocket.WebSocket()
         self.ws.connect(f"ws{'s' if config.SSL else ''}://{config.HOST}:{config.PORT}/eeg_{self.mode}/{self.p_id}")
+        self.ws.send("SENDER")
+        print("I'm SENDER")
         print(self.ws)
 
     def send_data(self):

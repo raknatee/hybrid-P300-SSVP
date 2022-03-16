@@ -1,4 +1,7 @@
 
+from ast import And
+from ctypes import cast
+from typing import Any, Optional
 from fastapi import FastAPI,WebSocket  # type: ignore
 import time
 import random
@@ -19,6 +22,7 @@ app.add_middleware(
 
 import mongo.collections.general as general_collection
 from mongo.collections.general import EEGClientStatus
+from enum import Enum
 general_collection.init_document()
 
 @app.post("/db")
@@ -36,18 +40,64 @@ def db_get():
 def db_info(db_name:str):
     return get_db_info(db_name)
  
+class EEGClientType(Enum):
+    SENDER="SENDER"
+    RECEIVER_LEN="RECEIVER_LEN"
+    RECEIVER_FULL= "RECEIVER_FULL"
+
+offline_viewers:list[WebSocket]=[]
+offline_full_package_viewers:list[WebSocket]=[]
 @app.websocket("/eeg_offline/{p_id}")
 async def eeg_offline(ws:WebSocket,p_id:str):
     collection_name = f"{p_id}-EEG-offline-collection"
     try:
         await ws.accept()
-        general_collection.set_eeg_client_status(EEGClientStatus.connected)
+     
+        string = await ws.receive_text()
+   
+        client_type:EEGClientType = EEGClientType.RECEIVER_LEN
+
+        if string == EEGClientType.RECEIVER_LEN.value:
+            client_type = EEGClientType.RECEIVER_LEN
+            offline_viewers.append(ws)
+
+        if string == EEGClientType.RECEIVER_FULL.value:
+            client_type = EEGClientType.RECEIVER_FULL
+            offline_full_package_viewers.append(ws)
+
+        if string == EEGClientType.SENDER.value:
+            client_type = EEGClientType.SENDER
+            general_collection.set_eeg_client_status(EEGClientStatus.connected)
+
+       
         while True:
-            json_data = await ws.receive_json()
-            eeg_collection.insert_eeg_signals(json_data,collection_name)
-            await ws.send_text("1")
+
+            if client_type == EEGClientType.SENDER:
+                json_data = await ws.receive_json()
+                eeg_collection.insert_eeg_signals(json_data,collection_name)
+                await ws.send_text("1")
+                for viewer in offline_viewers:
+                    
+                    await viewer.send_json({
+                        'len':len(json_data['data'])
+                    })
+                for full_viewer in offline_full_package_viewers:
+                    await full_viewer.send_json({
+                        'data': [d['data'] for d in json_data['data']]
+                    })
+
+            if client_type == EEGClientType.RECEIVER_LEN or client_type == EEGClientType.RECEIVER_FULL:
+                await ws.receive_text()
     finally:
-        general_collection.set_eeg_client_status(EEGClientStatus.unconnected)
+        if client_type == EEGClientType.SENDER:
+            general_collection.set_eeg_client_status(EEGClientStatus.unconnected)
+        if client_type == EEGClientType.RECEIVER_LEN:
+            offline_viewers.remove(ws)
+        if client_type == EEGClientType.RECEIVER_FULL:
+            offline_full_package_viewers.remove(ws)
+
+
+
 
 
     
