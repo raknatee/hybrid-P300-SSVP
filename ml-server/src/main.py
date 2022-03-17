@@ -9,6 +9,7 @@ import mongo.collections.eeg as eeg_collection
 import mongo.collections.experiment as experiment_collection
 from mongo.db_info import get_db_info
 from utils.iprint import iprint
+import numpy as np
 app = FastAPI()
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -50,12 +51,13 @@ offline_full_package_viewers:list[WebSocket]=[]
 @app.websocket("/eeg_offline/{p_id}")
 async def eeg_offline(ws:WebSocket,p_id:str):
     collection_name = f"{p_id}-EEG-offline-collection"
+    client_type:EEGClientType = EEGClientType.RECEIVER_LEN
+
     try:
         await ws.accept()
      
         string = await ws.receive_text()
-   
-        client_type:EEGClientType = EEGClientType.RECEIVER_LEN
+        iprint(string)
 
         if string == EEGClientType.RECEIVER_LEN.value:
             client_type = EEGClientType.RECEIVER_LEN
@@ -82,8 +84,10 @@ async def eeg_offline(ws:WebSocket,p_id:str):
                         'len':len(json_data['data'])
                     })
                 for full_viewer in offline_full_package_viewers:
+                    numpy_data = np.array([d['data'] for d in json_data['data']])
+                    numpy_data = numpy_data.T
                     await full_viewer.send_json({
-                        'data': [d['data'] for d in json_data['data']]
+                        'data': numpy_data.tolist()
                     })
 
             if client_type == EEGClientType.RECEIVER_LEN or client_type == EEGClientType.RECEIVER_FULL:
