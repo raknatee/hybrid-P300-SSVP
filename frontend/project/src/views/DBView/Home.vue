@@ -1,5 +1,5 @@
 <template lang="">
-        
+        <h1>warning: all graphs show the RAW data without any notch or bandpass filter</h1>
         <div class="ch-display">
         <div class="highcharts" v-for="i in 8" :key="i" :id="`highcharts-container-ch${i-1}`"></div>
         <div class="highcharts" id="highcharts-container"></div>
@@ -107,6 +107,11 @@ export default defineComponent({
             ,{
                 title:{
                     text:`${p_id} ch${i}`
+                },
+                plotOptions: {
+                    series: {
+                        animation: false
+                    }
                 },
                 series:[
                     {name:"eeg",data:Array(300).fill(0)}
