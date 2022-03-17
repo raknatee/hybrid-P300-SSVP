@@ -11,6 +11,7 @@ module.exports = {
     description: description,
     base: "/hybrid-P300-SSVP/",
     dest: "/home/deploy",
+    port:8888,
     /**
      * Extra tags to be injected to the page HTML `<head>`
      *

@@ -3,7 +3,7 @@ services:
     project:
         build: .
         ports: 
-            - "8080:8080"
+            - "8888:8888"
         volumes: 
             - ./vuepress-src:/home/src/docs
             - ./docs:/home/deploy

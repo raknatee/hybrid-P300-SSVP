@@ -92,6 +92,7 @@ SENDER|RECEIVER_LEN|RECEIVER_FULL
 } 
 ```
 3.3 client (RECEIVER_FULL) <- api 
+- data shape is transposed => (channel, data)
 ```json
 {
     "data": [
